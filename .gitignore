@@ -1,5 +1,5 @@
 # Custom
-package-lock.json
+public/dist/
 
 # Logs
 logs
@@ -31,9 +31,6 @@ bower_components
 
 # node-waf configuration
 .lock-wscript
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/
 
 # Dependency directories
 node_modules/

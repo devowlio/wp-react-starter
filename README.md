@@ -1,6 +1,13 @@
 # WordPress ReactJS Boilerplate
 
-This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin. It is forked from [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate) and adjusted to MatthiasWeb's plugins.
+This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin. 
+
+## Features
+* ReactJS v16 with babel `env` preset
+* webpack v3 build for assets
+* SASS stylesheets compiler (`.scss` files)
+* Admin backend components, in this case a own page with a button (`public/src/admin.js`)
+* Frontend backend components, in this case a simple widget (`public/src/widget.js`)
 
 ## Getting Started
 
@@ -26,13 +33,12 @@ npm run dev
 
 ## Todo
 
+1. Add Bourbon.io
+1. Add Babel polyfill
 1. Add `generate` script to generate a new plugin from the boilerplate
-1. Add code for bootstrapping data via a JSON object written into a script tag
-1. Add example that integrates the REST API
-1. Add redux and react-router
-1. Add admin components that use classes that match up with the classes used in WP Admin
-1. Incorporate the webpack-dev-server so that when developing the browser will wait while the assets are being regenerated
-1. Add script for publishing plugin to wordpress.org
+1. Add documentation generation
+1. Add redux
+1. Add script to create a build folder that holds only plugin relevant files
 1. Add hot loading of both React components and css
 
 ## Licensing / Credits

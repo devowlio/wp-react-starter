@@ -1,12 +1,16 @@
 import React from 'react';
-import AdminHeader from 'components/wp/admin-header';
-import Button from 'components/wp/button';
-import Notice from 'components/wp/notice';
-
+//import AdminHeader from 'components/wp/admin-header';
+//import Button from 'components/wp/button';
+//import Notice from 'components/wp/notice';
 require( './style.scss' );
 
-export default React.createClass({
+export default () => {
+	return (
+		<h1>Test</h1>
+	);
+};
 
+/*export default React.createClass({
 	render() {
 		return (
 				<div className="wp-styleguide">
@@ -31,5 +35,4 @@ export default React.createClass({
 				</div>
 		);
 	}
-
-});
+});*/

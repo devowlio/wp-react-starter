@@ -1,0 +1,7 @@
+{
+  "sourceMaps": true,
+  "presets": [ "env", "react" ],
+  "plugins": [
+    ["transform-decorators-legacy"]
+  ]
+}
