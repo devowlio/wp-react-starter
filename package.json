@@ -12,7 +12,7 @@
   "main": "index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack",
-    "build-dev": "webpack --watch",
+    "build-dev": "webpack",
     "dev": "webpack --watch",
     "lint": "eslint public/src"
   },
@@ -32,7 +32,6 @@
     "css-loader": "^0.28.7",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "es6-promise": "^4.1.1",
     "eslint": "^4.10.0",
     "eslint-plugin-react": "^7.4.0",
     "extract-text-webpack-plugin": "^3.0.2",

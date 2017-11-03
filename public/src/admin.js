@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
-import ComponentLibrary from './components/component-library';
+import ComponentLibrary from 'component-library';
 
 ReactDOM.render(
 	<ComponentLibrary />,

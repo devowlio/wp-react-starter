@@ -1,12 +1,10 @@
-require( 'es6-promise' ).polyfill();
+var path = require( 'path' ),
+	webpack = require( 'webpack' ),
+	NODE_ENV = process.env.NODE_ENV || 'development',
+	ExtractTextPlugin = require( 'extract-text-webpack-plugin' ),
+	dist = path.join( __dirname, 'public', 'dist' );
 
-var path = require( 'path' );
-var webpack = require( 'webpack' );
-var NODE_ENV = process.env.NODE_ENV || 'development';
-var ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
-var dist = path.join( __dirname, 'public', 'dist' );
-
-var webpackConfig = {
+module.exports = {
 	entry: {
 		widget: './public/src/widget.js',
 		admin: './public/src/admin.js'
@@ -41,15 +39,11 @@ var webpackConfig = {
 			}
 		}),
 		new ExtractTextPlugin( '[name].css' )
-	]
+	].concat(NODE_ENV === 'production' ? [
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			}
+		})
+	] : [])
 };
-
-if ( NODE_ENV === 'production' ) {
-	webpackConfig.plugins.push( new webpack.optimize.UglifyJsPlugin({
-		compress: {
-			warnings: false
-		}
-	}) );
-}
-
-module.exports = webpackConfig;
