@@ -1,4 +1,4 @@
-<p align="center"><h1>WordPress ReactJS Boilerplate :sparkling_heart:</h1></p>
+<h1><p align="center">WordPress ReactJS Boilerplate :sparkling_heart:</p></h1>
 <p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin.</p>
 
 ---
