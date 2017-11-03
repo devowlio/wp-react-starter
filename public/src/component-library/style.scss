@@ -1,4 +1,8 @@
+@import 'bourbon';
+
 .wp-styleguide--buttons {
 	background-color: #fff;
 	padding: 10px;
+	font-family: $helvetica;
+	box-sizing: border-box;
 }
