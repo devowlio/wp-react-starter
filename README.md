@@ -44,7 +44,7 @@ npm run dev # Start webpack in "watch" mode so that the assets are automatically
 1. Commands
 1. [Building production plugin](#building-production-plugin)
 
-#### Folder structure
+### Folder structure
 * **`build`**: Build relevant files
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
@@ -64,7 +64,7 @@ npm run dev # Start webpack in "watch" mode so that the assets are automatically
 * _`postcss.config.js`_: [PostCSS configuration](https://github.com/postcss/postcss-loader#configuration)
 * _`webpack.config.js`_: [webpack configuration](https://webpack.github.io/docs/configuration.html)
 
-#### Building production plugin
+### Building production plugin
 To build production JS and CSS code you simply run `npm run build`. More coming soon to prepare plugin for wordpress.org (serve).
 
 ## Todo
