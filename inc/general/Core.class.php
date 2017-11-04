@@ -23,6 +23,13 @@ class Core extends Base {
     private $activator;
     
     /**
+     * The plugins asset class.
+     * 
+     * @see Assets
+     */
+    private $assets;
+    
+    /**
      * The stored plugin data.
      * 
      * @see getPluginData()
@@ -41,12 +48,13 @@ class Core extends Base {
         spl_autoload_register(array($this, 'autoloadRegister'));
         
         $this->activator = new Activator();
+        $this->assets = new Assets();
         
         // Register immediate actions and filters
         add_action('plugins_loaded',            array($this, 'i18n'));
         add_action('init',                      array($this, 'init'));
-        register_activation_hook(WPRJSS_FILE,   array($this->activator, 'activate'));
-        register_deactivation_hook(WPRJSS_FILE, array($this->activator, 'deactivate'));
+        register_activation_hook(WPRJSS_FILE,   array($this->getActivator(), 'activate'));
+        register_deactivation_hook(WPRJSS_FILE, array($this->getActivator(), 'deactivate'));
     }
     
     /**
@@ -57,7 +65,9 @@ class Core extends Base {
         // Start migration check
         $this->updateDbCheck();
         
-        // Register all your hooks here...
+        // Register all your hooks here
+        add_action('admin_enqueue_scripts',     array($this->getAssets(), 'admin_enqueue_scripts'));
+        add_action('wp_enqueue_scripts',        array($this->getAssets(), 'wp_enqueue_scripts'));
     }
     
     /**
@@ -98,12 +108,7 @@ class Core extends Base {
         $installed = get_option( WPRJSS_OPT_PREFIX . '_db_version' );
         if ($installed != WPRJSS_VERSION) {
             $this->debug("(Re)install the database tables", __FUNCTION__);
-            $this->activator->install();
-            
-            if ($installed !== false) {
-                $this->debug("Trigger the migration system from $installed to " . WPRJSS_VERSION, __METHOD__);
-                // @TODO migration class
-            }
+            $this->getActivator()->install();
         }
     }
     
@@ -118,6 +123,20 @@ class Core extends Base {
         require_once(ABSPATH . '/wp-admin/includes/plugin.php');
         $data = isset($this->plugin_data) ? $this->plugin_data : $this->plugin_data = get_plugin_data(WPRJSS_FILE, true, false);
         return $key === null ? $data : $data[$key];
+    }
+    
+    /**
+     * @returns Activator
+     */
+    public function getActivator() {
+        return $this->activator;
+    }
+    
+    /**
+     * @returns Assets
+     */
+    public function getAssets() {
+        return $this->assets;
     }
     
     /**

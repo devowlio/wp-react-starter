@@ -30,22 +30,4 @@ define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
 //define('WPRJSS_DEBUG',	true); This constant should be defined in wp-config.php to enable the Base::debug() method
 
 // Check PHP Version and print notice if minimum not reached, otherwise start the plugin core
-if (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=")) {
-    require_once(WPRJSS_INC . "others/start.php");
-}else{
-    if (!function_exists("wprjss_skip_php_admin_notice")) {
-    	/**
-    	 * Show an admin notice to administrators when the minimum PHP version
-    	 * could not be reached. The error message is only in english available.
-    	 */
-        function wprjss_skip_php_admin_notice() {
-            if (current_user_can('install_plugins')) {
-            	extract(get_plugin_data(WPRJSS_FILE, true, false));
-            	echo "<div class=\"notice notice-error\">
-					<p><strong>$Name</strong> could not be initialized because you need minimum PHP version " . WPRJSS_MIN_PHP . " ... you are running: " . phpversion() . ".
-				</div>";
-            }
-        }
-    }
-    add_action('admin_notices', 'wprjss_skip_php_admin_notice');
-}
+require_once(WPRJSS_INC . "others/" . (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=") ? "start.php" : "phpfallback.php"));

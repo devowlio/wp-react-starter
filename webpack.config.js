@@ -3,7 +3,7 @@ var path = require( 'path' ),
 	NODE_ENV = process.env.NODE_ENV || 'development',
 	ExtractTextPlugin = require( 'extract-text-webpack-plugin' ),
 	bourbonIncludePath = require('node-bourbon').includePaths,
-	dist = path.join( __dirname, 'public', 'dist' );
+	dist = path.join( __dirname, 'public', NODE_ENV === 'production' ? 'dist' : 'dev' );
 
 module.exports = {
 	entry: {

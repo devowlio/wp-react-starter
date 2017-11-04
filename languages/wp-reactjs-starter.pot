@@ -24,32 +24,3 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: ../widget.php:10
-msgid "A widget that demonstrates using React."
-msgstr ""
-
-#: ../widget.php:12
-msgid "React Demo"
-msgstr ""
-
-#. Name of the plugin
-msgid "WP ReactJS Starter"
-msgstr ""
-
-#. URI of the plugin
-msgid "https://matthias-web.com/wordpress"
-msgstr ""
-
-#. Description of the plugin
-msgid ""
-"This WordPress plugin demonstrates how to setup a plugin that uses React and "
-"ES6 in a WordPress plugin."
-msgstr ""
-
-#. Author of the plugin
-msgid "Matthias Guenter"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://matthias-web.com"
-msgstr ""
