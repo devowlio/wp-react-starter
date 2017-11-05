@@ -44,8 +44,8 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Make the boilerplate yours](#make-the-boilerplate-yours)
 1. Available constants
 1. [Activation hooks](#activation-hooks)
-1. Hooks and own classes
-1. Add external JS library (with Grunt)
+1. Add hooks and own classes
+1. Add external JavaScript library
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
 
@@ -74,12 +74,12 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 ```sh
 $ npm run build
 ```
-Create production build. Files get generated in `public/dist`. This files should get loaded when `SCRIPT_DEBUG` is active. Learn more here: [Building production plugin](#building-production-plugin)
+Create production build. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is active. Learn more here: [Building production plugin](#building-production-plugin)
 
 ```sh
 $ npm run build-dev
 ```
-Create development build. Files get generated in `public/dev`. This files should get loaded when `SCRIPT_DEBUG` is not active.
+Create development build. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is not active.
 
 ```sh
 $ npm run dev
@@ -123,7 +123,6 @@ To build production JS and CSS code you simply run `npm run build`. More coming 
 1. Add Babel polyfill
 1. Add documentation generation
 1. Add redux
-1. Add hot loading of both React components and css
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).
