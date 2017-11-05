@@ -40,9 +40,9 @@ module.exports = function(grunt) {
                     default: '0.1.0'
                 },
                 textDomain: {
-                    description: 'Step 7 / 12: Text domain (example: wp-reactjs-starter)',
+                    description: 'Step 7 / 12: Plugin slug for text domain and language files (example: wp-reactjs-starter)',
                     pattern: /^[^ ]+$/,
-                    message: 'The text domain may not contain whitespaces',
+                    message: 'The plugin slug may not contain whitespaces',
                     required: true
                 },
                 minPHP: {
@@ -114,15 +114,16 @@ module.exports = function(grunt) {
             }
             grunt.log.writeln('Found the following constants: ' + constants.join(', '));
             
+            // Apply constants and namespaces
             var fileContent, file, files = grunt.file.expand({
                 cwd: './inc'
             }, "**/*"), parseOldConstant = function(constant) {
                 return 'WPRJSS' + constant.slice(result.constantPrefix.length);
-            };
+            }, functions = ['wprjss_skip_php_admin_notice'];
             _.each(files, function(_file) {
                 file = './inc/' + _file;
                 if (grunt.file.isFile(file)) {
-                    grunt.log.writeln('Modify constants and namespaces in [' + file + '] ...');
+                    grunt.log.writeln('Create constants, namespaces and procedural functions in [' + file + '] ...');
                     fileContent = grunt.file.read(file);
                     
                     // Replacing the constants in /inc files
@@ -133,15 +134,24 @@ module.exports = function(grunt) {
                     // Replacing the namespaces in /inc files
                     fileContent = fileContent.replace(new RegExp('MatthiasWeb\\\\WPRJSS', 'g'), result.namespace);
                     
+                    // Apply for procedural functions
+                    _.each(functions, function(fnName) {
+                        fileContent = fileContent.replace(new RegExp(fnName, 'g'), fnName.replace('wprjss', result.optPrefix));
+                    });
+                    
                     grunt.file.write(file, fileContent);
                 }
             });
             
-            grunt.log.writeln('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more informations. Happy coding and moke something awesome. :-)');
+            // Apply for language files
+            grunt.log.writeln('Create language files...');
+            var potFile = './languages/wp-reactjs-starter.pot', potContent = grunt.file.read(potFile);
+            grunt.file.delete(potFile);
+            grunt.file.write('./languages/' + result.textDomain + '.pot', potContent.replace('WP ReactJS Starter', result.pluginName));
+            
+            grunt.log.ok('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more informations. Happy coding and moke something awesome. :-)');
             done();
         });
-        
-        // /languages
     });
     
 };
