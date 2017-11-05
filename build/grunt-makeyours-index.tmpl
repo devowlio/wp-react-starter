@@ -20,11 +20,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file
 if (defined('${constantPrefix}_PATH')) return;
 define('${constantPrefix}_FILE',		__FILE__);
 define('${constantPrefix}_PATH',		dirname(${constantPrefix}_FILE));
-define('${constantPrefix}_INC',		trailingslashit(path_join(${constantPrefix}_PATH, 'inc')));
-define('${constantPrefix}_MIN_PHP',	'${minPHP}'); // Minimum of PHP 5.3 required for autoloading and namespacing
+define('${constantPrefix}_INC',			trailingslashit(path_join(${constantPrefix}_PATH, 'inc')));
+define('${constantPrefix}_MIN_PHP',		'${minPHP}'); // Minimum of PHP 5.3 required for autoloading and namespacing
 define('${constantPrefix}_NS',			'${namespace}');
 define('${constantPrefix}_DB_PREFIX',	'${dbPrefix}'); // The table name prefix wp_{prefix}
-define('${constantPrefix}_OPT_PREFIX', '${optPrefix}'); // The option name prefix in wp_options
+define('${constantPrefix}_OPT_PREFIX',	'${optPrefix}'); // The option name prefix in wp_options
 //define('${constantPrefix}_TD',		''); This constant is defined in the core class. Use this constant in all your __() methods
 //define('${constantPrefix}_VERSION',	''); This constant is defined in the core class
 //define('${constantPrefix}_DEBUG',	true); This constant should be defined in wp-config.php to enable the Base::debug() method

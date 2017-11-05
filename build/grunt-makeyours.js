@@ -4,9 +4,15 @@ var prompt = require('prompt'),
 module.exports = function(grunt) {
     
     grunt.registerTask('wordpress-reactjs-starter-makeyours', function() {
+        // Check already generated
+        if (grunt.file.exists('./build/.generated')) {
+            throw new Error('You already have generated the boilerplate.');
+        }
+        
+        // Start
         var done = this.async(),
             tmpl = grunt.file.read("./build/grunt-makeyours-index.tmpl");
-            
+    
         prompt.start();
         prompt.get({
             properties: {
@@ -47,7 +53,10 @@ module.exports = function(grunt) {
                     description: 'Step 9 / 12: PHP file namespace prefix (example: MatthiasWeb\\WPRJSS)',
                     pattern: /^[^ ]+$/,
                     message: 'The namespace may not contain whitespaces',
-                    required: true
+                    required: true,
+                    before: function(value) {
+                        return _.trim(value, '\\').split('\\').join('\\\\');
+                    }
                 },
                 optPrefix: {
                     description: 'Step 10 / 12: WordPress option names prefix (example: wprjss)',
@@ -81,15 +90,58 @@ module.exports = function(grunt) {
             // We have all the informations, let's parse the index.php file
             var indexPHP = tmpl;
             _.each(result, function(value, key) {
-                indexPHP = indexPHP.replace(new RegExp('\\$\\{' + key + '\\}'), 'g', value);
+                indexPHP = indexPHP.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), value);
             });
             
-            console.log(indexPHP);
+            // Create index.php file
+            grunt.log.writeln('Creating index.php file...');
+            grunt.file.write('./index.php', indexPHP);
+            grunt.file.write('./build/.generated', JSON.stringify(result));
+
+            // Read all available constants
+            grunt.log.writeln('Fetching all available constant names...');
+            var m, regex = /define\(\'([^\']+)/g, constants = [];
+            while ((m = regex.exec(indexPHP)) !== null) {
+                if (m.index === regex.lastIndex) {
+                    regex.lastIndex++;
+                }
+                
+                m.forEach((match, groupIndex) => {
+        			if (groupIndex === 1) {
+        				constants.push(match);
+        			}
+                });
+            }
+            grunt.log.writeln('Found the following constants: ' + constants.join(', '));
+            
+            var fileContent, file, files = grunt.file.expand({
+                cwd: './inc'
+            }, "**/*"), parseOldConstant = function(constant) {
+                return 'WPRJSS' + constant.slice(result.constantPrefix.length);
+            };
+            _.each(files, function(_file) {
+                file = './inc/' + _file;
+                if (grunt.file.isFile(file)) {
+                    grunt.log.writeln('Modify constants and namespaces in [' + file + '] ...');
+                    fileContent = grunt.file.read(file);
+                    
+                    // Replacing the constants in /inc files
+                    _.each(constants, function(constant) {
+                        fileContent = fileContent.replace(new RegExp(parseOldConstant(constant), 'g'), constant);
+                    });
+                    
+                    // Replacing the namespaces in /inc files
+                    fileContent = fileContent.replace(new RegExp('MatthiasWeb\\\\WPRJSS', 'g'), result.namespace);
+                    
+                    grunt.file.write(file, fileContent);
+                }
+            });
+            
+            grunt.log.writeln('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more informations. Happy coding and moke something awesome. :-)');
             done();
         });
         
-        // /languages, /inc, /index.php
-        // .generated file anlegen
+        // /languages
     });
     
 };

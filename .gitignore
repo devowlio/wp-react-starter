@@ -1,5 +1,6 @@
 # Custom
 public/dist/
+build/.generated
 
 # Logs
 logs

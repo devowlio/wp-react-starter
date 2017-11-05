@@ -29,7 +29,7 @@ Make sure that you have [**Node.js**](https://nodejs.org/en/)/[**Grunt**](https:
 ```sh
 cd /path/to/wordpress/wp-content/plugins/wp-react-boilerplate
 npm install # Install dependencies
-npm run generate # Make the plugin yours and set plugin informations
+npm run generate # Make the plugin yours and set plugin information
 npm run build # Generate production versions of static assets
 npm run dev # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
 ```
@@ -38,19 +38,21 @@ npm run dev # Start webpack in "watch" mode so that the assets are automatically
 
 1. [Folder structure](#folder-structure)
 1. Make the boilerplate yours
+1. Activation hooks
 1. Hooks and own classes
 1. Add external JS library (with Grunt)
 1. Localization
-1. Commands
+1. Available commands
 1. [Building production plugin](#building-production-plugin)
 
-### Folder structure
+## Folder structure
 * **`build`**: Build relevant files
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
     * **`others`**: Other files (for example the starter file)
 * **`languages`**: Language files
 * **`public`**: All client-side files (JavaScript, CSS)
+    * **`lib`**: Put external libraries to this folder
     * **`src`**: Your source files (see client-side features what's possible)
     * **`dev`**: Generated development sources (`SCRIPT_DEBUG` is active)
     * **`dist`**: Generated production sources (`SCRIPT_DEBUG` is not active)
@@ -64,7 +66,7 @@ npm run dev # Start webpack in "watch" mode so that the assets are automatically
 * _`postcss.config.js`_: [PostCSS configuration](https://github.com/postcss/postcss-loader#configuration)
 * _`webpack.config.js`_: [webpack configuration](https://webpack.github.io/docs/configuration.html)
 
-### Building production plugin
+## Building production plugin
 To build production JS and CSS code you simply run `npm run build`. More coming soon to prepare plugin for wordpress.org (serve).
 
 ## Todo
