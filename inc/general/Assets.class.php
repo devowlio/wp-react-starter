@@ -29,8 +29,8 @@ class Assets extends Base {
         $publicFolder = $this->getPublicFolder();
         
         if ($type === Assets::TYPE_ADMIN) {
-            wp_enqueue_script('wp-reactjs-starter',  $this->pluginsUrl("admin.js"), array(), WPRJSS_VERSION, true);
-		    wp_enqueue_style('wp-reactjs-starter',   $this->pluginsUrl("admin.css"), array(), WPRJSS_VERSION);
+            wp_enqueue_script('wp-reactjs-starter', $this->pluginsUrl("admin.js"), array(), WPRJSS_VERSION, true);
+		    wp_enqueue_style('wp-reactjs-starter', $this->pluginsUrl("admin.css"), array(), WPRJSS_VERSION);
         }
     }
     

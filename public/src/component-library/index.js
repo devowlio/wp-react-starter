@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'wp/button';
 import Notice from 'wp/notice';
-import style from './style.scss';
+require('./style.scss');
 
 export default () => {
 	return (

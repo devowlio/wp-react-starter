@@ -41,8 +41,8 @@ class Core extends Base {
      */
     private function __construct() {
         // Define lazy constants
-        define('WPRJSS_TD',		    $this->getPluginData("TextDomain"));
-        define('WPRJSS_VERSION',	$this->getPluginData("Version"));
+        define('WPRJSS_TD', $this->getPluginData("TextDomain"));
+        define('WPRJSS_VERSION', $this->getPluginData("Version"));
 
         // Register autoload
         spl_autoload_register(array($this, 'autoloadRegister'));
@@ -51,9 +51,9 @@ class Core extends Base {
         $this->assets = new Assets();
         
         // Register immediate actions and filters
-        add_action('plugins_loaded',            array($this, 'i18n'));
-        add_action('init',                      array($this, 'init'));
-        register_activation_hook(WPRJSS_FILE,   array($this->getActivator(), 'activate'));
+        add_action('plugins_loaded', array($this, 'i18n'));
+        add_action('init', array($this, 'init'));
+        register_activation_hook(WPRJSS_FILE, array($this->getActivator(), 'activate'));
         register_deactivation_hook(WPRJSS_FILE, array($this->getActivator(), 'deactivate'));
     }
     
@@ -66,8 +66,8 @@ class Core extends Base {
         $this->updateDbCheck();
         
         // Register all your hooks here
-        add_action('admin_enqueue_scripts',     array($this->getAssets(), 'admin_enqueue_scripts'));
-        add_action('wp_enqueue_scripts',        array($this->getAssets(), 'wp_enqueue_scripts'));
+        add_action('admin_enqueue_scripts', array($this->getAssets(), 'admin_enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this->getAssets(), 'wp_enqueue_scripts'));
     }
     
     /**

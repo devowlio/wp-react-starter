@@ -132,7 +132,7 @@ module.exports = function(grunt) {
                     });
                     
                     // Replacing the namespaces in /inc files
-                    fileContent = fileContent.replace(new RegExp('MatthiasWeb\\\\WPRJSS', 'g'), result.namespace);
+                    fileContent = fileContent.replace(new RegExp('MatthiasWeb\\\\WPRJSS', 'g'), result.namespace.replace('\\\\', '\\'));
                     
                     // Apply for procedural functions
                     _.each(functions, function(fnName) {
@@ -144,12 +144,12 @@ module.exports = function(grunt) {
             });
             
             // Apply for language files
-            grunt.log.writeln('Create language files...');
+            grunt.log.writeln('Create language file...');
             var potFile = './languages/wp-reactjs-starter.pot', potContent = grunt.file.read(potFile);
             grunt.file.delete(potFile);
             grunt.file.write('./languages/' + result.textDomain + '.pot', potContent.replace('WP ReactJS Starter', result.pluginName));
             
-            grunt.log.ok('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more informations. Happy coding and moke something awesome. :-)');
+            grunt.log.ok('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more information. Happy coding and make something awesome. :-)');
             done();
         });
     });

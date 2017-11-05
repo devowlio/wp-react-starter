@@ -1,5 +1,10 @@
 # Custom
-public/dist/
+public/dist/*.js
+public/dist/*.css
+public/dist/*.map
+public/dev/*.js
+public/dev/*.css
+public/dev/*.map
 build/.generated
 
 # Logs
