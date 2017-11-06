@@ -1,5 +1,6 @@
 <?php
 namespace MatthiasWeb\WPRJSS\general;
+use MatthiasWeb\WPRJSS\menu;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
@@ -68,6 +69,7 @@ class Core extends Base {
         // Register all your hooks here
         add_action('admin_enqueue_scripts', array($this->getAssets(), 'admin_enqueue_scripts'));
         add_action('wp_enqueue_scripts', array($this->getAssets(), 'wp_enqueue_scripts'));
+        add_action('admin_menu', array(new menu\Page(), 'admin_menu'));
     }
     
     /**

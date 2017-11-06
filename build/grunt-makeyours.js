@@ -60,8 +60,8 @@ module.exports = function(grunt) {
                 },
                 optPrefix: {
                     description: 'Step 10 / 12: WordPress option names prefix (example: wprjss)',
-                    pattern: /^[A-Za-z0-9]+$/,
-                    message: 'The option prefix must match the [A-Za-z0-9] pattern',
+                    pattern: /^[A-Za-z0-9_]+$/,
+                    message: 'The option prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
                         return value.toLowerCase();
                     },
@@ -69,8 +69,8 @@ module.exports = function(grunt) {
                 },
                 dbPrefix: {
                     description: 'Step 11 / 12: WordPress database tables prefix (example: wprjss)',
-                    pattern: /^[A-Za-z0-9]+$/,
-                    message: 'The database table prefix must match the [A-Za-z0-9] pattern',
+                    pattern: /^[A-Za-z0-9_]+$/,
+                    message: 'The database table prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
                         return value.toLowerCase();
                     },
@@ -78,8 +78,8 @@ module.exports = function(grunt) {
                 },
                 constantPrefix: {
                     description: 'Step 12 / 12: PHP constants prefix for the above options (example: WPRJSS)',
-                    pattern: /^[A-Za-z0-9]+$/,
-                    message: 'The constant prefix must match the [A-Za-z0-9] pattern',
+                    pattern: /^[A-Za-z0-9_]+$/,
+                    message: 'The constant prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
                         return value.toUpperCase();
                     },

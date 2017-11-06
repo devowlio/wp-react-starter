@@ -1,5 +1,5 @@
 <h1><p align="center">WordPress ReactJS Boilerplate :sparkling_heart:</p></h1>
-<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin.</p>
+<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (_Frontend Widget, WordPress backend menu page_).</p>
 
 ---
 
@@ -28,7 +28,7 @@ Make sure that you have [**Node.js**](https://nodejs.org/en/)/[**Grunt**](https:
 
 ```sh
 $ cd /path/to/wordpress/wp-content/plugins
-$ git clone https://github.com/matzeeeeeable/wp-reactjs-starter.git ./your-plugin-name
+$ git clone https://github.com/matzeeable/wp-reactjs-starter.git ./your-plugin-name
 $ cd your-plugin-name
 $ npm install # Install dependencies
 $ npm run generate # Make the plugin yours and set plugin information
@@ -46,11 +46,14 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Activation hooks](#activation-hooks)
 1. Add hooks and own classes
 1. Add external JavaScript library
+1. Add external PHP library
+1. Remove predefined components (widget, menu page)
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
 
 ## Folder structure
 * **`build`**: Build relevant files
+* **`lib`**: Library classes and external files (PHP) @TODO
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
     * **`others`**: Other files (for example the starter file)
@@ -112,6 +115,11 @@ There are four types of activation hooks:
 The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see `index.php` for constants) as the `$domain` parameter.
 
 To translate the plugin you can use for example a tool like [Poedit](https://poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/).
+
+In this boilerplate you can find an example of using a [`wp_localize_script`](https://developer.wordpress.org/reference/functions/wp_localize_script/)'ed object in React (`inc/menu/Page.class.php::enqueue_scripts()`, `public/src/component-library/index.js`):
+```js
+<Notice type="info">The text domain of the plugin is: "{window.wprjssOpts.textDomain}" (localized variable)</Notice>
+```
 
 ## Building production plugin
 To build production JS and CSS code you simply run `npm run build`. More coming soon to prepare plugin for wordpress.org (serve).

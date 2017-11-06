@@ -7,7 +7,7 @@
   "homepage": "https://matthias-web.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/matzeeeeeable/wp-reactjs-starter"
+    "url": "https://github.com/matzeeable/wp-reactjs-starter"
   },
   "main": "index.js",
   "scripts": {

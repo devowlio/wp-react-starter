@@ -31,7 +31,18 @@ class Assets extends Base {
         if ($type === Assets::TYPE_ADMIN) {
             wp_enqueue_script('wp-reactjs-starter', $this->pluginsUrl("admin.js"), array(), WPRJSS_VERSION, true);
 		    wp_enqueue_style('wp-reactjs-starter', $this->pluginsUrl("admin.css"), array(), WPRJSS_VERSION);
+		    // @TODO variable name from database table name
+		    wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->admin_localize_script());
         }
+    }
+    
+    /**
+     * Localize the WordPress admin backend.
+     */
+    public function admin_localize_script() {
+        return array(
+            'textDomain' => WPRJSS_TD    
+        );
     }
     
     /**
