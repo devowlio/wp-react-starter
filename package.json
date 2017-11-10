@@ -15,6 +15,7 @@
     "generate": "grunt wordpress-reactjs-starter-makeyours",
     "build": "NODE_ENV=production webpack",
     "build-dev": "webpack",
+    "webpack-build-done": "grunt cachebuster:public",
     "dev": "webpack --watch",
     "lint": "eslint public/src"
   },

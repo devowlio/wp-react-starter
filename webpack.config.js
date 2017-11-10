@@ -1,5 +1,6 @@
 var path = require( 'path' ),
 	webpack = require( 'webpack' ),
+	exec = require('child_process').exec,
 	NODE_ENV = process.env.NODE_ENV || 'development',
 	ExtractTextPlugin = require( 'extract-text-webpack-plugin' ),
 	bourbonIncludePath = require('node-bourbon').includePaths,
@@ -50,7 +51,18 @@ module.exports = {
 				env: JSON.stringify( NODE_ENV )
 			}
 		}),
-		new ExtractTextPlugin( '[name].css' )
+		new ExtractTextPlugin( '[name].css' ),
+		new ((function() {
+			// Short plugin to run script on build finished to recreate the cachebuster
+			function WebPackRecreateCachebuster() { }
+			WebPackRecreateCachebuster.prototype.apply = function(compiler) {
+				compiler.plugin('done', function(compilation, callback) {
+					setTimeout(function() { console.log('Running webpack-build-done script...'); }, 0);
+					exec('npm run webpack-build-done', function(error, stdout, stderr) { console.log(stdout); });
+				});
+			};
+			return WebPackRecreateCachebuster;
+		})())()
 	].concat(NODE_ENV === 'production' ? [
 		new webpack.optimize.UglifyJsPlugin({
 			compress: {

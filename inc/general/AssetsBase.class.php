@@ -99,7 +99,7 @@ abstract class AssetsBase extends Base {
         $path_lib = $path . 'cachebuster-lib.php';
         $path = $path . 'cachebuster.php';
         if ($isLib) {
-            // Library cachebuster @TODO regex
+            // Library cachebuster
             if (file_exists($path_lib)) {
                 static $cachebuster_lib = null;
                 if ($cachebuster_lib === null) {

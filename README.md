@@ -88,7 +88,7 @@ Create development build. The files gets generated in `public/dev`. This files s
 ```sh
 $ npm run dev
 ```
-Starts to watch the `public/src` folder for file changes and automatically runs the `build-dev` script.
+Starts to watch the `public/src` folder for file changes and automatically runs the `build-dev` script. Additionally the npm script `webpack-build-done` is executed after each webpack build.
 
 ```sh
 $ npm run lint
@@ -103,7 +103,7 @@ Starts to make the boilerplate yours and fit to your plugin name. Learn more her
 ```sh
 $ grunt public-cachebuster
 ```
-Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation. @TODO
+Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation.
 
 ```sh
 $ grunt copy-npmLibs
@@ -147,6 +147,7 @@ copy: {
 }
 ```
 **Note:** The `src` for your npm module can be different. You must have a look at the modules' folder tree.
+
 3. Run the command `grunt copy-npmLibs` to copy the library and generate the new cachebuster for the library files.
 4. Go to `Assets.class.php` and enqueue the styles and scripts:
 ```php
