@@ -18,7 +18,9 @@
     "webpack-build-done": "grunt cachebuster:public",
     "dev": "webpack --watch",
     "lint": "eslint public/src",
-    "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve"
+    "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve",
+    "phpdocs": "rm -rf docs/php && vendor/bin/apigen generate --source inc/ --destination docs/php --template-theme bootstrap",
+    "jsdocs": "rm -rf docs/js && ./node_modules/.bin/jsdoc public/src -c build/jsdoc.json"
   },
   "dependencies": {},
   "engines": {
@@ -44,6 +46,7 @@
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-node-modules-cachebuster": "^0.1.0",
+    "jsdoc": "^3.5.5",
     "lodash": "^4.17.4",
     "node-bourbon": "^4.2.8",
     "node-sass": "^4.5.3",

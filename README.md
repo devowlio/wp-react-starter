@@ -1,5 +1,5 @@
 <h1><p align="center">WordPress ReactJS Boilerplate :sparkling_heart:</p></h1>
-<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (_Frontend Widget, WordPress backend menu page_).</p>
+<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (Frontend Widget, WordPress backend menu page).</p>
 
 ---
 
@@ -22,7 +22,8 @@
 * [`SCRIPT_DEBUG`](https://codex.wordpress.org/Debugging_in_WordPress#SCRIPT_DEBUG) enables not-minified sources for debug sources (use in connection with `npm run build-dev`)
 * [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 * Predefined `.po` files for **translating (i18n)** the plugin
-* [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation (@TODO see)
+* [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation
+* [**JSDoc**](http://usejsdoc.org/) for JavaScript Documentation
 
 ## :white_check_mark: Prerequesits
 * [**Node.js**](https://nodejs.org/) `npm` command globally available in CLI
@@ -55,7 +56,7 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Make the boilerplate yours](#make-the-boilerplate-yours)
 1. [Available constants](#available-constants)
 1. [Activation hooks](#activation-hooks)
-1. Add hooks and own classes
+1. [Add hooks and own classes](#add-hooks-and-own-classes)
 1. [Add external PHP library](#add-external-php-library)
 1. [Add external JavaScript library](#add-external-javascript-library)
 1. [Using the cachebuster](#using-the-cachebuster)
@@ -65,6 +66,7 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 ## Folder structure
 * **`build`**: Build relevant files and predefined grunt tasks
 * **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
+* **`docs`**: Auto generated docs (for example for PHP and JSDoc), see [Available commands](#available-commands)
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
     * **`others`**: Other files (for example the starter file)
@@ -111,6 +113,16 @@ $ npm run lint
 Prints out errors and warning about coding styles.
 
 ```sh
+$ npm run phpdocs
+```
+Generate PHP docs in `docs/php` of `inc`.
+
+```sh
+$ npm run jsdocs
+```
+Generate JS docs in `docs/js` of `public/src`.
+
+```sh
 $ grunt public-cachebuster
 ```
 Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation.
@@ -150,8 +162,15 @@ There are four types of activation hooks:
 * **Install**: This hook / code gets executed when the plugin versions changes. That means every update of the plugin executes this code - also the initial plugin activation. Usually you should implement your database table creation with [`dbDelta`](https://developer.wordpress.org/reference/functions/dbdelta/) here. You can implement your code in `inc/general/Activator.class.php::install()`.
 * **Uninstall**: This hook / code gets executed even the plugin gets uninstalled in the WordPress backend. You can implement your code in `uninstall.php`.
 
+## Add hooks and own classes
+Your action and filters can be registered in `inc/general/Core.class.php::init()/__construct()`.
+
+If you want to create your own classes / interfaces / enums, ... please create them in `inc` with `Classname.class.php` or `IMyInterface.interface.php`. The `inc` folder hiearchy represents the namespace path. For example you create a class in `inc/my/package/Class.class.php` and your generated namespace prefix is `Company\Plugin` the full name for the class should be `Company\Plugin\my\package\Class`.
+
 ## Add external PHP library
-@TODO bei serve nur require, no-dev
+PHP libraries should be installed via [**Composer**](https://getcomposer.org/). If you want to use a PHP library in the plugin's production build (`dist`) then install the dependency as non-dev dependency. The `dist` build does not contain any dev dependencies.
+
+When the composer dependency supports autoloading you do not have to worry about including. The boilerplate already includes the vendor autoload if exists.
 
 ## Add external JavaScript library
 In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.

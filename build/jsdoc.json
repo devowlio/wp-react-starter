@@ -1,0 +1,19 @@
+{
+    "opts": {
+        "destination": "docs/js",
+        "template": "build/jsdocdefault",
+        "recurse": true
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "plugins": [],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "outputSourceFiles": true,
+            "outputSourcePath": true
+        }
+    }
+}
