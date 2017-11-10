@@ -15,7 +15,7 @@ abstract class Base {
      * @param string $methodOrFunction __METHOD__ OR __FUNCTION__
      */
     public function debug($message, $methodOrFunction = null) {
-        if (defined('WPRJSS_DEBUG') && WPRJSS_DEBUG || true) { // @TODO
+        if (defined('WPRJSS_DEBUG') && WPRJSS_DEBUG) {
             $log = (empty($methodOrFunction) ? "" : "(" . $methodOrFunction . ")") . ": " . (is_string($message) ? $message : json_encode($message));
             error_log("WPRJSS_DEBUG " . $log);
         }

@@ -20,6 +20,7 @@
 * [**Namespace**](http://php.net/manual/en/language.namespaces.rationale.php) support
 * [**Autloading**](http://php.net/manual/en/language.oop5.autoload.php) classes in connection with namespaces
 * [`SCRIPT_DEBUG`](https://codex.wordpress.org/Debugging_in_WordPress#SCRIPT_DEBUG) enables not-minified sources for debug sources (use in connection with `npm run build-dev`)
+* [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 * Predefined `.po` files for **translating (i18n)** the plugin
 
 ## :mountain_bicyclist: Getting Started
@@ -45,9 +46,9 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. Available constants
 1. [Activation hooks](#activation-hooks)
 1. Add hooks and own classes
-1. Add external JavaScript library
 1. Add external PHP library
-1. Remove predefined components (widget, menu page)
+1. [Add external JavaScript library](#add-external-javascript-library)
+1. [Using the cachebuster](#using-the-cachebuster)
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
 
@@ -59,7 +60,7 @@ $ # >> You are now able to activate the plugin in your WordPress backend
     * **`others`**: Other files (for example the starter file)
 * **`languages`**: Language files
 * **`public`**: All client-side files (JavaScript, CSS)
-    * **`lib`**: Put external libraries to this folder
+    * **`lib`**: Put external libraries to this folder (cachebuster is only available for copied node modules, see Documentation)
     * **`src`**: Your source files (see client-side features what's possible)
     * **`dev`**: Generated development sources (`SCRIPT_DEBUG` is active)
     * **`dist`**: Generated production sources (`SCRIPT_DEBUG` is not active)
@@ -97,7 +98,17 @@ Prints out errors and warning about coding styles.
 ```sh
 $ npm run generate
 ```
-Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours)
+Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours).
+
+```sh
+$ grunt public-cachebuster
+```
+Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation. @TODO
+
+```sh
+$ grunt copy-npmLibs
+```
+Copies the defined public libraries in `Gruntfile.js` to the public/lib folder. See [Add external JavaScript library](#add-external-javascript-library).
 
 ## Make the boilerplate yours
 This boilerplate plugin allows you with a simple CLI command to make it yours. _Make it yours?! Sounds crazy._ Yes, it means it can automatically change the **constant names** (PHP), **namespace** prefix (PHP) and the language **`.pot`** filename.
@@ -111,26 +122,89 @@ There are four types of activation hooks:
 * **Install**: This hook / code gets executed when the plugin versions changes. That means every update of the plugin executes this code - also the initial plugin activation. Usually you should implement your database table creation with [`dbDelta`](https://developer.wordpress.org/reference/functions/dbdelta/) here. You can implement your code in `inc/general/Activator.class.php::install()`.
 * **Uninstall**: This hook / code gets executed even the plugin gets uninstalled in the WordPress backend. You can implement your code in `uninstall.php`.
 
+## Add external JavaScript library
+In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.
+
+1. Run `npm install jquery-tooltipster --save-dev` to install the npm module.
+2. Add the library name to the `Gruntfile.js` so it looks like this:
+```js
+clean: {
+    /**
+     * Task to clean the already copied node modules to the public library folder
+     */
+    npmLibs: ['public/lib/jquery-tooltipster/']
+},
+copy: {
+    /**
+     * Task to copy npm modules to the public library folder.
+     */
+    npmLibs: {
+        expand: true,
+        cwd: 'node_modules',
+        src: ['jquery-tooltipster/js/*.js', 'jquery-tooltipster/css/*.css'],
+        dest: 'public/lib/'
+    }
+}
+```
+**Note:** The `src` for your npm module can be different. You must have a look at the modules' folder tree.
+3. Run the command `grunt copy-npmLibs` to copy the library and generate the new cachebuster for the library files.
+4. Go to `Assets.class.php` and enqueue the styles and scripts:
+```php
+// This must be before your ReactJS styles and scripts so it can be used in ReactJS
+$this->enqueueLibraryScript('jquery-tooltipster', 'jquery-tooltipster/css/tooltipster.css');
+$this->enqueueLibraryStyle('jquery-tooltipster', 'jquery-tooltipster/css/tooltipster.css');
+
+// Add the dependencies to the ReactJS styles and scripts
+$this->enqueueScript('wp-reactjs-starter', 'admin.js', array('jquery-tooltipster'), true);
+$this->enqueueStyle('wp-reactjs-starter', 'admin.css', array('jquery-tooltipster');
+```
+5. If you have a look at your browser network log you see that the plugin automatically appends the right module version to the resource URL.
+6. If you want to use the library in your ReactJS coding simply add this to the `webpack.config.js` file:
+```js
+externals: {
+	'jquery': 'jQuery',
+	'jquery-tooltipster': 'jquery-tooltipster'
+},
+```
+7. And this in your ReactJS file:
+```js
+import $ from 'jquery';
+```
+8. Now you can use `$.tooltipster` functionality.
+
+## Using the cachebuster
+The class `AssetsBase` (`inc/general/AssetsBase.class.php`) provides a few scenarios of cachebusting enqueue (scripts and styles):
+
+* **Scenario 1 (NPM library)**: Add a dependency to `package.json` > Copy to `public/lib/{PACKAGE_NAME}` (using Grunt) > Use `AssetsBase::enqueueLibraryScript()` to enqueue the handle `public/lib/{PACKAGE_NAME}/{FILE}.js` for example. The cachebuster is applied with the node module version. See [Add external JavaScript library](#add-external-javascript-library) for more.
+* **Scenario 2 (Dist and Dev)**: While developing the `public/src` is automatically transformed to production / dev code. Use `AssetsBase::enqueueScript()` to enqueue the handle `public/dev/admin.js` for example. The cachebuster is applied with a hash.
+* **Scenario 3 (Unknown library)**: Imagine you want to use a JavaScript library which is not installable through npm. > Use `AssetsBase::enqueLibraryScript()` (or [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)) to enqueue the handle `public/lib/myprivatelib/file.js` for example. The cachebuster is applied with the plugin version.
+
 ## Localization
 The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see `index.php` for constants) as the `$domain` parameter.
 
 To translate the plugin you can use for example a tool like [Poedit](https://poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 
 In this boilerplate you can find an example of using a [`wp_localize_script`](https://developer.wordpress.org/reference/functions/wp_localize_script/)'ed object in React (`inc/menu/Page.class.php::enqueue_scripts()`, `public/src/component-library/index.js`):
-```js
+```xml
 <Notice type="info">The text domain of the plugin is: "{window.wprjssOpts.textDomain}" (localized variable)</Notice>
 ```
 
 ## Building production plugin
 To build production JS and CSS code you simply run `npm run build`. More coming soon to prepare plugin for wordpress.org (serve).
 
+## :information_desk_person: Useful resources
+1. [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
+1. [Redux State Management Concept](http://www.youhavetolearncomputers.com/blog/2015/9/15/a-conceptual-overview-of-redux-or-how-i-fell-in-love-with-a-javascript-state-container)
+1. [Redux+React Provider and Connect explained](http://www.sohamkamani.com/blog/2017/03/31/react-redux-connect-explained/)
+1. [Redux with API's](http://www.sohamkamani.com/blog/2016/06/05/redux-apis/)
+
 ## :construction_worker: Todo
 
 1. Make widget src runnable
 1. Make wordpress.org compatible (readme, banners, etc.)
-1. Add Babel polyfill
+1. Add babel polyfills
 1. Add documentation generation
-1. Add redux
+1. Add redux to the sample source code
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).

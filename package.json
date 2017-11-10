@@ -4,6 +4,7 @@
   "description": "WordPress Plugin Boilerplate using new web technologies.",
   "author": "Matthias Günter <support@matthias-web.com>",
   "license": "MIT",
+  "private": "true",
   "homepage": "https://matthias-web.com",
   "repository": {
     "type": "git",
@@ -37,6 +38,10 @@
     "eslint-plugin-react": "^7.4.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "grunt": "^1.0.1",
+    "grunt-cachebuster": "^0.1.7",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-node-modules-cachebuster": "^0.1.0",
     "lodash": "^4.17.4",
     "node-bourbon": "^4.2.8",
     "node-sass": "^4.5.3",
