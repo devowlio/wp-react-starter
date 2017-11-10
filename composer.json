@@ -1,0 +1,16 @@
+{
+    "name": "matzeeable/wp-reactjs-starter",
+    "description": "WordPress Plugin Boilerplate using new web technologies.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthias Günter",
+            "email": "support@matthias-web.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "apigen/apigen": "^4.1"
+    }
+}

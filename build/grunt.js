@@ -4,6 +4,9 @@ var prompt = require('prompt'),
 module.exports = function(grunt) {
     // Cachebuster
     grunt.config.merge({
+        clean: {
+            serve: 'dist'
+        },
         cachebuster: {
             'public': {
                 options: {
@@ -34,6 +37,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-cachebuster');
     grunt.loadNpmTasks('grunt-node-modules-cachebuster');
     grunt.registerTask('public-cachebuster', ['cachebuster:public', 'node_modules_cachebuster:publiclib']);
+    
+    // Serve (create dist)
+    grunt.registerTask('serve', ['clean:serve']);
 
     // Generate script
     grunt.registerTask('wordpress-reactjs-starter-makeyours', function() {
@@ -183,6 +189,7 @@ module.exports = function(grunt) {
             grunt.file.write('./languages/' + result.textDomain + '.pot', potContent.replace('WP ReactJS Starter', result.pluginName));
             
             grunt.log.ok('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more information. Happy coding and make something awesome. :-)');
+            grunt.log.ok('Oh forgot... The package.json and composer.json files have to be adjusted to your needs.');
             done();
         });
     });

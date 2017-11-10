@@ -26,7 +26,7 @@ define('WPRJSS_NS', 'MatthiasWeb\\WPRJSS');
 define('WPRJSS_DB_PREFIX', 'wprjss'); // The table name prefix wp_{prefix}
 define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
 //define('WPRJSS_TD', ''); This constant is defined in the core class. Use this constant in all your __() methods
-//define('WPRJSS_VERSION', ''); This constant is defined in the core class
+//define('WPRJSS_VERSION', ''); This constant is defined in the core class.
 //define('WPRJSS_DEBUG', true); This constant should be defined in wp-config.php to enable the Base::debug() method
 
 // Check PHP Version and print notice if minimum not reached, otherwise start the plugin core

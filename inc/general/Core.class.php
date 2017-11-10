@@ -14,6 +14,11 @@ require_once("Base.class.php");
  */
 class Core extends Base {
     
+    /**
+     * The relative path to the composer autoload file.
+     */
+    const COMPOSER_AUTOLOAD = 'vendor/autoload.php';
+    
     private static $me = null;
     
     /**
@@ -48,10 +53,16 @@ class Core extends Base {
         // Register autoload
         spl_autoload_register(array($this, 'autoloadRegister'));
         
+        // Register composer autoload
+        $composer_path = path_join(WPRJSS_PATH, Core::COMPOSER_AUTOLOAD);
+        if (file_exists($composer_path)) {
+            include_once($composer_path);
+        }
+        
+        // Register immediate actions and filters
         $this->activator = new Activator();
         $this->assets = new Assets();
         
-        // Register immediate actions and filters
         add_action('plugins_loaded', array($this, 'i18n'));
         add_action('init', array($this, 'init'));
         register_activation_hook(WPRJSS_FILE, array($this->getActivator(), 'activate'));

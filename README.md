@@ -22,6 +22,7 @@
 * [`SCRIPT_DEBUG`](https://codex.wordpress.org/Debugging_in_WordPress#SCRIPT_DEBUG) enables not-minified sources for debug sources (use in connection with `npm run build-dev`)
 * [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 * Predefined `.po` files for **translating (i18n)** the plugin
+* [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation (@TODO see)
 
 ## :mountain_bicyclist: Getting Started
 
@@ -31,10 +32,11 @@ Make sure that you have [**Node.js**](https://nodejs.org/en/)/[**Grunt**](https:
 $ cd /path/to/wordpress/wp-content/plugins
 $ git clone https://github.com/matzeeable/wp-reactjs-starter.git ./your-plugin-name
 $ cd your-plugin-name
-$ npm install # Install dependencies
+$ npm install # Install NPM dependencies
 $ npm run generate # Make the plugin yours and set plugin information
 $ npm run build # Generate production versions of static assets
 $ npm run dev # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
+$ composer install # Install Composer (PHP) dependencies
 $ # >> You are now able to activate the plugin in your WordPress backend
 ```
 
@@ -43,10 +45,10 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Folder structure](#folder-structure)
 1. [Available commands](#available-commands)
 1. [Make the boilerplate yours](#make-the-boilerplate-yours)
-1. Available constants
+1. [Available constants](#available-constants)
 1. [Activation hooks](#activation-hooks)
 1. Add hooks and own classes
-1. Add external PHP library
+1. [Add external PHP library](#add-external-php-library)
 1. [Add external JavaScript library](#add-external-javascript-library)
 1. [Using the cachebuster](#using-the-cachebuster)
 1. [Localization](#localization)
@@ -54,13 +56,13 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 
 ## Folder structure
 * **`build`**: Build relevant files
-* **`lib`**: Library classes and external files (PHP) @TODO
+* **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
     * **`others`**: Other files (for example the starter file)
 * **`languages`**: Language files
 * **`public`**: All client-side files (JavaScript, CSS)
-    * **`lib`**: Put external libraries to this folder (cachebuster is only available for copied node modules, see Documentation)
+    * **`lib`**: Put external libraries to this folder (cachebuster is only available for copied node modules, see [Add external JavaScript library](#add-external-javascript-library))
     * **`src`**: Your source files (see client-side features what's possible)
     * **`dev`**: Generated development sources (`SCRIPT_DEBUG` is active)
     * **`dist`**: Generated production sources (`SCRIPT_DEBUG` is not active)
@@ -76,14 +78,19 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 
 ## Available commands
 ```sh
+$ npm run generate
+```
+Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours).
+
+```sh
 $ npm run build
 ```
-Create production build. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is active. Learn more here: [Building production plugin](#building-production-plugin)
+Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is active. Learn more here: [Building production plugin](#building-production-plugin)
 
 ```sh
 $ npm run build-dev
 ```
-Create development build. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is not active.
+Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is not active.
 
 ```sh
 $ npm run dev
@@ -96,11 +103,6 @@ $ npm run lint
 Prints out errors and warning about coding styles.
 
 ```sh
-$ npm run generate
-```
-Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours).
-
-```sh
 $ grunt public-cachebuster
 ```
 Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation.
@@ -110,10 +112,28 @@ $ grunt copy-npmLibs
 ```
 Copies the defined public libraries in `Gruntfile.js` to the public/lib folder. See [Add external JavaScript library](#add-external-javascript-library).
 
+```sh
+$ npm run serve
+```
+Bundles all the plugin files together and puts it into the `dist` folder. This folder can be pushed to the wordpress.org SVN. See [Building production plugin](#building-production-plugin).
+
 ## Make the boilerplate yours
 This boilerplate plugin allows you with a simple CLI command to make it yours. _Make it yours?! Sounds crazy._ Yes, it means it can automatically change the **constant names** (PHP), **namespace** prefix (PHP) and the language **`.pot`** filename.
 
 All the magic is done by the command `npm run generate`. It will ask you a few plugin details in the CLI prompt and fully automatically generates the files for you. When the generator is finished just have a look at the `index.php` file.
+
+## Available constants
+After generating your boilerplate you should have a look in the generated `index.php` file. There are several PHP constants available for your plugin coding:
+* `YOURCONSTANTPREFIX_FILE`: The plugin file (`__FILE__`)
+* `YOURCONSTANTPREFIX_PATH`: The plugins path
+* `YOURCONSTANTPREFIX_INC`: The plugins `inc` folder with trailing slash
+* `YOURCONSTANTPREFIX_MIN_PHP`: The minimum PHP version
+* `YOURCONSTANTPREFIX_NS`: The namespace for your plugin
+* `YOURCONSTANTPREFIX_DB_PREFIX`: The `Base.class.php` offers a method `getTableName()` which returns a valid table name for your plugin
+* `YOURCONSTANTPREFIX_OPT_PREFIX`: If you want to save options you should use this constant for option names prefix
+* `YOURCONSTANTPREFIX_TD`: The text domain for your plugin. See [Localization](#localization)
+* `YOURCONSTANTPREFIX_VERSION`: The version of the plugin
+* `YOURCONSTANTPREFIX_DEBUG`: If true the `Base.class.php::debug()` method writes to the error log
 
 ## Activation hooks
 There are four types of activation hooks:
@@ -121,6 +141,9 @@ There are four types of activation hooks:
 * **Deactivate**: This hook / code gets executed even the plugin gets deactivated in the WordPress backend. You can implement your code in `inc/general/Activator.class.php::deactivate()`.
 * **Install**: This hook / code gets executed when the plugin versions changes. That means every update of the plugin executes this code - also the initial plugin activation. Usually you should implement your database table creation with [`dbDelta`](https://developer.wordpress.org/reference/functions/dbdelta/) here. You can implement your code in `inc/general/Activator.class.php::install()`.
 * **Uninstall**: This hook / code gets executed even the plugin gets uninstalled in the WordPress backend. You can implement your code in `uninstall.php`.
+
+## Add external PHP library
+
 
 ## Add external JavaScript library
 In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.
@@ -181,7 +204,7 @@ The class `AssetsBase` (`inc/general/AssetsBase.class.php`) provides a few scena
 * **Scenario 3 (Unknown library)**: Imagine you want to use a JavaScript library which is not installable through npm. > Use `AssetsBase::enqueLibraryScript()` (or [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)) to enqueue the handle `public/lib/myprivatelib/file.js` for example. The cachebuster is applied with the plugin version.
 
 ## Localization
-The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see `index.php` for constants) as the `$domain` parameter.
+The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see [Available constants](#available-constants)) as the `$domain` parameter.
 
 To translate the plugin you can use for example a tool like [Poedit](https://poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 
@@ -191,7 +214,22 @@ In this boilerplate you can find an example of using a [`wp_localize_script`](ht
 ```
 
 ## Building production plugin
-To build production JS and CSS code you simply run `npm run build`. More coming soon to prepare plugin for wordpress.org (serve).
+To build production JS and CSS code you simply run `npm run build`.
+
+#### Building installable WordPress plugin (WordPress.org)
+If you want to publish the plugin you have to change the version. The version is defined in the `index.php` header comment. You do not have to change the version constant. It is also recommended to use the `npm verison` command to set the new version.
+
+After setting the new version and want to build an installable **wordpress.org** plugin you can run the command `npm run serve`. _What does this mean?_ This command creates all **plugin-only** folder and files, without `package.json`, `composer.json`, `public/src`, ... The command does exactly this:
+
+1. Build production and development resources (JS, CSS) (`npm run build && npm run build-dev`)
+1. Create library files in `public/lib` (`grunt copy-npmLibs`)
+1. Generate cachebusters for the resources (JS, CSS) (`grunt public-cachebuster`)
+1. Copy all plugin relevant files to `dist` (including `composer.json`)
+1. Install composer dependencies (no-dev) for `dist`
+1. Delete `composer.json` file
+1. Finished
+
+#### Using wordpress.org SVN repository together with the `serve` command
 
 ## :information_desk_person: Useful resources
 1. [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)

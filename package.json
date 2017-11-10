@@ -17,7 +17,8 @@
     "build-dev": "webpack",
     "webpack-build-done": "grunt cachebuster:public",
     "dev": "webpack --watch",
-    "lint": "eslint public/src"
+    "lint": "eslint public/src",
+    "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve"
   },
   "dependencies": {},
   "engines": {
