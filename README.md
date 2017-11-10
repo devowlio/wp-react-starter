@@ -24,19 +24,27 @@
 * Predefined `.po` files for **translating (i18n)** the plugin
 * [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation (@TODO see)
 
+## :white_check_mark: Prerequesits
+* [**Node.js**](https://nodejs.org/) `npm` command globally available in CLI
+* [**Grunt CLI**](https://gruntjs.com/using-the-cli) `grunt` command globally available in CLI
+* [**Composer**](https://getcomposer.org/) `composer` command globally available in CLI
+
 ## :mountain_bicyclist: Getting Started
 
-Make sure that you have [**Node.js**](https://nodejs.org/en/)/[**Grunt**](https://gruntjs.com/getting-started) installed and `SCRIPT_DEBUG` set `true` (only development sources are built). Navigate to the plugin directory, install `npm` dependencies, and run the dev build command:
+Navigate to the plugin directory, install `npm` and `composer` dependencies, and run this installation script:
 
 ```sh
+# Boilerplate download
 $ cd /path/to/wordpress/wp-content/plugins
 $ git clone https://github.com/matzeeable/wp-reactjs-starter.git ./your-plugin-name
 $ cd your-plugin-name
+
+# Boilerplate installation
 $ npm install # Install NPM dependencies
 $ npm run generate # Make the plugin yours and set plugin information
-$ npm run build # Generate production versions of static assets
-$ npm run dev # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
+$ npm run build && npm run build-dev # Generate production / dev of resources (JS, CSS)
 $ composer install # Install Composer (PHP) dependencies
+$ npm run dev # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
 $ # >> You are now able to activate the plugin in your WordPress backend
 ```
 
@@ -55,7 +63,7 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Building production plugin](#building-production-plugin)
 
 ## Folder structure
-* **`build`**: Build relevant files
+* **`build`**: Build relevant files and predefined grunt tasks
 * **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
 * **`inc`**: All server-side files (PHP)
     * **`general`**: General files
@@ -143,7 +151,7 @@ There are four types of activation hooks:
 * **Uninstall**: This hook / code gets executed even the plugin gets uninstalled in the WordPress backend. You can implement your code in `uninstall.php`.
 
 ## Add external PHP library
-
+@TODO bei serve nur require, no-dev
 
 ## Add external JavaScript library
 In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.
@@ -224,26 +232,32 @@ After setting the new version and want to build an installable **wordpress.org**
 1. Build production and development resources (JS, CSS) (`npm run build && npm run build-dev`)
 1. Create library files in `public/lib` (`grunt copy-npmLibs`)
 1. Generate cachebusters for the resources (JS, CSS) (`grunt public-cachebuster`)
-1. Copy all plugin relevant files to `dist` (including `composer.json`)
+1. Copy all plugin relevant files to `dist` (= `['composer.json', 'index.php', 'inc/**/*', 'public/**/*', 'LICENSE', 'README.md', 'languages/**/*']`)
 1. Install composer dependencies (no-dev) for `dist`
 1. Delete `composer.json` file
 1. Finished
 
 #### Using wordpress.org SVN repository together with the `serve` command
+1. Create the `dist` folder manually
+1. Initialize the wordpress.org SVN repository in `dist`
+1. Change the `SERVE_DIR` in `Gruntfile.js` to the folder where you want to place the build files (example: `dist/trunk`)
+1. wordpress.org needs a `README.txt` instead of `README.md`
+1. Register the predefined rename task as post task for the `serve` command with: `SERVE_POST_TASKS: ['serveRenameReadme']` in `Gruntfile.js`
+1. Run `npm run serve`
+
+**Note:** Do not forget to adjust the `README.md` to your plugin description.
 
 ## :information_desk_person: Useful resources
 1. [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
 1. [Redux State Management Concept](http://www.youhavetolearncomputers.com/blog/2015/9/15/a-conceptual-overview-of-redux-or-how-i-fell-in-love-with-a-javascript-state-container)
 1. [Redux+React Provider and Connect explained](http://www.sohamkamani.com/blog/2017/03/31/react-redux-connect-explained/)
 1. [Redux with API's](http://www.sohamkamani.com/blog/2016/06/05/redux-apis/)
+1. [Install Babel's polyfills](https://babeljs.io/docs/usage/polyfill/)
 
 ## :construction_worker: Todo
 
 1. Make widget src runnable
-1. Make wordpress.org compatible (readme, banners, etc.)
-1. Add babel polyfills
 1. Add documentation generation
-1. Add redux to the sample source code
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).

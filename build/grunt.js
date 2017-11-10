@@ -1,11 +1,31 @@
-var prompt = require('prompt'),
-    _ = require("lodash");
+var SERVE_DIR, prompt = require('prompt'),
+    _ = require("lodash"),
+    exec = require('child_process').exec;
 
 module.exports = function(grunt) {
+    grunt.loadNpmTasks('grunt-cachebuster');
+    grunt.loadNpmTasks('grunt-node-modules-cachebuster');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    
+    // Detect SERVE_DIR
+    SERVE_DIR  = _.trimEnd(grunt.config.get('SERVE_DIR') || 'dist', '/');
+    if (['.', './', '/'].indexOf(SERVE_DIR) > -1) {
+        throw new Error('SERVE_DIR is not valid.');
+    }
+    
     // Cachebuster
     grunt.config.merge({
         clean: {
-            serve: 'dist'
+            serve: SERVE_DIR + '/**/*',
+            serveAfter: [SERVE_DIR + '/public/src', SERVE_DIR + '/composer.*']
+        },
+        copy: {
+            serve: {
+                expand: true,
+                src: ['composer.json', 'index.php', 'inc/**/*', 'public/**/*', 'LICENSE', 'README.md', 'languages/**/*'],
+                dest: SERVE_DIR
+            }
         },
         cachebuster: {
             'public': {
@@ -34,12 +54,24 @@ module.exports = function(grunt) {
             }
         }
     });
-    grunt.loadNpmTasks('grunt-cachebuster');
-    grunt.loadNpmTasks('grunt-node-modules-cachebuster');
     grunt.registerTask('public-cachebuster', ['cachebuster:public', 'node_modules_cachebuster:publiclib']);
     
+    // Register copy lib task
+    grunt.registerTask('copy-npmLibs', ['clean:npmLibs', 'copy:npmLibs', 'node_modules_cachebuster:publiclib']);
+    
     // Serve (create dist)
-    grunt.registerTask('serve', ['clean:serve']);
+    grunt.registerTask('serveDo', function() {
+        var done = this.async();
+        grunt.log.writeln('Install no-dev composer dependencies... (SERVE_DIR=' + SERVE_DIR + ')');
+        exec('composer install --no-dev --no-scripts --working-dir ' + SERVE_DIR, function(error, stdout, stderr) { console.log(stdout); done(); });
+    });
+    grunt.registerTask('serve', ['clean:serve', 'copy:serve', 'serveDo', 'clean:serveAfter'].concat(grunt.config.get('SERVE_POST_TASKS') || []));
+    
+    // Register readme rename task
+    grunt.registerTask('serveRenameReadme', function() {
+        grunt.file.copy(SERVE_DIR + '/README.md', SERVE_DIR + '/README.txt');
+        grunt.file.delete(SERVE_DIR + '/README.md');
+    });
 
     // Generate script
     grunt.registerTask('wordpress-reactjs-starter-makeyours', function() {

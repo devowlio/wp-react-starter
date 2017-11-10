@@ -6,6 +6,7 @@ public/dev/*.js
 public/dev/*.css
 public/dev/*.map
 build/.generated
+dist/
 
 # Logs
 logs
