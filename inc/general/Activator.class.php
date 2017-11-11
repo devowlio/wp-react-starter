@@ -1,5 +1,6 @@
 <?php
 namespace MatthiasWeb\WPRJSS\general;
+use MatthiasWeb\WPRJSS\base;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
@@ -7,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file
  * The activator class handles the plugin relevant activation hooks: Uninstall, activation,
  * deactivation and installation. The "installation" means installing needed database tables.
  */
-class Activator extends Base {
+class Activator extends base\Base {
     /**
      * Method gets fired when the user activates the plugin.
      */

@@ -1,12 +1,12 @@
 <?php
-namespace MatthiasWeb\WPRJSS\general;
+namespace MatthiasWeb\WPRJSS\base;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
 /**
  * Base asset management class for frontend scripts and styles.
  */
-abstract class AssetsBase extends Base {
+abstract class Assets extends Base {
     
     /**
      * Enqueue scripts and styles in admin pages.
@@ -50,9 +50,9 @@ abstract class AssetsBase extends Base {
     }
     
     /**
-     * Wrapper for AssetsBase::enqueueScript() method with $isLib = true.
+     * Wrapper for Assets::enqueueScript() method with $isLib = true.
      * 
-     * @see AssetsBase::enqueueScript()
+     * @see Assets::enqueueScript()
      */
     public function enqueueLibraryScript($handle, $src = '', $deps = array(), $in_footer = false) {
         $this->enqueueScript($handle, $src, $deps, $in_footer, true);
@@ -76,9 +76,9 @@ abstract class AssetsBase extends Base {
     }
     
     /**
-     * Wrapper for AssetsBase::enqueueStyle() method with $isLib = true.
+     * Wrapper for Assets::enqueueStyle() method with $isLib = true.
      * 
-     * @see AssetsBase::enqueueStyle()
+     * @see Assets::enqueueStyle()
      */
     public function enqueueLibraryStyle($handle, $src = '', $deps = array(), $media = 'false') {
         $this->enqueueStyle($handle, $src, $deps, $media, true);
@@ -107,7 +107,7 @@ abstract class AssetsBase extends Base {
                 }
                 
                 // Parse module
-                preg_match(AssetsBase::LIB_CACHEBUSTER_REGEX, $src, $matches);
+                preg_match(Assets::LIB_CACHEBUSTER_REGEX, $src, $matches);
                 if (is_array($matches) && isset($matches[1]) && ($module = $matches[1]) && 
                     is_array($cachebuster_lib) && array_key_exists($module, $cachebuster_lib)) {
                     // Valid cachebuster

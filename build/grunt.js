@@ -88,40 +88,44 @@ module.exports = function(grunt) {
         prompt.get({
             properties: {
                 pluginName: {
-                    message: 'Step 1 / 12: Plugin name',
+                    message: 'Step 1 / 13: Plugin name',
                     default: 'WP ReactJS Starter'
                 },
                 pluginURI: {
-                    message: 'Step 2 / 12: Plugin URI',
+                    message: 'Step 2 / 13: Plugin URI',
                     default: 'https://github.com/matzeeeeeable/wp-reactjs-starter'
                 },
                 pluginDescription: {
-                    message: 'Step 3 / 12: Plugin Description',
+                    message: 'Step 3 / 13: Plugin Description',
                     default: 'This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin.'
                 },
                 author: {
-                    message: 'Step 4 / 12: Plugin author',
+                    message: 'Step 4 / 13: Plugin author',
                     required: true
                 },
                 authorURI: {
-                    message: 'Step 5 / 12: Plugin author URI'
+                    message: 'Step 5 / 13: Plugin author URI'
                 },
                 version: {
-                    message: 'Step 6 / 12: Plugin initial version',
+                    message: 'Step 6 / 13: Plugin initial version',
                     default: '0.1.0'
                 },
                 textDomain: {
-                    description: 'Step 7 / 12: Plugin slug for text domain and language files (example: wp-reactjs-starter)',
+                    description: 'Step 7 / 13: Plugin slug for text domain and language files (example: wp-reactjs-starter)',
                     pattern: /^[^ ]+$/,
                     message: 'The plugin slug may not contain whitespaces',
                     required: true
                 },
                 minPHP: {
-                    message: 'Step 8 / 12: Minimum PHP version',
+                    message: 'Step 8 / 13: Minimum PHP version (minimum of 5.3 required for the boilerplate)',
                     default: '5.3.0'
                 },
+                minWP: {
+                    message: 'Step 9 / 13: Minimum WordPress version (minimum of 4.4 required for the boilerplate)',
+                    default: '4.4.0'
+                },
                 namespace: {
-                    description: 'Step 9 / 12: PHP file namespace prefix (example: MatthiasWeb\\WPRJSS)',
+                    description: 'Step 10 / 13: PHP file namespace prefix (example: MatthiasWeb\\WPRJSS)',
                     pattern: /^[^ ]+$/,
                     message: 'The namespace may not contain whitespaces',
                     required: true,
@@ -130,7 +134,7 @@ module.exports = function(grunt) {
                     }
                 },
                 optPrefix: {
-                    description: 'Step 10 / 12: WordPress option names prefix (example: wprjss)',
+                    description: 'Step 11 / 13: WordPress option names prefix (example: wprjss)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The option prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
@@ -139,7 +143,7 @@ module.exports = function(grunt) {
                     required: true
                 },
                 dbPrefix: {
-                    description: 'Step 11 / 12: WordPress database tables prefix (example: wprjss)',
+                    description: 'Step 12 / 13: WordPress database tables prefix (example: wprjss)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The database table prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
@@ -148,7 +152,7 @@ module.exports = function(grunt) {
                     required: true
                 },
                 constantPrefix: {
-                    description: 'Step 12 / 12: PHP constants prefix for the above options (example: WPRJSS)',
+                    description: 'Step 13 / 13: PHP constants prefix for the above options (example: WPRJSS)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The constant prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
@@ -190,7 +194,7 @@ module.exports = function(grunt) {
                 cwd: './inc'
             }, "**/*"), parseOldConstant = function(constant) {
                 return 'WPRJSS' + constant.slice(result.constantPrefix.length);
-            }, functions = ['wprjss_skip_php_admin_notice'];
+            }, functions = ['wprjss_skip_php_admin_notice', 'wprjss_skip_wp_admin_notice', 'wprjss_skip_rest_admin_notice'];
             _.each(files, function(_file) {
                 file = './inc/' + _file;
                 if (grunt.file.isFile(file)) {

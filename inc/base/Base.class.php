@@ -1,5 +1,5 @@
 <?php
-namespace MatthiasWeb\WPRJSS\general;
+namespace MatthiasWeb\WPRJSS\base;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 

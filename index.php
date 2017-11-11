@@ -22,6 +22,7 @@ define('WPRJSS_FILE', __FILE__);
 define('WPRJSS_PATH', dirname(WPRJSS_FILE));
 define('WPRJSS_INC', trailingslashit(path_join(WPRJSS_PATH, 'inc')));
 define('WPRJSS_MIN_PHP', '5.3.0'); // Minimum of PHP 5.3 required for autoloading and namespacing
+define('WPRJSS_MIN_WP', '4.4.0'); // Minimum of WordPress 4.4 required
 define('WPRJSS_NS', 'MatthiasWeb\\WPRJSS');
 define('WPRJSS_DB_PREFIX', 'wprjss'); // The table name prefix wp_{prefix}
 define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
@@ -30,4 +31,4 @@ define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
 //define('WPRJSS_DEBUG', true); This constant should be defined in wp-config.php to enable the Base::debug() method
 
 // Check PHP Version and print notice if minimum not reached, otherwise start the plugin core
-require_once(WPRJSS_INC . "others/" . (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=") ? "start.php" : "phpfallback.php"));
+require_once(WPRJSS_INC . "others/" . (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=") ? "start.php" : "fallback-php-version.php"));

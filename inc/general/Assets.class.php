@@ -1,12 +1,14 @@
 <?php
 namespace MatthiasWeb\WPRJSS\general;
+use MatthiasWeb\WPRJSS\base;
+use MatthiasWeb\WPRJSS\rest;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
 /**
  * Asset management for frontend scripts and styles.
  */
-class Assets extends AssetsBase {
+class Assets extends base\Assets {
     
     /**
      * Enqueue scripts and styles depending on the type. This function is called
@@ -14,14 +16,14 @@ class Assets extends AssetsBase {
      * type through the $type parameter. In this function you can include your
      * external libraries from public/lib, too.
      * 
-     * @param string $type The type (see Assets constants)
+     * @param string $type The type (see base\Assets constants)
      */
     public function enqueue_scripts_and_styles($type) {
         $publicFolder = $this->getPublicFolder();
         
-        // Your assets implementation here... See AssetsBase for enqueue* methods.
+        // Your assets implementation here... See base\Assets for enqueue* methods.
         
-        if ($type === AssetsBase::TYPE_ADMIN) {
+        if ($type === base\Assets::TYPE_ADMIN) {
             // @TODO variable name from generate
             $this->enqueueScript('wp-reactjs-starter', 'admin.js', array(), true);
 		    $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
@@ -36,7 +38,8 @@ class Assets extends AssetsBase {
      */
     public function adminLocalizeScript() {
         return array(
-            'textDomain' => WPRJSS_TD    
+            'textDomain' => WPRJSS_TD,
+            'restUrl' => rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)
         );
     }
     
@@ -44,13 +47,13 @@ class Assets extends AssetsBase {
      * Enqueue scripts and styles for admin pages.
      */
     public function admin_enqueue_scripts() {
-        $this->enqueue_scripts_and_styles(AssetsBase::TYPE_ADMIN);
+        $this->enqueue_scripts_and_styles(base\Assets::TYPE_ADMIN);
     }
     
     /**
      * Enqueue scripts and styles for frontend pages.
      */
     public function wp_enqueue_scripts() {
-        $this->enqueue_scripts_and_styles(AssetsBase::TYPE_FRONTEND);
+        $this->enqueue_scripts_and_styles(base\Assets::TYPE_FRONTEND);
     }
 }

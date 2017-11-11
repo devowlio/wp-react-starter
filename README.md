@@ -17,8 +17,10 @@
 
 **Server-side features:** _OOP-style for building a high-quality plugin._
 * PHP >= **5.3** required: An admin notice is showed when not available
+* WordPress >= **4.4** required: An admin notice is showed when not available with a link to the updater
 * [**Namespace**](http://php.net/manual/en/language.namespaces.rationale.php) support
 * [**Autloading**](http://php.net/manual/en/language.oop5.autoload.php) classes in connection with namespaces
+* [**WP REST API v2**](http://v2.wp-api.org/) for API programming, no longer use `admin-ajax.php` for your CRUD operations
 * [`SCRIPT_DEBUG`](https://codex.wordpress.org/Debugging_in_WordPress#SCRIPT_DEBUG) enables not-minified sources for debug sources (use in connection with `npm run build-dev`)
 * [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 * Predefined `.po` files for **translating (i18n)** the plugin
@@ -60,6 +62,7 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 1. [Add external PHP library](#add-external-php-library)
 1. [Add external JavaScript library](#add-external-javascript-library)
 1. [Using the cachebuster](#using-the-cachebuster)
+1. [WP REST API v2](#wp-rest-api-v2)
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
 
@@ -68,8 +71,11 @@ $ # >> You are now able to activate the plugin in your WordPress backend
 * **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
 * **`docs`**: Auto generated docs (for example for PHP and JSDoc), see [Available commands](#available-commands)
 * **`inc`**: All server-side files (PHP)
-    * **`general`**: General files
-    * **`others`**: Other files (for example the starter file)
+    * **`base`**: Abstract base classes
+    * **`general`**: General files for the plugin
+    * **`menu`**: Example page (backend)
+    * **`others`**: Other files (cachebusters, ...)
+    * **`rest`**: Example REST API service, see [WP REST API v2](#wp-rest-api-v2)
 * **`languages`**: Language files
 * **`public`**: All client-side files (JavaScript, CSS)
     * **`lib`**: Put external libraries to this folder (cachebuster is only available for copied node modules, see [Add external JavaScript library](#add-external-javascript-library))
@@ -95,12 +101,12 @@ Starts to make the boilerplate yours and fit to your plugin name. Learn more her
 ```sh
 $ npm run build
 ```
-Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is active. Learn more here: [Building production plugin](#building-production-plugin)
+Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is not active. Learn more here: [Building production plugin](#building-production-plugin)
 
 ```sh
 $ npm run build-dev
 ```
-Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is not active.
+Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is active.
 
 ```sh
 $ npm run dev
@@ -213,15 +219,14 @@ $this->enqueueStyle('wp-reactjs-starter', 'admin.css', array('jquery-tooltipster
 6. If you want to use the library in your ReactJS coding simply add this to the `webpack.config.js` file:
 ```js
 externals: {
-	'jquery': 'jQuery',
-	'jquery-tooltipster': 'jquery-tooltipster'
+	'jquery': 'jQuery'
 },
 ```
 7. And this in your ReactJS file:
 ```js
 import $ from 'jquery';
 ```
-8. Now you can use `$.tooltipster` functionality.
+8. Now you can use `$.fn.tooltipster` functionality.
 
 ## Using the cachebuster
 The class `AssetsBase` (`inc/general/AssetsBase.class.php`) provides a few scenarios of cachebusting enqueue (scripts and styles):
@@ -229,6 +234,15 @@ The class `AssetsBase` (`inc/general/AssetsBase.class.php`) provides a few scena
 * **Scenario 1 (NPM library)**: Add a dependency to `package.json` > Copy to `public/lib/{PACKAGE_NAME}` (using Grunt) > Use `AssetsBase::enqueueLibraryScript()` to enqueue the handle `public/lib/{PACKAGE_NAME}/{FILE}.js` for example. The cachebuster is applied with the node module version. See [Add external JavaScript library](#add-external-javascript-library) for more.
 * **Scenario 2 (Dist and Dev)**: While developing the `public/src` is automatically transformed to production / dev code. Use `AssetsBase::enqueueScript()` to enqueue the handle `public/dev/admin.js` for example. The cachebuster is applied with a hash.
 * **Scenario 3 (Unknown library)**: Imagine you want to use a JavaScript library which is not installable through npm. > Use `AssetsBase::enqueLibraryScript()` (or [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)) to enqueue the handle `public/lib/myprivatelib/file.js` for example. The cachebuster is applied with the plugin version.
+
+## WP REST API v2
+The boilerplate needs a minimum WordPress version of **4.4**. The **WP REST API v2** is implemented in WordPress core in **4.7**. The user gets an admin notice if < 4.4 to update WordPress core. If the user is > 4.4 and < 4.7 there is an admin notice with a link to download the [WP REST API](https://wordpress.org/plugins/rest-api/) plugin. The boilerplate adds a localization key to provide the REST API url to JavaScript:
+
+```xml
+<Notice type="info">The WP REST API URL of the plugin is: "{window.wprjssOpts.restUrl}" (localized variable)</Notice>
+```
+
+**Note:** Using the WP REST API v2 is essential for high quality plugins, please avoid using `admin-ajax.php`.
 
 ## Localization
 The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see [Available constants](#available-constants)) as the `$domain` parameter.
@@ -275,8 +289,7 @@ After setting the new version and want to build an installable **wordpress.org**
 
 ## :construction_worker: Todo
 
-1. Make widget src runnable
-1. Add documentation generation
+1. Make widget src runnable (widget.php)
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).
