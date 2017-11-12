@@ -36,19 +36,18 @@
 
 Navigate to the plugin directory, install `npm` and `composer` dependencies, and run this installation script:
 
+#### Download boilerplate
 ```sh
-# Boilerplate download
 $ cd /path/to/wordpress/wp-content/plugins
 $ git clone https://github.com/matzeeable/wp-reactjs-starter.git ./your-plugin-name
 $ cd your-plugin-name
+```
 
-# Boilerplate installation
-$ npm install # Install NPM dependencies
-$ npm run generate # Make the plugin yours and set plugin information
-$ npm run build && npm run build-dev # Generate production / dev of resources (JS, CSS)
-$ composer install # Install Composer (PHP) dependencies
-$ npm run dev # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
-$ # >> You are now able to activate the plugin in your WordPress backend
+#### Create plugin
+```sh
+$ npm run create    # Guide through plugin generation
+$ npm run dev       # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
+                    # You are now able to activate the plugin in your WordPress backend
 ```
 
 ## :book: Documentation

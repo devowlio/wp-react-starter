@@ -12,6 +12,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "create": "npm install && npm run generate && npm run build && npm run build-dev && composer install",
     "generate": "grunt wordpress-reactjs-starter-makeyours",
     "build": "NODE_ENV=production webpack",
     "build-dev": "webpack",
