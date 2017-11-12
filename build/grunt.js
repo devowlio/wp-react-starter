@@ -263,7 +263,7 @@ module.exports = function(grunt) {
                     fileContent = grunt.file.read(file);
                     
                     // Replace localized object
-                    fileContent = fileContent.replace(new RegExp('window.wprjssOpts', 'g'), result.optPrefix + 'Opts');
+                    fileContent = fileContent.replace(new RegExp('window.wprjssOpts', 'g'), 'window.' + result.optPrefix + 'Opts');
                     
                     // File specific replaces
                     switch (_file) {
@@ -272,6 +272,8 @@ module.exports = function(grunt) {
                         default:
                             break;
                     }
+                    
+                    grunt.file.write(file, fileContent);
                 }
             });
             
