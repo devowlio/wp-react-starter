@@ -20,7 +20,8 @@
     "lint": "eslint public/src",
     "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve",
     "phpdocs": "rm -rf docs/php && vendor/bin/apigen generate --source inc/ --destination docs/php --template-theme bootstrap",
-    "jsdocs": "rm -rf docs/js && ./node_modules/.bin/jsdoc public/src -c build/jsdoc.json"
+    "jsdocs": "rm -rf docs/js && ./node_modules/.bin/jsdoc public/src -c build/jsdoc.json",
+    "docs": "npm run phpdocs && npm run jsdocs"
   },
   "dependencies": {},
   "engines": {

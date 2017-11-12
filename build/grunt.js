@@ -14,7 +14,9 @@ module.exports = function(grunt) {
         throw new Error('SERVE_DIR is not valid.');
     }
     
-    // Cachebuster
+    /**
+     * Tasks configuration.
+     */
     grunt.config.merge({
         clean: {
             serve: SERVE_DIR + '/**/*',
@@ -54,26 +56,38 @@ module.exports = function(grunt) {
             }
         }
     });
+    
+    /**
+     * Cachebuster task
+     */
     grunt.registerTask('public-cachebuster', ['cachebuster:public', 'node_modules_cachebuster:publiclib']);
     
-    // Register copy lib task
+    /**
+     * Copy npm libraries task.
+     */
     grunt.registerTask('copy-npmLibs', ['clean:npmLibs', 'copy:npmLibs', 'node_modules_cachebuster:publiclib']);
     
-    // Serve (create dist)
+    /**
+     * Serve task.
+     */
     grunt.registerTask('serveDo', function() {
         var done = this.async();
         grunt.log.writeln('Install no-dev composer dependencies... (SERVE_DIR=' + SERVE_DIR + ')');
-        exec('composer install --no-dev --no-scripts --working-dir ' + SERVE_DIR, function(error, stdout, stderr) { console.log(stdout); done(); });
+        exec('composer install --no-dev --no-scripts --prefer-dist --working-dir ' + SERVE_DIR, function(error, stdout, stderr) { console.log(stdout); done(); });
     });
     grunt.registerTask('serve', ['clean:serve', 'copy:serve', 'serveDo', 'clean:serveAfter'].concat(grunt.config.get('SERVE_POST_TASKS') || []));
     
-    // Register readme rename task
+    /**
+     * Serve rename readme task
+     */
     grunt.registerTask('serveRenameReadme', function() {
         grunt.file.copy(SERVE_DIR + '/README.md', SERVE_DIR + '/README.txt');
         grunt.file.delete(SERVE_DIR + '/README.md');
     });
 
-    // Generate script
+    /**
+     * Generate task
+     */
     grunt.registerTask('wordpress-reactjs-starter-makeyours', function() {
         // Check already generated
         if (grunt.file.exists('./build/.generated')) {
@@ -88,44 +102,44 @@ module.exports = function(grunt) {
         prompt.get({
             properties: {
                 pluginName: {
-                    message: 'Step 1 / 13: Plugin name',
+                    message: 'Step 1 / 14: Plugin name',
                     default: 'WP ReactJS Starter'
                 },
                 pluginURI: {
-                    message: 'Step 2 / 13: Plugin URI',
+                    message: 'Step 2 / 14: Plugin URI',
                     default: 'https://github.com/matzeeeeeable/wp-reactjs-starter'
                 },
                 pluginDescription: {
-                    message: 'Step 3 / 13: Plugin Description',
+                    message: 'Step 3 / 14: Plugin Description',
                     default: 'This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin.'
                 },
                 author: {
-                    message: 'Step 4 / 13: Plugin author',
+                    message: 'Step 4 / 14: Plugin author',
                     required: true
                 },
                 authorURI: {
-                    message: 'Step 5 / 13: Plugin author URI'
+                    message: 'Step 5 / 14: Plugin author URI'
                 },
                 version: {
-                    message: 'Step 6 / 13: Plugin initial version',
+                    message: 'Step 6 / 14: Plugin initial version',
                     default: '0.1.0'
                 },
                 textDomain: {
-                    description: 'Step 7 / 13: Plugin slug for text domain and language files (example: wp-reactjs-starter)',
+                    description: 'Step 7 / 14: Plugin slug for text domain, language files, ... (example: wp-reactjs-starter)',
                     pattern: /^[^ ]+$/,
                     message: 'The plugin slug may not contain whitespaces',
                     required: true
                 },
                 minPHP: {
-                    message: 'Step 8 / 13: Minimum PHP version (minimum of 5.3 required for the boilerplate)',
+                    message: 'Step 8 / 14: Minimum PHP version (minimum of 5.3 required for the boilerplate)',
                     default: '5.3.0'
                 },
                 minWP: {
-                    message: 'Step 9 / 13: Minimum WordPress version (minimum of 4.4 required for the boilerplate)',
+                    message: 'Step 9 / 14: Minimum WordPress version (minimum of 4.4 required for the boilerplate)',
                     default: '4.4.0'
                 },
                 namespace: {
-                    description: 'Step 10 / 13: PHP file namespace prefix (example: MatthiasWeb\\WPRJSS)',
+                    description: 'Step 10 / 14: PHP file namespace prefix (example: MatthiasWeb\\WPRJSS)',
                     pattern: /^[^ ]+$/,
                     message: 'The namespace may not contain whitespaces',
                     required: true,
@@ -134,7 +148,7 @@ module.exports = function(grunt) {
                     }
                 },
                 optPrefix: {
-                    description: 'Step 11 / 13: WordPress option names prefix (example: wprjss)',
+                    description: 'Step 11 / 14: WordPress option names prefix (example: wprjss)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The option prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
@@ -143,7 +157,7 @@ module.exports = function(grunt) {
                     required: true
                 },
                 dbPrefix: {
-                    description: 'Step 12 / 13: WordPress database tables prefix (example: wprjss)',
+                    description: 'Step 12 / 14: WordPress database tables prefix (example: wprjss)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The database table prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
@@ -152,12 +166,18 @@ module.exports = function(grunt) {
                     required: true
                 },
                 constantPrefix: {
-                    description: 'Step 13 / 13: PHP constants prefix for the above options (example: WPRJSS)',
+                    description: 'Step 13 / 14: PHP constants prefix for the above options (example: WPRJSS)',
                     pattern: /^[A-Za-z0-9_]+$/,
                     message: 'The constant prefix must match the [A-Za-z0-9_] pattern',
                     before: function(value) {
                         return value.toUpperCase();
                     },
+                    required: true
+                },
+                apiPrefix: {
+                    description: 'Step 14 / 14: REST API namespace prefix (example: wprjss/v1)',
+                    pattern: /^[^ ]+$/,
+                    message: 'The namespace may not contain whitespaces',
                     required: true
                 }
             }
@@ -189,7 +209,7 @@ module.exports = function(grunt) {
             }
             grunt.log.writeln('Found the following constants: ' + constants.join(', '));
             
-            // Apply constants and namespaces
+            // PHP replacements (inc)
             var fileContent, file, files = grunt.file.expand({
                 cwd: './inc'
             }, "**/*"), parseOldConstant = function(constant) {
@@ -214,7 +234,44 @@ module.exports = function(grunt) {
                         fileContent = fileContent.replace(new RegExp(fnName, 'g'), fnName.replace('wprjss', result.optPrefix));
                     });
                     
+                    // File specific replaces
+                    switch (_file) {
+                        case 'general/Assets.class.php':
+                            fileContent = fileContent.replace(new RegExp('wp-reactjs-starter', 'g'), result.textDomain);
+                            fileContent = fileContent.replace('wprjssOpts', result.optPrefix + 'Opts');
+                            break;
+                        case 'rest/Service.class.php':
+                            fileContent = fileContent.replace('wprjss/v1', result.apiPrefix);
+                        case 'menu/Page.class.php':
+                            fileContent = fileContent.replace(new RegExp('wp-react-component-library', 'g'), result.optPrefix + '-wp-react-component-library');
+                        default:
+                            break;
+                    }
+                    
                     grunt.file.write(file, fileContent);
+                }
+            });
+            
+            // JS replacements
+            grunt.log.writeln('Generate JavaScript files...');
+            files = grunt.file.expand({
+                cwd: './public/src'
+            }, "**/*");
+            _.each(files, function(_file) {
+                file = './public/src/' + _file;
+                if (grunt.file.isFile(file)) {
+                    fileContent = grunt.file.read(file);
+                    
+                    // Replace localized object
+                    fileContent = fileContent.replace(new RegExp('window.wprjssOpts', 'g'), result.optPrefix + 'Opts');
+                    
+                    // File specific replaces
+                    switch (_file) {
+                        case 'admin.js':
+                            fileContent = fileContent.replace('wp-react-component-library', result.optPrefix + '-wp-react-component-library');
+                        default:
+                            break;
+                    }
                 }
             });
             
@@ -224,6 +281,7 @@ module.exports = function(grunt) {
             grunt.file.delete(potFile);
             grunt.file.write('./languages/' + result.textDomain + '.pot', potContent.replace('WP ReactJS Starter', result.pluginName));
             
+            // Success
             grunt.log.ok('All files successfully created. Please read on the Documentation on https://github.com/matzeeeeeable/wp-reactjs-starter for more information. Happy coding and make something awesome. :-)');
             grunt.log.ok('Oh forgot... The package.json and composer.json files have to be adjusted to your needs.');
             done();

@@ -9,7 +9,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file
  */
 class Page extends base\Base {
     public function admin_menu() {
-        // @TODO generate
         add_menu_page(
             'WP React Component Library',
             'Component Library',
@@ -20,6 +19,6 @@ class Page extends base\Base {
     }
     
     public function render_component_library() {
-		echo '<div id="wp-react-component-library" class="wrap"></div>'; // @TOOD generate id
+		echo '<div id="wp-react-component-library" class="wrap"></div>';
 	}
 }

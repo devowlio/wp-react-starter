@@ -15,7 +15,7 @@ class Service extends base\Base {
      * 
      * @see Service::getUrl()
      */
-    const SERVICE_NAMESPACE = 'wprjss/v1'; // @TODO generate
+    const SERVICE_NAMESPACE = 'wprjss/v1';
     
     /**
      * Register endpoints.

@@ -22,9 +22,7 @@ class Assets extends base\Assets {
         $publicFolder = $this->getPublicFolder();
         
         // Your assets implementation here... See base\Assets for enqueue* methods.
-        
         if ($type === base\Assets::TYPE_ADMIN) {
-            // @TODO variable name from generate
             $this->enqueueScript('wp-reactjs-starter', 'admin.js', array(), true);
 		    $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
 		    wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->adminLocalizeScript());
