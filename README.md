@@ -1,11 +1,12 @@
 <h1><p align="center">WordPress ReactJS Boilerplate :sparkling_heart:</p></h1>
 <p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (Frontend Widget, WordPress backend menu page).</p>
-[![Github All Releases](https://img.shields.io/github/downloads/matzeeable/wp-reactjs-starter/total.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter)
-[![GitHub tag](https://img.shields.io/github/tag/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter)
-[![license](https://img.shields.io/github/license/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter/blob/master/LICENSE)
-[![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://your-link.com)
 
 ---
+
+[![Github All Releases](https://img.shields.io/github/downloads/matzeeable/wp-reactjs-starter/total.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter) 
+[![GitHub tag](https://img.shields.io/github/tag/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter) 
+[![license](https://img.shields.io/github/license/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter/blob/master/LICENSE) 
+[![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://your-link.com)
 
 **Client-side features:** _Familiar React API & patterns (ES6)_
 * [**ReactJS**](https://reactjs.org/) v16 with babel `env` preset
