@@ -32,6 +32,7 @@
 * [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation
 * [**JSDoc**](http://usejsdoc.org/) for JavaScript Documentation
 * [**apiDoc**](http://apidocjs.com//) for API Documentation
+* [**WP HookDoc**](https://github.com/matzeeable/wp-hookdoc) for Filters & Actions Documentation
 
 ## :white_check_mark: Prerequesits
 * [**Node.js**](https://nodejs.org/) `npm` command globally available in CLI
@@ -310,7 +311,7 @@ After setting the new version and want to build an installable **wordpress.org**
 
 ## :construction_worker: Todo
 
-* WordPress Hook Documentation
+Nothing.
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).
