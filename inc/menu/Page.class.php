@@ -1,6 +1,7 @@
 <?php
 namespace MatthiasWeb\WPRJSS\menu;
 use MatthiasWeb\WPRJSS\base;
+use MatthiasWeb\WPRJSS\general;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
@@ -9,9 +10,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file
  */
 class Page extends base\Base {
     public function admin_menu() {
+        $pluginName = general\Core::getInstance()->getPluginData()['Name'];
         add_menu_page(
-            'WP React Component Library',
-            'Component Library',
+            $pluginName,
+            $pluginName,
             'manage_options',
             'wp-react-component-library',
             array($this, 'render_component_library')

@@ -28,11 +28,31 @@ class Service extends base\Base {
     }
     
     /**
-     * Get plugin data.
+     * @api {get} /wprjss/v1/plugin Get plugin information
+     * @apiName GetPlugin
+     * @apiGroup Plugin
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     *     WC requires at least: "",
+     *     WC tested up to: "",
+     *     Name: "WP ReactJS Starter",
+     *     PluginURI: "https://matthias-web.com/wordpress",
+     *     Version: "0.1.0",
+     *     Description: "This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin. <cite>By <a href="https://matthias-web.com">Matthias Guenter</a>.</cite>",
+     *     Author: "<a href="https://matthias-web.com">Matthias Guenter</a>",
+     *     AuthorURI: "https://matthias-web.com",
+     *     TextDomain: "wp-reactjs-starter",
+     *     DomainPath: "/languages",
+     *     Network: false,
+     *     Title: "<a href="https://matthias-web.com/wordpress">WP ReactJS Starter</a>",
+     *     AuthorName: "Matthias Guenter"
+     * }
+     * @apiVersion 0.1.0
      */
     public function routePlugin() {
         return new \WP_REST_Response(general\Core::getInstance()->getPluginData());
-    } 
+    }
     
     /**
      * Get the wp-json URL for a defined REST service.

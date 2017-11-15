@@ -26,6 +26,7 @@
 * Predefined `.po` files for **translating (i18n)** the plugin
 * [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation
 * [**JSDoc**](http://usejsdoc.org/) for JavaScript Documentation
+* [**apiDoc**](http://apidocjs.com//) for API Documentation
 
 ## :white_check_mark: Prerequesits
 * [**Node.js**](https://nodejs.org/) `npm` command globally available in CLI
@@ -68,13 +69,14 @@ $ npm run dev       # Start webpack in "watch" mode so that the assets are autom
 ## Folder structure
 * **`build`**: Build relevant files and predefined grunt tasks
 * **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
-* **`docs`**: Auto generated docs (for example for PHP and JSDoc), see [Available commands](#available-commands)
+* **`docs`**: Auto generated docs (for example for PHP, JS and API Doc), see [Available commands](#available-commands)
 * **`inc`**: All server-side files (PHP)
     * **`base`**: Abstract base classes
     * **`general`**: General files for the plugin
     * **`menu`**: Example page (backend)
     * **`others`**: Other files (cachebusters, ...)
     * **`rest`**: Example REST API service, see [WP REST API v2](#wp-rest-api-v2)
+    * **`widget`**: Example widget
 * **`languages`**: Language files
 * **`public`**: All client-side files (JavaScript, CSS)
     * **`lib`**: Put external libraries to this folder (cachebuster is only available for copied node modules, see [Add external JavaScript library](#add-external-javascript-library))
@@ -93,7 +95,7 @@ $ npm run dev       # Start webpack in "watch" mode so that the assets are autom
 
 ## Available commands
 ```sh
-$ npm run generate
+$ npm run create
 ```
 Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours).
 
@@ -126,6 +128,21 @@ Generate PHP docs in `docs/php` of `inc`.
 $ npm run jsdocs
 ```
 Generate JS docs in `docs/js` of `public/src`.
+
+```sh
+$ npm run apidocs
+```
+Generate API docs in `docs/api` of `inc`.
+
+```sh
+$ npm run hookdocs
+```
+Generate Actions and Filters docs in `docs/hooks` of `inc`.
+
+```sh
+$ npm run docs
+```
+Generates all docs at once.
 
 ```sh
 $ grunt public-cachebuster
@@ -170,7 +187,7 @@ There are four types of activation hooks:
 ## Add hooks and own classes
 Your action and filters can be registered in `inc/general/Core.class.php::init()/__construct()`.
 
-If you want to create your own classes / interfaces / enums, ... please create them in `inc` with `Classname.class.php` or `IMyInterface.interface.php`. The `inc` folder hiearchy represents the namespace path. For example you create a class in `inc/my/package/Class.class.php` and your generated namespace prefix is `Company\Plugin` the full name for the class should be `Company\Plugin\my\package\Class`.
+If you want to create your own classes / interfaces / enums, ... please create them in `inc` with `Classname.class.php` or `IMyInterface.interface.php`. The `inc` folder hiearchy represents the namespace prefix. For example you create a class in `inc/my/package/Class.class.php` and your generated namespace prefix is `Company\Plugin` the full name for the class should be `Company\Plugin\my\package\Class`.
 
 ## Add external PHP library
 PHP libraries should be installed via [**Composer**](https://getcomposer.org/). If you want to use a PHP library in the plugin's production build (`dist`) then install the dependency as non-dev dependency. The `dist` build does not contain any dev dependencies.
@@ -288,7 +305,7 @@ After setting the new version and want to build an installable **wordpress.org**
 
 ## :construction_worker: Todo
 
-1. Make widget src runnable (widget.php)
+* WordPress Hook Documentation
 
 ## Licensing / Credits
 This boilerplate is MIT licensed. Originally this boilerplate is a fork of [gcorne/wp-react-boilerplate](https://github.com/gcorne/wp-react-boilerplate).

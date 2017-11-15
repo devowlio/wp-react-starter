@@ -26,6 +26,9 @@ class Assets extends base\Assets {
             $this->enqueueScript('wp-reactjs-starter', 'admin.js', array(), true);
 		    $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
 		    wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->adminLocalizeScript());
+        }else{
+            $this->enqueueScript('wp-reactjs-starter', 'widget.js', array(), true);
+            $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
         }
     }
     

@@ -3,6 +3,7 @@ namespace MatthiasWeb\WPRJSS\general;
 use MatthiasWeb\WPRJSS\base;
 use MatthiasWeb\WPRJSS\menu;
 use MatthiasWeb\WPRJSS\rest;
+use MatthiasWeb\WPRJSS\widget;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
 
@@ -32,6 +33,9 @@ class Core extends base\Core {
      */
     protected function __construct() {
         parent::__construct();
+        
+        // Register all your before init hooks here
+        add_action('widgets_init', array($this, 'widgets_init'));
     }
     
     /**
@@ -49,7 +53,31 @@ class Core extends base\Core {
         add_action('admin_enqueue_scripts', array($this->getAssets(), 'admin_enqueue_scripts'));
         add_action('wp_enqueue_scripts', array($this->getAssets(), 'wp_enqueue_scripts'));
         add_action('admin_menu', array(new menu\Page(), 'admin_menu'));
+        
+        /**
+         * Snowball action.
+         *
+         * @hook wupa
+         * @property {boolean} isPacked - Indicates whether the snowball is tightly packed.
+         */
+        do_action('wup');
+        
+        /**
+         * Snowball filter.
+         *
+         * @hook wupf
+         * @returns string
+         * @property {boolean} isPacked - Indicates whether the snowball is tightly packed.
+         */
+        do_action('wup');
     }
+    
+    /**
+	 * Register widgets.
+	 */
+	public function widgets_init() {
+	    register_widget(WPRJSS_NS . '\\widget\\Widget');
+	}
     
     /**
      * Get the service.
