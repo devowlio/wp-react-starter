@@ -53,23 +53,6 @@ class Core extends base\Core {
         add_action('admin_enqueue_scripts', array($this->getAssets(), 'admin_enqueue_scripts'));
         add_action('wp_enqueue_scripts', array($this->getAssets(), 'wp_enqueue_scripts'));
         add_action('admin_menu', array(new menu\Page(), 'admin_menu'));
-        
-        /**
-         * Snowball action.
-         *
-         * @hook wupa
-         * @property {boolean} isPacked - Indicates whether the snowball is tightly packed.
-         */
-        do_action('wup');
-        
-        /**
-         * Snowball filter.
-         *
-         * @hook wupf
-         * @returns string
-         * @property {boolean} isPacked - Indicates whether the snowball is tightly packed.
-         */
-        do_action('wup');
     }
     
     /**
