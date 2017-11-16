@@ -57,6 +57,9 @@ $ npm run dev       # Start webpack in "watch" mode so that the assets are autom
                     # You are now able to activate the plugin in your WordPress backend
 ```
 
+#### Generate CLI preview (npm run create)
+![generate cli](https://image.prntscr.com/image/z61WDD8RQ3GJ3Bp4pZ-ElQ.png)
+
 ## :book: Documentation
 
 1. [Folder structure](#folder-structure)
