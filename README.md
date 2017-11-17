@@ -204,6 +204,8 @@ PHP libraries should be installed via [**Composer**](https://getcomposer.org/). 
 When the composer dependency supports autoloading you do not have to worry about including. The boilerplate already includes the vendor autoload if exists.
 
 ## Add external JavaScript library
+When using external libraries or React components it is recommended to avoid bundling it with the plugin's source code (webpack). Because the WordPress community offers a lot of plugins you should enqueue the library files using the provided `base\AssetsBase` (which is based on `wp_enqueue_script`/`wp_enqueue_style`) to **avoid duplicate JavaScript assets**.
+
 In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.
 
 1. Run `npm install jquery-tooltipster --save-dev` to install the npm module.
@@ -213,7 +215,9 @@ clean: {
     /**
      * Task to clean the already copied node modules to the public library folder
      */
-    npmLibs: ['public/lib/jquery-tooltipster/']
+    npmLibs: [
+        'public/lib/jquery-tooltipster/'
+    ]
 },
 copy: {
     /**
@@ -222,7 +226,10 @@ copy: {
     npmLibs: {
         expand: true,
         cwd: 'node_modules',
-        src: ['jquery-tooltipster/js/*.js', 'jquery-tooltipster/css/*.css'],
+        src: [
+            'jquery-tooltipster/js/*.js',
+            'jquery-tooltipster/css/*.css'
+        ],
         dest: 'public/lib/'
     }
 }
@@ -233,15 +240,15 @@ copy: {
 4. Go to `Assets.class.php` and enqueue the styles and scripts:
 ```php
 // This must be before your ReactJS styles and scripts so it can be used in ReactJS
-$this->enqueueLibraryScript('jquery-tooltipster', 'jquery-tooltipster/css/tooltipster.css');
+$this->enqueueLibraryScript('jquery-tooltipster', 'jquery-tooltipster/js/tooltipster.js');
 $this->enqueueLibraryStyle('jquery-tooltipster', 'jquery-tooltipster/css/tooltipster.css');
 
 // Add the dependencies to the ReactJS styles and scripts
-$this->enqueueScript('wp-reactjs-starter', 'admin.js', array('jquery-tooltipster'), true);
+$this->enqueueScript('wp-reactjs-starter', 'admin.js', array('react-dom', 'jquery-tooltipster'));
 $this->enqueueStyle('wp-reactjs-starter', 'admin.css', array('jquery-tooltipster');
 ```
 5. If you have a look at your browser network log you see that the plugin automatically appends the right module version to the resource URL.
-6. If you want to use the library in your ReactJS coding simply add this to the `webpack.config.js` file:
+6. If you want to use the library in your ReactJS coding simply add jQuery to the `webpack.config.js` file as external:
 ```js
 externals: {
 	'jquery': 'jQuery'
@@ -251,7 +258,7 @@ externals: {
 ```js
 import $ from 'jquery';
 ```
-8. Now you can use `$.fn.tooltipster` functionality.
+8. Now you can use the `$.fn.tooltipster` functionality.
 
 ## Using the cachebuster
 The class `AssetsBase` (`inc/general/AssetsBase.class.php`) provides a few scenarios of cachebusting enqueue (scripts and styles):

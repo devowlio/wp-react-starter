@@ -5,10 +5,13 @@ public/dist/*.map
 public/dev/*.js
 public/dev/*.css
 public/dev/*.map
+public/lib/*
 build/.generated
 dist/
 docs/
 vendor/
+inc/others/cachebuster-lib.php
+inc/others/cachebuster.php
 
 # Logs
 logs

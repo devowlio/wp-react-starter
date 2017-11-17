@@ -10,7 +10,10 @@ module.exports = function(grunt) {
             /**
              * DO NOT REMOVE. Task to clean the already copied node modules to the public library folder
              */
-            npmLibs: [] // Your library folders, do not use 'public/lib' as source directly
+            npmLibs: [
+                'public/lib/react/',
+                'public/lib/react-dom/'
+            ] // Your library folders, do not use 'public/lib' as source directly
         },
         copy: {
             /**
@@ -19,7 +22,11 @@ module.exports = function(grunt) {
             npmLibs: {
                 expand: true,
                 cwd: 'node_modules',
-                src: [], // Your library files
+                src: [
+                    'react/umd/*.js',
+                    'react-dom/umd/react-dom.development.js',
+                    'react-dom/umd/react-dom.production.js'
+                ], // Your library files
                 dest: 'public/lib/'
             }
         }

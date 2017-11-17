@@ -15,7 +15,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "create": "npm install && npm run generate && npm run build && npm run build-dev && composer install && npm run docs",
+    "create": "npm install && npm run generate && npm run build && npm run build-dev && composer install && npm run docs && grunt copy-npmLibs",
     "generate": "grunt wordpress-reactjs-starter-makeyours",
     "build": "NODE_ENV=production webpack",
     "build-dev": "webpack",
@@ -29,7 +29,10 @@
     "hookdocs": "rm -rf docs/hooks && ./node_modules/.bin/jsdoc inc -c build/hookdoc.json",
     "docs": "npm run phpdocs && npm run jsdocs && npm run apidocs && npm run hookdocs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
   "engines": {
     "node": ">=0.8"
   },
@@ -60,8 +63,6 @@
     "node-sass": "^4.5.3",
     "postcss-loader": "^2.0.8",
     "prompt": "^1.0.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
     "webpack": "^3.8.1",

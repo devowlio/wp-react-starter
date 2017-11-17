@@ -20,14 +20,20 @@ class Assets extends base\Assets {
      */
     public function enqueue_scripts_and_styles($type) {
         $publicFolder = $this->getPublicFolder();
+        $isDebug = $this->isScriptDebug();
+        $dpSuffix = $isDebug ? 'development' : 'production';
+        
+        // Both in admin interface (page) and frontend (widgets)
+        $this->enqueueLibraryScript('react', 'react/umd/react.' . $dpSuffix . '.js');
+        $this->enqueueLibraryScript('react-dom', 'react-dom/umd/react-dom.' . $dpSuffix . '.js', 'react');
         
         // Your assets implementation here... See base\Assets for enqueue* methods.
         if ($type === base\Assets::TYPE_ADMIN) {
-            $this->enqueueScript('wp-reactjs-starter', 'admin.js', array(), true);
+            $this->enqueueScript('wp-reactjs-starter', 'admin.js', array('react-dom'));
 		    $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
 		    wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->adminLocalizeScript());
         }else{
-            $this->enqueueScript('wp-reactjs-starter', 'widget.js', array(), true);
+            $this->enqueueScript('wp-reactjs-starter', 'widget.js', array('react-dom'));
             $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
         }
     }
