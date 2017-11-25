@@ -80,7 +80,7 @@ abstract class Assets extends Base {
      * 
      * @see Assets::enqueueStyle()
      */
-    public function enqueueLibraryStyle($handle, $src = '', $deps = array(), $media = 'false') {
+    public function enqueueLibraryStyle($handle, $src = '', $deps = array(), $media = 'all') {
         $this->enqueueStyle($handle, $src, $deps, $media, true);
     }
     

@@ -3,7 +3,6 @@
 
 ---
 
-[![Github All Releases](https://img.shields.io/github/downloads/matzeeable/wp-reactjs-starter/total.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter) 
 [![GitHub tag](https://img.shields.io/github/tag/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter) 
 [![license](https://img.shields.io/github/license/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter/blob/master/LICENSE) 
 [![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://matthiasweb.signup.team/)
