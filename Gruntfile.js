@@ -26,7 +26,7 @@ module.exports = function(grunt) {
                     'react/umd/*.js',
                     'react/LICENSE*',
                     'react-dom/umd/react-dom.development.js',
-                    'react-dom/umd/react-dom.production.js',
+                    'react-dom/umd/react-dom.production.min.js',
                     'react-dom/LICENSE*'
                 ], // Your library files
                 dest: 'public/lib/'

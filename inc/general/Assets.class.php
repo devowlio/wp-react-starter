@@ -21,7 +21,7 @@ class Assets extends base\Assets {
     public function enqueue_scripts_and_styles($type) {
         $publicFolder = $this->getPublicFolder();
         $isDebug = $this->isScriptDebug();
-        $dpSuffix = $isDebug ? 'development' : 'production';
+        $dpSuffix = $isDebug ? 'development' : 'production.min';
         
         // Both in admin interface (page) and frontend (widgets)
         $this->enqueueLibraryScript('react', 'react/umd/react.' . $dpSuffix . '.js');
