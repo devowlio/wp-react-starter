@@ -35,6 +35,7 @@ class Core extends base\Core {
         parent::__construct();
         
         // Register all your before init hooks here
+        add_action('plugins_loaded', array($this, 'updateDbCheck'));
         add_action('widgets_init', array($this, 'widgets_init'));
     }
     
@@ -43,9 +44,6 @@ class Core extends base\Core {
      * it should register all hooks to have them in one place.
      */
     public function init() {
-        // Install database tables if necessery
-        $this->updateDbCheck();
-        
         $this->service = new rest\Service();
         
         // Register all your hooks here
