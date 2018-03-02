@@ -1,6 +1,5 @@
 module.exports = ({ file, options, env }) => ({
-    plugins: {
-        'autoprefixer': options.autoprefixer,
-        'cssnano': env === 'production' ? options.cssnano : false
-    }
+    plugins: [
+        require('autoprefixer')
+    ].concat(env === 'production' ? [require('postcss-clean')(options.clean)] : [])
 });

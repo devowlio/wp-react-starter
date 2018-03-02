@@ -34,8 +34,7 @@ module.exports = {
 					options: {
 						config: {
 							ctx: {
-								cssnano: true,
-								autoprefixer: true
+								clean: {}
 							}
 						}
 					}
