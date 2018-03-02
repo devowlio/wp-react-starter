@@ -29,6 +29,7 @@ class Service extends base\Base {
     
     /**
      * @api {get} /wprjss/v1/plugin Get plugin information
+     * @apiHeader {string} X-WP-Nonce
      * @apiName GetPlugin
      * @apiGroup Plugin
      *
