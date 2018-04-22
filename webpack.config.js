@@ -3,10 +3,10 @@ var path = require( 'path' ),
 	exec = require('child_process').exec,
 	NODE_ENV = process.env.NODE_ENV || 'development',
 	ExtractTextPlugin = require( 'extract-text-webpack-plugin' ),
-	bourbonIncludePath = require('node-bourbon').includePaths,
 	dist = path.join( __dirname, 'public', NODE_ENV === 'production' ? 'dist' : 'dev' );
 
 module.exports = {
+	mode: NODE_ENV,
 	entry: {
 		widget: './public/src/widget.js',
 		admin: './public/src/admin.js'
@@ -38,7 +38,7 @@ module.exports = {
 							}
 						}
 					}
-				}, 'sass-loader?includePaths[]=' + bourbonIncludePath]
+				}, 'sass-loader']
 	        })
 	    }]
 	},
@@ -66,11 +66,5 @@ module.exports = {
 			};
 			return WebPackRecreateCachebuster;
 		})())()
-	].concat(NODE_ENV === 'production' ? [
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false
-			}
-		})
-	] : [])
+	]
 };

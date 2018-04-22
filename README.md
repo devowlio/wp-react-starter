@@ -12,7 +12,6 @@
 * [**webpack**](https://webpack.js.org/) v3 build for assets
 * CSS and JS [**Sourcemap**](https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) generation for debugging purposes
 * [**SASS**](http://sass-lang.com/) stylesheets compiler (`.scss` files)
-* [**Bourbon**](http://bourbon.io/) mixins for SASS
 * [**PostCSS**](http://postcss.org/) for transforming CSS with JavaScript (including autoprefixing)
 * Generation of **minified** sources for production (JS, CSS)
 * [**Grunt**](https://gruntjs.com/) for automation tasks
