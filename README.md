@@ -8,7 +8,7 @@
 [![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://matthiasweb.signup.team/)
 
 **Client-side features:** _Familiar React API & patterns (ES6)_
-* [**ReactJS**](https://reactjs.org/) v16 with babel `env` preset
+* [**ReactJS**](https://reactjs.org/) v16 with **Babel v7** `env` preset
 * [**webpack**](https://webpack.js.org/) v3 build for assets
 * CSS and JS [**Sourcemap**](https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) generation for debugging purposes
 * [**SASS**](http://sass-lang.com/) stylesheets compiler (`.scss` files)

@@ -2,7 +2,7 @@ var path = require( 'path' ),
 	webpack = require( 'webpack' ),
 	exec = require('child_process').exec,
 	NODE_ENV = process.env.NODE_ENV || 'development',
-	ExtractTextPlugin = require( 'extract-text-webpack-plugin' ),
+	MiniCssExtractPlugin = require( 'mini-css-extract-plugin' ),
 	dist = path.join( __dirname, 'public', NODE_ENV === 'production' ? 'dist' : 'dev' );
 
 module.exports = {
@@ -27,19 +27,16 @@ module.exports = {
 			use: 'babel-loader?cacheDirectory'
 	    }, {
 	    	test: /\.scss$/,
-	        use: ExtractTextPlugin.extract({
-	    		fallback: 'style-loader',
-	        	use: ['css-loader', {
-					loader: 'postcss-loader',
-					options: {
-						config: {
-							ctx: {
-								clean: {}
-							}
+	        use: [MiniCssExtractPlugin.loader, 'css-loader', {
+				loader: 'postcss-loader',
+				options: {
+					config: {
+						ctx: {
+							clean: {}
 						}
 					}
-				}, 'sass-loader']
-	        })
+				}
+			}, 'sass-loader']
 	    }]
 	},
 	resolve: {
@@ -54,7 +51,7 @@ module.exports = {
 				env: JSON.stringify( NODE_ENV )
 			}
 		}),
-		new ExtractTextPlugin( '[name].css' ),
+		new MiniCssExtractPlugin( '[name].css' ),
 		new ((function() {
 			// Short plugin to run script on build finished to recreate the cachebuster
 			function WebPackRecreateCachebuster() { }
