@@ -6,7 +6,6 @@ public/dev/*.js
 public/dev/*.css
 public/dev/*.map
 public/lib/*
-build/.generated
 dist/
 docs/
 vendor/
