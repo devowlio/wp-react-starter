@@ -3,6 +3,8 @@
 
 ---
 
+:new: :fire: **Instant no-config plugin creation with [create-wp-react-app](https://github.com/matzeeable/create-wp-react-app)**
+
 [![GitHub tag](https://img.shields.io/github/tag/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter) 
 [![license](https://img.shields.io/github/license/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter/blob/master/LICENSE) 
 [![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://matthiasweb.signup.team/)
@@ -39,24 +41,18 @@
 
 ## :mountain_bicyclist: Getting Started
 
-Navigate to the plugin directory, install `npm` and `composer` dependencies, and run this installation script:
+The brandnew **[create-wp-react-app](https://github.com/matzeeable/create-wp-react-app)** allows you now to create your plugin with a single command!
 
-#### Download boilerplate
+#### Installation
 ```sh
-$ cd /path/to/wordpress/wp-content/plugins
-$ git clone https://github.com/matzeeable/wp-reactjs-starter.git ./your-plugin-name
-$ cd your-plugin-name
+$ npm install -g create-wp-react-app
 ```
 
 #### Create plugin
 ```sh
-$ npm run create    # Guide through plugin generation
-$ npm run dev       # Start webpack in "watch" mode so that the assets are automatically compiled when a file changes
-                    # You are now able to activate the plugin in your WordPress backend
+$ create-wp-react-app create my-plugin
 ```
-
-#### Generate CLI preview (npm run create)
-![generate cli](https://image.prntscr.com/image/z61WDD8RQ3GJ3Bp4pZ-ElQ.png)
+![generate cli](https://matthias-web.com/wp-content/uploads/Posts/create-wp-react-app.gif)
 
 ## :book: Documentation
 
@@ -101,11 +97,6 @@ $ npm run dev       # Start webpack in "watch" mode so that the assets are autom
 * _`webpack.config.js`_: [webpack configuration](https://webpack.github.io/docs/configuration.html)
 
 ## Available commands
-```sh
-$ npm run create
-```
-Starts to make the boilerplate yours and fit to your plugin name. Learn more here: [Make the boilerplate yours](#make-the-boilerplate-yours).
-
 ```sh
 $ npm run build
 ```
