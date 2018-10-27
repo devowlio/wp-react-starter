@@ -80,10 +80,17 @@ abstract class Core extends Base {
         if (0 === strpos($className, $namespace)) {
             $name = substr($className, strlen($namespace));
             $last = explode("\\", $name);
-            $isInterface = substr($last[count($last) - 1], 0, 1) === "I";
-            $filename = WPRJSS_INC . str_replace('\\', '/', $name) . '.' . ($isInterface ? 'interface' : 'class') . '.php';
-            if (file_exists($filename)) {
-                require_once($filename);
+            $prefix = RML_INC . str_replace('\\', '/', $name) . '.';
+            $filesToCheck = array(
+                $prefix . 'class.php',
+                $prefix . 'interface.php',
+                $prefix . 'trait.php'
+            );
+            
+            foreach ($filesToCheck as $filename) {
+                if (file_exists($filename)) {
+                    require_once($filename);
+                }
             }
         }
     }
