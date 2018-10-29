@@ -80,7 +80,7 @@ abstract class Core extends Base {
         if (0 === strpos($className, $namespace)) {
             $name = substr($className, strlen($namespace));
             $last = explode("\\", $name);
-            $prefix = RML_INC . str_replace('\\', '/', $name) . '.';
+            $prefix = WPRJSS_INC . str_replace('\\', '/', $name) . '.';
             $filesToCheck = array(
                 $prefix . 'class.php',
                 $prefix . 'interface.php',
