@@ -28,8 +28,12 @@
     "docs": "npm run phpdocs && npm run jsdocs && npm run apidocs && npm run hookdocs"
   },
   "dependencies": {
+    "mobx": "^4.5.1",
+    "mobx-react": "^5.3.6",
+    "mobx-state-tree": "^3.7.1",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "setimmediate": "^1.0.5"
   },
   "engines": {
     "node": ">=0.8"

@@ -22,10 +22,17 @@ class Assets extends base\Assets {
         $publicFolder = $this->getPublicFolder();
         $isDebug = $this->isScriptDebug();
         $dpSuffix = $isDebug ? 'development' : 'production.min';
+        $minSuffix = $isDebug ? '' : '.min';
         
         // Both in admin interface (page) and frontend (widgets)
         $this->enqueueLibraryScript('react', 'react/umd/react.' . $dpSuffix . '.js');
         $this->enqueueLibraryScript('react-dom', 'react-dom/umd/react-dom.' . $dpSuffix . '.js', 'react');
+        
+        // mobx
+        $this->enqueueLibraryScript('mobx', 'mobx/lib/mobx.umd' . $minSuffix . '.js');
+        
+        // mobx-state-tree
+        $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', array('mobx'));
         
         // Your assets implementation here... See base\Assets for enqueue* methods.
         if ($type === base\Assets::TYPE_ADMIN) {

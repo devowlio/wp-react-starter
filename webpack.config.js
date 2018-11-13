@@ -17,7 +17,13 @@ module.exports = {
 	},
 	externals: {
 		'react': 'React',
-		'react-dom': 'ReactDOM'
+		'react-dom': 'ReactDOM',
+		'jquery': 'jQuery',
+		'mobx': 'mobx',
+		'mobx-state-tree': 'mobxStateTree',
+		'wp': 'wp',
+		'_': '_',
+		'wpApiSettings': 'wpApiSettings'
 	},
 	devtool: '#source-map',
 	module: {

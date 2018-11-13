@@ -12,7 +12,9 @@ module.exports = function(grunt) {
              */
             npmLibs: [
                 'public/lib/react/',
-                'public/lib/react-dom/'
+                'public/lib/react-dom/',
+                'public/lib/mobx/',
+                'public/lib/mobx-state-tree/',
             ] // Your library folders, do not use 'public/lib' as source directly
         },
         copy: {
@@ -27,7 +29,11 @@ module.exports = function(grunt) {
                     'react/LICENSE*',
                     'react-dom/umd/react-dom.development.js',
                     'react-dom/umd/react-dom.production.min.js',
-                    'react-dom/LICENSE*'
+                    'react-dom/LICENSE*',
+                    'mobx/LICENSE*',
+                    'mobx/lib/mobx.umd*.js',
+                    'mobx/lib/mobx.umd*.map',
+                    'mobx-state-tree/dist/mobx-state-tree.umd.js'
                 ], // Your library files
                 dest: 'public/lib/'
             }

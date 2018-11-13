@@ -11,7 +11,8 @@
 
 **Client-side features:** _Familiar React API & patterns (ES6)_
 * [**ReactJS**](https://reactjs.org/) v16 with **Babel v7** `env` preset
-* [**webpack**](https://webpack.js.org/) v3 build for assets
+* [**mobx-state-tree**](https://github.com/mobxjs/mobx-state-tree) for Model Driven State Management
+* [**webpack**](https://webpack.js.org/) v4 build for assets
 * CSS and JS [**Sourcemap**](https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) generation for debugging purposes
 * [**SASS**](http://sass-lang.com/) stylesheets compiler (`.scss` files)
 * [**PostCSS**](http://postcss.org/) for transforming CSS with JavaScript (including autoprefixing)
@@ -66,6 +67,7 @@ $ create-wp-react-app create my-plugin
 1. [Add external JavaScript library](#add-external-javascript-library)
 1. [Using the cachebuster](#using-the-cachebuster)
 1. [WP REST API v2](#wp-rest-api-v2)
+1. [JavaScript state management](#javascript-state-management)
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
 
@@ -265,6 +267,13 @@ The boilerplate needs a minimum WordPress version of **4.4**. The **WP REST API 
 
 **Note:** Using the WP REST API v2 is essential for high quality plugins, please avoid using `admin-ajax.php`.
 
+## JavaScript state management
+The starter plugin uses the following packages to provide a easy-to use **Model Driven State Management**:
+
+* [**mobx@4**](https://github.com/mobxjs/mobx): This dependency is needed for mobx-state-tree to work. It uses Version 4 because v5 is for browsers with Proxies supported. Not all browsers (e. g. IE) does not support this kind of functionality.
+* [**mobx-state-tree**](https://github.com/mobxjs/mobx-state-tree): The model driven state management built on top of mobx.
+* [**mobx-react**](https://github.com/mobxjs/mobx-react): Easily create bindings for your React components for your models
+
 ## Localization
 The boilerplate comes with an automatically created `languages/gyour-plugin-name.pot` file. If you are familar with the [``__()``](https://developer.wordpress.org/reference/functions/__/) translation functions you can use the constant `YOURCONSTANTPREFIX_TD` (see [Available constants](#available-constants)) as the `$domain` parameter.
 
@@ -303,9 +312,6 @@ After setting the new version and want to build an installable **wordpress.org**
 
 ## :information_desk_person: Useful resources
 1. [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
-1. [Redux State Management Concept](http://www.youhavetolearncomputers.com/blog/2015/9/15/a-conceptual-overview-of-redux-or-how-i-fell-in-love-with-a-javascript-state-container)
-1. [Redux+React Provider and Connect explained](http://www.sohamkamani.com/blog/2017/03/31/react-redux-connect-explained/)
-1. [Redux with API's](http://www.sohamkamani.com/blog/2016/06/05/redux-apis/)
 1. [Install Babel's polyfills](https://babeljs.io/docs/usage/polyfill/)
 
 ## :construction_worker: Todo
