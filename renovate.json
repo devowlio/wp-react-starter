@@ -1,5 +1,9 @@
 {
   "extends": [
     "config:semverAllMonthly"
-  ]
+  ],
+  "packageRules": [{
+    "packageNames": ["mobx"],
+    "allowedVersions": "<5.0.0"
+  }]
 }
