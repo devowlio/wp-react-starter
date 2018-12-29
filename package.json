@@ -21,7 +21,7 @@
     "dev": "webpack --watch",
     "lint": "eslint public/src",
     "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve",
-    "phpdocs": "rm -rf docs/php && vendor/bin/apigen generate --source inc/ --destination docs/php --template-theme bootstrap",
+    "phpdocs": "rm -rf docs/php && vendor/bin/apigen generate inc/ --destination docs/php",
     "jsdocs": "rm -rf docs/js && ./node_modules/.bin/jsdoc public/src -c build/jsdoc.json",
     "apidocs": "rm -rf docs/api && ./node_modules/.bin/apidoc -i inc -o docs/api",
     "hookdocs": "rm -rf docs/hooks && ./node_modules/.bin/jsdoc inc -c build/hookdoc.json",

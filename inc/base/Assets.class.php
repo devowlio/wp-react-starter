@@ -52,7 +52,7 @@ abstract class Assets extends Base {
     /**
      * Wrapper for Assets::enqueueScript() method with $isLib = true.
      * 
-     * @see Assets::enqueueScript()
+     * @see enqueueScript()
      */
     public function enqueueLibraryScript($handle, $src = '', $deps = array(), $in_footer = false) {
         $this->enqueueScript($handle, $src, $deps, $in_footer, true);
@@ -78,7 +78,7 @@ abstract class Assets extends Base {
     /**
      * Wrapper for Assets::enqueueStyle() method with $isLib = true.
      * 
-     * @see Assets::enqueueStyle()
+     * @see enqueueStyle()
      */
     public function enqueueLibraryStyle($handle, $src = '', $deps = array(), $media = 'all') {
         $this->enqueueStyle($handle, $src, $deps, $media, true);
@@ -90,7 +90,6 @@ abstract class Assets extends Base {
      * 
      * @param string $src The src relative to public/ folder
      * @param boolean $isLib If true the cachebuster-lib.php cachebuster is used
-     * @see inc/others/cachebuster.php
      * @returns string WPRJSS_VERSION or cachebuster timestamp
      */
     public function getCachebusterVersion($src, $isLib = false) {

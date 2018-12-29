@@ -11,6 +11,7 @@
     ],
     "require": {},
     "require-dev": {
-        "apigen/apigen": "^4.1"
+        "apigen/apigen": "dev-master",
+        "roave/better-reflection": "dev-master"
     }
 }

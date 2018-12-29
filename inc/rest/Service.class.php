@@ -13,7 +13,7 @@ class Service extends base\Base {
     /**
      * The namespace for this service.
      * 
-     * @see Service::getUrl()
+     * @see getUrl()
      */
     const SERVICE_NAMESPACE = 'wprjss/v1';
     
