@@ -46,7 +46,7 @@ abstract class Assets extends Base {
      */
     public function enqueueScript($handle, $src = '', $deps = array(), $in_footer = false, $isLib = false) {
         $src = $this->getPublicFolder($isLib) . $src;
-        wp_enqueue_script($handle, plugins_url($src, WPRJSS_FILE), array(), $this->getCachebusterVersion($src, $isLib), true);
+        wp_enqueue_script($handle, plugins_url($src, WPRJSS_FILE), $deps, $this->getCachebusterVersion($src, $isLib), true);
     }
     
     /**
@@ -72,7 +72,7 @@ abstract class Assets extends Base {
      */
     public function enqueueStyle($handle, $src = '', $deps = array(), $media = 'all', $isLib = false) {
         $src = $this->getPublicFolder($isLib) . $src;
-        wp_enqueue_style($handle, plugins_url($src, WPRJSS_FILE), array(), $this->getCachebusterVersion($src, $isLib), $media);
+        wp_enqueue_style($handle, plugins_url($src, WPRJSS_FILE), $deps, $this->getCachebusterVersion($src, $isLib), $media);
     }
     
     /**
