@@ -53,7 +53,8 @@ class Assets extends base\Assets {
     public function adminLocalizeScript() {
         return array(
             'textDomain' => WPRJSS_TD,
-            'restUrl' => rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)
+            'restUrl' => rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE),
+            'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
         );
     }
     
