@@ -46,7 +46,9 @@ class Assets extends base\Assets {
     }
     
     /**
-     * Localize the WordPress admin backend.
+     * Localize the WordPress admin backend. If you want to provide URLs to the
+     * frontend you have to consider that some JS libraries do not support umlauts
+     * in their URI builder. For this you can use base\Assets#getAsciiUrl.
      * 
      * @returns array
      */

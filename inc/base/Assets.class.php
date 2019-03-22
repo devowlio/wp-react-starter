@@ -154,6 +154,22 @@ abstract class Assets extends Base {
     }
     
     /**
+     * Convert a complete URL to IDN url. This is necessery if you use a URIBuilder like
+     * lil-url in your frontend.
+     * 
+     * @see idn_to_ascii
+     * @param string $url The url
+     * @returns string
+     */
+    public function getAsciiUrl($url) {
+        require_once(ABSPATH . WPINC . '/Requests/IRI.php');
+    	require_once(ABSPATH . WPINC . '/Requests/IDNAEncoder.php');
+    	$iri = new \Requests_IRI($url);
+		$iri->host = \Requests_IDNAEncoder::encode($iri->ihost);
+		return $iri->uri;
+    }
+    
+    /**
      * Check if SCRIPT_DEBUG is set to true.
      * 
      * @returns boolean
