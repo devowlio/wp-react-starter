@@ -157,7 +157,7 @@ abstract class Assets extends Base {
      * Convert a complete URL to IDN url. This is necessery if you use a URIBuilder like
      * lil-url in your frontend.
      * 
-     * @see idn_to_ascii
+     * @see https://www.php.net/manual/en/function.idn-to-ascii.php
      * @param string $url The url
      * @returns string
      */
