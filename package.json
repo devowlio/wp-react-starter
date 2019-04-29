@@ -21,7 +21,7 @@
     "dev": "webpack --watch",
     "lint": "eslint public/src",
     "serve": "npm run build && npm run build-dev && grunt copy-npmLibs && grunt public-cachebuster && grunt serve",
-    "phpdocs": "rm -rf docs/php && vendor/bin/apigen generate inc/ --destination docs/php",
+    "phpdocs": "rm -rf docs/php docs/_php && vendor/bin/phpdoc run -d inc/ -f index.php -t docs/_php --template=vendor/nelson6e65/phpdoc-vuepress/data/templates/vuepress && mkdir -p docs/_php/.vuepress/ && cp build/vuepress-php.js docs/_php/.vuepress/config.js && vuepress build docs/_php && rm -rf docs/_php",
     "jsdocs": "rm -rf docs/js && ./node_modules/.bin/jsdoc public/src -c build/jsdoc.json",
     "apidocs": "rm -rf docs/api && ./node_modules/.bin/apidoc -i inc -o docs/api",
     "hookdocs": "rm -rf docs/hooks && ./node_modules/.bin/jsdoc inc -c build/hookdoc.json",
@@ -81,6 +81,7 @@
     "postcss-clean": "^1.1.0",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
+    "vuepress": "^0.14.11",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
     "wp-hookdoc": "^0.2.0"

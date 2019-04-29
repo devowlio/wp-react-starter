@@ -11,7 +11,7 @@
     ],
     "require": {},
     "require-dev": {
-        "apigen/apigen": "dev-master",
-        "roave/better-reflection": "dev-master"
+        "phpdocumentor/phpdocumentor": "dev-master",
+        "nelson6e65/phpdoc-vuepress": "dev-master"
     }
 }

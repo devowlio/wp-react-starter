@@ -30,7 +30,7 @@
 * [`SCRIPT_DEBUG`](https://codex.wordpress.org/Debugging_in_WordPress#SCRIPT_DEBUG) enables not-minified sources for debug sources (use in connection with `npm run build-dev`)
 * [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 * Predefined `.po` files for **translating (i18n)** the plugin
-* [**ApiGen**](https://github.com/ApiGen/ApiGen) for PHP Documentation
+* [**phpDocumentor**](https://github.com/phpDocumentor/phpDocumentor2) for PHP Documentation
 * [**JSDoc**](http://usejsdoc.org/) for JavaScript Documentation
 * [**apiDoc**](http://apidocjs.com//) for API Documentation
 * [**WP HookDoc**](https://github.com/matzeeable/wp-hookdoc) for Filters & Actions Documentation
