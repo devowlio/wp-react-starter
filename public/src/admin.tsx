@@ -1,3 +1,3 @@
-function (test) {
-  // WUp
+function wup(test: any) {
+    // Wup
 }

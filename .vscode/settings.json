@@ -3,7 +3,11 @@
     "editor.useTabStops": false,
     "editor.formatOnSave": false,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "cSpell.enabled": false,
     "editor.tabSize": 4,
+    "[typescript]": {
+        "editor.formatOnSave": true
+    },
     "[typescriptreact]": {
         "editor.formatOnSave": true
     },
