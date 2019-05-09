@@ -32,3 +32,5 @@ define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
 
 // Check PHP Version and print notice if minimum not reached, otherwise start the plugin core
 require_once(WPRJSS_INC . "others/" . (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=") ? "start.php" : "fallback-php-version.php"));
+
+
