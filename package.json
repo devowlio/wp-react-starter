@@ -26,7 +26,12 @@
         "apidocs": "rm -rf docs/api && ./node_modules/.bin/apidoc -i inc -o docs/api",
         "hookdocs": "rm -rf docs/hooks && ./node_modules/.bin/jsdoc inc -c build/hookdoc.json",
         "docs": "npm run phpdocs && npm run jsdocs && npm run apidocs && npm run hookdocs",
-        "prettier-write": "prettier --write 'inc/**/*.php' '*.php' && prettier --write 'public/src/**/*.tsx'" 
+        "prettier-write": "prettier --write 'inc/**/*.php' '*.php' && prettier --write 'public/src/**/*.tsx'"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
     },
     "dependencies": {
         "mobx": "^4.5.1",
@@ -73,6 +78,7 @@
         "grunt-contrib-clean": "^2.0.0",
         "grunt-contrib-copy": "^1.0.0",
         "grunt-node-modules-cachebuster": "^0.1.0",
+        "husky": "^2.2.0",
         "jsdoc": "^3.5.5",
         "lodash": "^4.17.11",
         "mini-css-extract-plugin": "^0.4.3",
@@ -80,6 +86,7 @@
         "postcss-clean": "^1.1.0",
         "postcss-loader": "^3.0.0",
         "prettier": "^1.17.0",
+        "pretty-quick": "^1.10.0",
         "sass-loader": "^7.1.0",
         "tslint": "^5.16.0",
         "tslint-config-prettier": "^1.18.0",
