@@ -3,20 +3,19 @@ namespace MatthiasWeb\WPRJSS\rest;
 use MatthiasWeb\WPRJSS\base;
 use MatthiasWeb\WPRJSS\general;
 
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
+defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
 
 /**
  * Create a REST Service.
  */
 class Service extends base\Base {
-    
     /**
      * The namespace for this service.
-     * 
+     *
      * @see getUrl()
      */
     const SERVICE_NAMESPACE = 'wprjss/v1';
-    
+
     /**
      * Register endpoints.
      */
@@ -26,7 +25,7 @@ class Service extends base\Base {
             'callback' => array($this, 'routePlugin')
         ));
     }
-    
+
     /**
      * @api {get} /wprjss/v1/plugin Get plugin information
      * @apiHeader {string} X-WP-Nonce
@@ -54,10 +53,10 @@ class Service extends base\Base {
     public function routePlugin() {
         return new \WP_REST_Response(general\Core::getInstance()->getPluginData());
     }
-    
+
     /**
      * Get the wp-json URL for a defined REST service.
-     * 
+     *
      * @param string $namespace The prefix for REST service
      * @param string $endpoint The path appended to the prefix
      * @returns String Example: https://example.com/wp-json

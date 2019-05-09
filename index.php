@@ -11,13 +11,15 @@
  * Domain Path:		/languages
  */
 
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file request
+defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
 
 /**
  * Plugin constants. This file is procedural coding style for initialization of
  * the plugin core and definition of plugin configuration.
  */
-if (defined('WPRJSS_PATH')) return;
+if (defined('WPRJSS_PATH')) {
+    return;
+}
 define('WPRJSS_FILE', __FILE__);
 define('WPRJSS_PATH', dirname(WPRJSS_FILE));
 define('WPRJSS_INC', trailingslashit(path_join(WPRJSS_PATH, 'inc')));
@@ -31,6 +33,6 @@ define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options
 //define('WPRJSS_DEBUG', true); This constant should be defined in wp-config.php to enable the Base::debug() method
 
 // Check PHP Version and print notice if minimum not reached, otherwise start the plugin core
-require_once(WPRJSS_INC . "others/" . (version_compare(phpversion(), WPRJSS_MIN_PHP, ">=") ? "start.php" : "fallback-php-version.php"));
-
-
+require_once WPRJSS_INC .
+    'others/' .
+    (version_compare(phpversion(), WPRJSS_MIN_PHP, '>=') ? 'start.php' : 'fallback-php-version.php');

@@ -16,5 +16,8 @@
     },
     "[jsonc]": {
         "editor.formatOnSave": true
+    },
+    "[php]": {
+        "editor.formatOnSave": true
     }
 }

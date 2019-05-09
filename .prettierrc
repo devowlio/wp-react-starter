@@ -7,7 +7,8 @@
         {
             "files": "*.php",
             "options": {
-                "singleQuote": true
+                "singleQuote": true,
+                "braceStyle": "1tbs"
             }
         }
     ]
