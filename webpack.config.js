@@ -3,12 +3,13 @@ var path = require("path"),
     exec = require("child_process").exec,
     NODE_ENV = process.env.NODE_ENV || "development",
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-    dist = path.join(__dirname, "public", NODE_ENV === "production" ? "dist" : "dev");
+    dist = path.join(__dirname, "public", NODE_ENV === "production" ? "dist" : "dev"),
+    WebpackBar = require("webpackbar");
 
 module.exports = {
     mode: NODE_ENV,
     entry: {
-        //widget: "./public/src/widget.js",
+        widget: "./public/src/widget.tsx",
         admin: "./public/src/admin.tsx"
     },
     output: {
@@ -58,6 +59,7 @@ module.exports = {
         modules: ["node_modules", "public/src"]
     },
     plugins: [
+        new WebpackBar(),
         new webpack.DefinePlugin({
             // NODE_ENV is used inside React to enable/disable features that should only be used in development
             "process.env": {

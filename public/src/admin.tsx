@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { ComponentLibrary } from "./component-library";
+import "setimmediate"; // Polyfill for yielding
 
-function wup(test: any) {
-    // Wup
+const node = document.getElementById("wp-react-component-library");
+
+if (node) {
+    ReactDOM.render(<ComponentLibrary />, node);
 }
