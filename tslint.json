@@ -19,7 +19,8 @@
             {
                 "order": "fields-first"
             }
-        ]
+        ],
+        "no-submodule-imports": [true, "i18n-calypso"]
     },
     "rulesDirectory": []
 }
