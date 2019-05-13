@@ -42,6 +42,11 @@ class Assets extends base\Assets {
             $this->enqueueScript('wp-reactjs-starter', 'widget.js', array('react-dom'));
             $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
         }
+
+        // Localize with a window.process.env variable for libraries relying on it (MST for example)
+        wp_localize_script('react', 'process', array(
+            'env' => array('NODE_ENV' => $isDebug ? 'development' : 'production')
+        ));
     }
 
     /**
