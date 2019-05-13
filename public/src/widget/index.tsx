@@ -1,10 +1,11 @@
 import React from "react";
+import { translate } from "../util/i18n";
 import "./style.scss";
 
 const Widget: React.FunctionComponent<{}> = () => (
     <div className="react-boilerplate-widget">
-        <h3>Hello, World!</h3>
-        <p>I made this thing.</p>
+        <h3>{translate("widgetTitle")}</h3>
+        <p>{translate("widgetDescription")}</p>
     </div>
 );
 

@@ -35,6 +35,7 @@
         }
     },
     "dependencies": {
+        "i18n-calypso": "^3.0.0",
         "mobx": "^4.9.4",
         "mobx-react": "^5.4.3",
         "mobx-state-tree": "^3.14.0",

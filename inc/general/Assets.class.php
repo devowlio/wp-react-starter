@@ -37,11 +37,11 @@ class Assets extends base\Assets {
         if ($type === base\Assets::TYPE_ADMIN) {
             $this->enqueueScript('wp-reactjs-starter', 'admin.js', array('react-dom'));
             $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
-            wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->adminLocalizeScript());
         } else {
             $this->enqueueScript('wp-reactjs-starter', 'widget.js', array('react-dom'));
             $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
         }
+        wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->localizeScript($type));
 
         // Localize with a window.process.env variable for libraries relying on it (MST for example)
         wp_localize_script('react', 'process', array(
@@ -50,18 +50,30 @@ class Assets extends base\Assets {
     }
 
     /**
-     * Localize the WordPress admin backend. If you want to provide URLs to the
+     * Localize the WordPress backend and frontend. If you want to provide URLs to the
      * frontend you have to consider that some JS libraries do not support umlauts
      * in their URI builder. For this you can use base\Assets#getAsciiUrl.
      *
      * @returns array
      */
-    public function adminLocalizeScript() {
-        return array(
+    public function localizeScript($context) {
+        $i18n = new JsI18n();
+        $common = array(
             'textDomain' => WPRJSS_TD,
-            'restUrl' => rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE),
-            'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
+            'version' => WPRJSS_VERSION,
+            'i18n' => $i18n->build($context)
         );
+
+        if ($context === base\Assets::TYPE_ADMIN) {
+            return array_merge($common, array(
+                'restUrl' => $this->getAsciiUrl(rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)),
+                'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
+            ));
+        } else {
+            return array_merge($common, array(
+                /* Your frontend variables for the widget */
+            ));
+        }
     }
 
     /**

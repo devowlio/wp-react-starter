@@ -2,6 +2,7 @@ import React, { FormEvent } from "react";
 import { inject, observer } from "mobx-react";
 import { Button, EButtonType } from "../wp/";
 import { ITodo as ITodoType, ITodoStore as ITodoStoreType } from "../store";
+import { translate } from "../util/i18n";
 
 interface ITodoItemProps {
     todo: ITodoType;
@@ -19,7 +20,7 @@ class TodoItem extends React.Component<ITodoItemProps> {
                 </label>
                 &nbsp;
                 <a href="#" onClick={() => todo.remove()}>
-                    Remove
+                    {translate("remove")}
                 </a>
             </li>
         );
@@ -78,17 +79,19 @@ class Todo extends React.Component<ITodoProps, ITodoState> {
 
         return (
             <div className="wp-styleguide--buttons">
-                <h2>Todo list ({todos.length})</h2>
-                <p>This section demonstrates a mobx-state-tree Todo list (no peristence to server).</p>
+                <h2>
+                    {translate("todoList")} ({todos.length})
+                </h2>
+                <p>{translate("todoListDescription")}</p>
                 <input
                     value={inputText}
                     onChange={this.handleChange}
                     type="text"
                     className="regular-text"
-                    placeholder="What needs to be done?"
+                    placeholder={translate("todoInputPlaceholder")}
                 />
                 <Button type={EButtonType.Primary} disabled={!inputText.length} onClick={this.handleAdd}>
-                    Add
+                    {translate("add")}
                 </Button>
                 <ul>
                     {todos.map((t) => (
