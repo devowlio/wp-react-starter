@@ -39,14 +39,16 @@ function ajax<B = false extends false ? false : true, C = B extends true ? strin
         settings.method = "POST";
     }
 
-    const builtUrl = apiUrl.query($.extend(true, {}, pluginOptions.restQuery, query)).build();
+    const builtUrl = apiUrl.query($.extend(true, {}, pluginOptions.restQuery, query));
     if (returnUrl) {
-        return (builtUrl as unknown) as C;
+        return (builtUrl
+            .query($.extend(true, {}, builtUrl.query(), { _wpnonce: pluginOptions.restNonce }))
+            .build() as unknown) as C;
     }
 
     return ($.ajax(
         $.extend(true, settings, {
-            url: builtUrl,
+            url: builtUrl.build(),
             headers: {
                 "X-WP-Nonce": pluginOptions.restNonce
             }

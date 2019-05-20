@@ -332,10 +332,25 @@ The boilerplate comes with an automatically created `languages/gyour-plugin-name
 
 To translate the plugin you can use for example a tool like [Poedit](https://poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 
-In this boilerplate you can find an example of using a [`wp_localize_script`](https://developer.wordpress.org/reference/functions/wp_localize_script/)'ed object in React (`inc/menu/Page.class.php::enqueue_scripts()`, `public/src/component-library/index.js`):
+For frontend localization (`i18n-calypso`)[https://github.com/Automattic/wp-calypso/tree/master/packages/i18n-calypso] is used which is very easy to understand and works with i18n keys instead of direct translations in your TSX files. This module also allows you interpolating components to your translations so you can translate texts with links for example. You have to use the `inc/general/JsI18n.class.php` file to maintain your translation keys - then you can use them as follow in your code (complex example from `public/src/component-library/index.tsx`):
 
-```xml
-<Notice type="info">The text domain of the plugin is: "{window.wprjssOpts.textDomain}" (localized variable)</Notice>
+```tsx
+import { translate } from "../util/i18n";
+
+const NoticeExample = (
+    <Notice type={ENoticeType.Info}>
+        {translate("restUrlNotice", {
+            args: { restUrl: pluginOptions.restUrl },
+            components: {
+                a: (
+                    <a href="#" onClick={doTestAjaxCall}>
+                        {pluginOptions.restUrl}
+                    </a>
+                )
+            }
+        })}
+    </Notice>
+);
 ```
 
 ## Building production plugin

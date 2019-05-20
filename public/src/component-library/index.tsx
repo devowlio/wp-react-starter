@@ -3,10 +3,8 @@ import { Notice, ENoticeType } from "../wp";
 import { Todo } from "./Todo";
 import { TodoStore } from "../store";
 import { Provider } from "mobx-react";
-import { pluginOptions } from "../util";
+import { pluginOptions, ajax } from "../util";
 import { translate } from "../util/i18n";
-import { ajax } from "../util";
-
 import "./style.scss";
 
 // Craete default store

@@ -69,6 +69,7 @@ class Assets extends base\Assets {
                 'restUrl' => $this->getAsciiUrl(rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)),
                 'restRoot' => $this->getAsciiUrl(get_rest_url()),
                 'restQuery' => array('_v' => WPRJSS_VERSION),
+                'restNonce' => wp_installing() && !is_multisite() ? '' : wp_create_nonce('wp_rest'),
                 'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
             ));
         } else {
