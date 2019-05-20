@@ -1,5 +1,5 @@
 import React from "react";
-import { translate } from "../util/i18n";
+import { translate } from "../util";
 import "./style.scss";
 
 const Widget: React.FunctionComponent<{}> = () => (

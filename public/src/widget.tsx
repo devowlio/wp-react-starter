@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Widget } from "./widget/";
+import "setimmediate"; // Polyfill for yielding
 
 // Query DOM for all widget wrapper divs
 const widgets = document.querySelectorAll("div.react-demo-wrapper");

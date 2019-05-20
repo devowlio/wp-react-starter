@@ -3,6 +3,7 @@
 /**
  * Internal dependencies
  */
+// @ts-ignore i18n-calpyso has no types, yet
 import { I18N } from "i18n-calypso";
 import React from "react";
 import { pluginOptions, process } from "./";
@@ -65,7 +66,7 @@ interface ITranslateOptions {
 /**
  * Translate an key from the JsI18n class.
  *
- * @param {string} original - the string to translate, will be used as single version if plural passed
+ * @param {string} original - the string key translation, will be used as single version if plural passed
  * @param {object} [options] - properties describing translation requirements for given text
  * @returns string
  */

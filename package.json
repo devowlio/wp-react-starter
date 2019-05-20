@@ -37,6 +37,7 @@
     "dependencies": {
         "i18n-calypso": "^3.0.0",
         "jquery": "^3.4.1",
+        "lil-uri": "^0.2.2",
         "mobx": "^4.9.4",
         "mobx-react": "^5.4.3",
         "mobx-state-tree": "^3.14.0",
@@ -73,6 +74,7 @@
         "@prettier/plugin-php": "^0.10.2",
         "@types/classnames": "^2.2.7",
         "@types/jquery": "^3.3.29",
+        "@types/lil-uri": "^0.2.0",
         "@types/react": "^16.8.17",
         "@types/react-dom": "^16.8.4",
         "apidoc": "^0.17.7",

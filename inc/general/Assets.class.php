@@ -67,6 +67,8 @@ class Assets extends base\Assets {
         if ($context === base\Assets::TYPE_ADMIN) {
             return array_merge($common, array(
                 'restUrl' => $this->getAsciiUrl(rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)),
+                'restRoot' => $this->getAsciiUrl(get_rest_url()),
+                'restQuery' => array('_v' => WPRJSS_VERSION),
                 'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
             ));
         } else {
