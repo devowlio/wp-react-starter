@@ -3,12 +3,23 @@ import { Notice, ENoticeType } from "../wp";
 import { Todo } from "./Todo";
 import { TodoStore } from "../store";
 import { Provider } from "mobx-react";
-import { pluginOptions, translate } from "../util";
+import { pluginOptions } from "../util";
+import { translate } from "../util/i18n";
+import { ajax } from "../util";
 
 import "./style.scss";
 
 // Craete default store
 const todoStore = TodoStore.create();
+
+// Do a test ajax call when clicking the REST API url
+async function doTestAjaxCall(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    e.persist();
+    const result = await ajax("plugin"),
+        usedUrl = ajax<true>("plugin", undefined, undefined, true);
+    alert(usedUrl + "\n\n" + JSON.stringify(result, undefined, 4));
+    e.preventDefault();
+}
 
 // Note: window.wprjssOpts can also be registered as external in webpack.config.js.
 const ComponentLibrary: React.FunctionComponent<{}> = () => {
@@ -24,7 +35,7 @@ const ComponentLibrary: React.FunctionComponent<{}> = () => {
                     args: { restUrl: pluginOptions.restUrl },
                     components: {
                         a: (
-                            <a href={pluginOptions.restUrl + "plugin"} target="_blank">
+                            <a href="#" onClick={doTestAjaxCall}>
                                 {pluginOptions.restUrl}
                             </a>
                         )

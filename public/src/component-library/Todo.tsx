@@ -2,7 +2,7 @@ import React, { FormEvent } from "react";
 import { inject, observer } from "mobx-react";
 import { Button, EButtonType } from "../wp/";
 import { ITodo as ITodoType, ITodoStore as ITodoStoreType } from "../store";
-import { translate } from "../util";
+import { translate } from "../util/i18n";
 
 interface ITodoItemProps {
     todo: ITodoType;

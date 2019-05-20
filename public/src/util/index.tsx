@@ -1,5 +1,4 @@
 import uri from "lil-uri";
-export * from "./i18n";
 
 const pluginOptions = (window as any).wprjssOpts,
     process = (window as any).process,

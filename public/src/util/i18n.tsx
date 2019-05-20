@@ -70,7 +70,7 @@ interface ITranslateOptions {
  * @param {object} [options] - properties describing translation requirements for given text
  * @returns string
  */
-function translate(original: string, options?: ITranslateOptions): string {
+function translate(original: string, options: ITranslateOptions = {}): string {
     return i18n.translate(original, options.plural, options);
 }
 
