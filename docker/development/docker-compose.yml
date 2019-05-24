@@ -1,10 +1,5 @@
 version: "3"
 
-# This docker file is for development environments only, it is not recommenend
-# to deploy it to a production site. The main purpose of the create-wp-react-app
-# is the local development (with this compose file) and to build an installable
-# WordPress plugin file(s).
-
 networks:
     wprjss: {}
 
@@ -25,7 +20,18 @@ services:
             MYSQL_USER: wordpress
             MYSQL_PASSWORD: wordpress
 
-    # https://hub.docker.com/_/wordpress
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: wprjss_development_phpmyadmin
+        networks:
+            - wprjss
+        ports:
+            - 8079:80
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+
     wordpress:
         image: wordpress:5.2.0-apache
         container_name: wprjss_development_wordpress
@@ -40,40 +46,26 @@ services:
         restart: on-failure
         depends_on:
             - mysql
-        command: bash /scripts/container-wp-cli-start.sh
+        command: bash /scripts/container-wordpress-command.sh
         environment:
-            DOCKER_ENTRYPOINT_GITHUB_URL: https://raw.githubusercontent.com/docker-library/wordpress/047c3b4b0f54f80753e65c20dcc0064b0d39a76b/php7.2/apache/docker-entrypoint.sh
             WORDPRESS_DB_HOST: mysql:3306
             WORDPRESS_DB_USER: wordpress
             WORDPRESS_DB_PASSWORD: wordpress
             WORDPRESS_DB_NAME: wordpress
 
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        container_name: wprjss_development_phpmyadmin
+    wordpress-cli:
+        image: wordpress:cli
+        container_name: wprjss_development_wp_cli
+        user: xfs
         networks:
             - wprjss
-        ports:
-            - 8079:80
+        volumes:
+            - wprjss_www:/var/www/html
+            - ../scripts:/scripts
+        entrypoint: /scripts/container-wordpress-cli-entrypoint.sh
         depends_on:
             - mysql
-        environment:
-            PMA_HOST: mysql
-
-    #wordpress-cli:
-    #  image: wordpress:cli
-    #  container_name: wprjss_development_wp_cli
-    #  user: xfs
-    #  networks:
-    #    - wprjss
-    #  volumes:
-    #    - wprjss_www:/var/www/html
-    #    - ../../:/var/www/html/wp-content/plugins/wp-reactjs-starter
-    #    - ../scripts:/scripts
-    #  command: bash /scripts/container-wp-cli-start.sh
-    #  depends_on:
-    #    - mysql
-    #    - wordpress
+            - wordpress
 
 volumes:
     wprjss_database: {}
