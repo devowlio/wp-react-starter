@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run original docker-entrypoint.sh because it is overwritten with "command" (https://git.io/)
+# Run original docker-entrypoint.sh because it is overwritten with "command"
 docker-entrypoint.sh apache2
 
 # The database needs to be ready, so netcat it, and also the wp binary must be downloaded and executable

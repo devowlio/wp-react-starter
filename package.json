@@ -1,5 +1,7 @@
 {
     "name": "wp-reactjs-boilerplate",
+    "docker-hub-username": "matzeeable",
+    "docker-ci-image-name": "ci-php-composer-node",
     "version": "0.1.0",
     "description": "WordPress Plugin Boilerplate using new web technologies.",
     "author": "Matthias Günter <support@matthias-web.com>",
@@ -29,7 +31,9 @@
         "apidocs": "rm -rf docs/api && ./node_modules/.bin/apidoc -i inc -o docs/api",
         "hookdocs": "rm -rf docs/hooks && ./node_modules/.bin/jsdoc inc -c build/hookdoc.json",
         "docs": "npm run phpdocs && npm run jsdocs && npm run apidocs && npm run hookdocs",
-        "prettier-write": "prettier --write 'inc/**/*.php' '*.php' && prettier --write 'public/src/**/*.tsx'"
+        "prettier-write": "prettier --write 'inc/**/*.php' '*.php' && prettier --write 'public/src/**/*.tsx'",
+        "docker-ci-image-build": "./docker/scripts/build-ci-image.sh",
+        "docker-ci-image-push": "./docker/scripts/push-ci-image.sh"
     },
     "husky": {
         "hooks": {
