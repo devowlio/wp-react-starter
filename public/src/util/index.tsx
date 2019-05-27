@@ -1,4 +1,5 @@
 import uri from "lil-uri";
+import $ from "jquery";
 
 const pluginOptions = (window as any).wprjssOpts,
     process = (window as any).process,

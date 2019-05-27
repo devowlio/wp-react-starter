@@ -69,4 +69,46 @@ class JsI18n extends base\Base {
             return array_merge($common, $this->widget());
         }
     }
+
+    /**
+     * Allow language overrides so for example de_AT uses de_DE to avoid duplicate
+     * .po files and management.
+     *
+     * @see https://webschale.de/2015/plugin-language-fallback-wenns-einem-die-sprache-verschlaegt/
+     */
+    public function override_load_textdomain($override, $domain, $mofile) {
+        $pluginFolder = path_join(WPRJSS_PATH, 'languages');
+        if (
+            $domain === WPRJSS_TD &&
+            !is_readable($mofile) &&
+            substr($mofile, 0, strlen($pluginFolder)) === $pluginFolder
+        ) {
+            $prefix = $domain . '-';
+            $folder = dirname($mofile);
+            $locale = pathinfo(str_replace($prefix, '', basename($mofile)), PATHINFO_FILENAME);
+            $use = null;
+
+            // Overrides
+            switch ($locale) {
+                // Put your overrides here!
+                // case 'de_AT':
+                // case 'de_CH':
+                // case 'de_CH_informal':
+                // case 'de_DE_formal':
+                //     $use = 'de_DE';
+                //     break;
+                default:
+                    break;
+            }
+
+            if (!empty($use)) {
+                $usemo = path_join($folder, $prefix . $use . '.mo');
+                if (is_readable($usemo)) {
+                    load_textdomain($domain, $usemo);
+                    return true;
+                }
+            }
+        }
+        return $override;
+    }
 }

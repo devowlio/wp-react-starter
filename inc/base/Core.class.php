@@ -49,7 +49,7 @@ abstract class Core extends Base {
         define('WPRJSS_VERSION', $this->getPluginData('Version'));
 
         // Register autoload
-        spl_autoload_register(array($this, 'autoloadRegister'));
+        spl_autoload_register([$this, 'autoloadRegister']);
 
         // Register composer autoload
         $composer_path = path_join(WPRJSS_PATH, Core::COMPOSER_AUTOLOAD);
@@ -61,10 +61,10 @@ abstract class Core extends Base {
         $this->activator = new general\Activator();
         $this->assets = new general\Assets();
 
-        add_action('plugins_loaded', array($this, 'i18n'));
-        add_action('init', array($this, 'init'));
-        register_activation_hook(WPRJSS_FILE, array($this->getActivator(), 'activate'));
-        register_deactivation_hook(WPRJSS_FILE, array($this->getActivator(), 'deactivate'));
+        add_action('plugins_loaded', [$this, 'i18n']);
+        add_action('init', [$this, 'init']);
+        register_activation_hook(WPRJSS_FILE, [$this->getActivator(), 'activate']);
+        register_deactivation_hook(WPRJSS_FILE, [$this->getActivator(), 'deactivate']);
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class Core extends Base {
             $name = substr($className, strlen($namespace));
             $last = explode('\\', $name);
             $prefix = WPRJSS_INC . str_replace('\\', '/', $name) . '.';
-            $filesToCheck = array($prefix . 'class.php', $prefix . 'interface.php', $prefix . 'trait.php');
+            $filesToCheck = [$prefix . 'class.php', $prefix . 'interface.php', $prefix . 'trait.php'];
 
             foreach ($filesToCheck as $filename) {
                 if (file_exists($filename)) {

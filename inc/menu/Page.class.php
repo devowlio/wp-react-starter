@@ -11,10 +11,10 @@ defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file req
 class Page extends base\Base {
     public function admin_menu() {
         $pluginName = general\Core::getInstance()->getPluginData()['Name'];
-        add_menu_page($pluginName, $pluginName, 'manage_options', 'wp-react-component-library', array(
+        add_menu_page($pluginName, $pluginName, 'manage_options', 'wp-react-component-library', [
             $this,
             'render_component_library'
-        ));
+        ]);
     }
 
     public function render_component_library() {

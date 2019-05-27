@@ -20,10 +20,10 @@ class Service extends base\Base {
      * Register endpoints.
      */
     public function rest_api_init() {
-        register_rest_route(Service::SERVICE_NAMESPACE, '/plugin', array(
+        register_rest_route(Service::SERVICE_NAMESPACE, '/plugin', [
             'methods' => 'GET',
-            'callback' => array($this, 'routePlugin')
-        ));
+            'callback' => [$this, 'routePlugin']
+        ]);
     }
 
     /**

@@ -43,7 +43,7 @@ abstract class Assets extends Base {
      * @param boolean $isLib If true the public/lib/ folder is used.
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/ For parameters
      */
-    public function enqueueScript($handle, $src = '', $deps = array(), $in_footer = false, $isLib = false) {
+    public function enqueueScript($handle, $src = '', $deps = [], $in_footer = false, $isLib = false) {
         $src = $this->getPublicFolder($isLib) . $src;
         wp_enqueue_script(
             $handle,
@@ -59,7 +59,7 @@ abstract class Assets extends Base {
      *
      * @see enqueueScript()
      */
-    public function enqueueLibraryScript($handle, $src = '', $deps = array(), $in_footer = false) {
+    public function enqueueLibraryScript($handle, $src = '', $deps = [], $in_footer = false) {
         $this->enqueueScript($handle, $src, $deps, $in_footer, true);
     }
 
@@ -75,7 +75,7 @@ abstract class Assets extends Base {
      * @param boolean $isLib If true the public/lib/ folder is used.
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_style/ For parameters
      */
-    public function enqueueStyle($handle, $src = '', $deps = array(), $media = 'all', $isLib = false) {
+    public function enqueueStyle($handle, $src = '', $deps = [], $media = 'all', $isLib = false) {
         $src = $this->getPublicFolder($isLib) . $src;
         wp_enqueue_style(
             $handle,
@@ -91,7 +91,7 @@ abstract class Assets extends Base {
      *
      * @see enqueueStyle()
      */
-    public function enqueueLibraryStyle($handle, $src = '', $deps = array(), $media = 'all') {
+    public function enqueueLibraryStyle($handle, $src = '', $deps = [], $media = 'all') {
         $this->enqueueStyle($handle, $src, $deps, $media, true);
     }
 

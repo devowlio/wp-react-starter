@@ -10,9 +10,9 @@ defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file req
  */
 class Widget extends \WP_Widget {
     public function __construct() {
-        $widget_ops = array(
+        $widget_ops = [
             'description' => 'A widget that demonstrates using React.'
-        );
+        ];
         parent::__construct(WPRJSS_TD . 'react-demo', 'React Demo Widget', $widget_ops);
     }
 

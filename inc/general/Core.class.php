@@ -34,8 +34,9 @@ class Core extends base\Core {
         parent::__construct();
 
         // Register all your before init hooks here
-        add_action('plugins_loaded', array($this, 'updateDbCheck'));
-        add_action('widgets_init', array($this, 'widgets_init'));
+        add_action('plugins_loaded', [$this, 'updateDbCheck']);
+        add_action('widgets_init', [$this, 'widgets_init']);
+        add_filter('override_load_textdomain', [new JsI18n(), 'override_load_textdomain'], 10, 3);
     }
 
     /**
@@ -46,10 +47,10 @@ class Core extends base\Core {
         $this->service = new rest\Service();
 
         // Register all your hooks here
-        add_action('rest_api_init', array($this->getService(), 'rest_api_init'));
-        add_action('admin_enqueue_scripts', array($this->getAssets(), 'admin_enqueue_scripts'));
-        add_action('wp_enqueue_scripts', array($this->getAssets(), 'wp_enqueue_scripts'));
-        add_action('admin_menu', array(new menu\Page(), 'admin_menu'));
+        add_action('rest_api_init', [$this->getService(), 'rest_api_init']);
+        add_action('admin_enqueue_scripts', [$this->getAssets(), 'admin_enqueue_scripts']);
+        add_action('wp_enqueue_scripts', [$this->getAssets(), 'wp_enqueue_scripts']);
+        add_action('admin_menu', [new menu\Page(), 'admin_menu']);
     }
 
     /**

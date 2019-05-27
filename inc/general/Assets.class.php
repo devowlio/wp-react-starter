@@ -31,22 +31,22 @@ class Assets extends base\Assets {
         $this->enqueueLibraryScript('mobx', 'mobx/lib/mobx.umd' . $minSuffix . '.js');
 
         // mobx-state-tree
-        $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', array('mobx'));
+        $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', ['mobx']);
 
         // Your assets implementation here... See base\Assets for enqueue* methods.
         if ($type === base\Assets::TYPE_ADMIN) {
-            $this->enqueueScript('wp-reactjs-starter', 'admin.js', array('react-dom'));
+            $this->enqueueScript('wp-reactjs-starter', 'admin.js', ['react-dom']);
             $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
         } else {
-            $this->enqueueScript('wp-reactjs-starter', 'widget.js', array('react-dom'));
+            $this->enqueueScript('wp-reactjs-starter', 'widget.js', ['react-dom']);
             $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
         }
         wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->localizeScript($type));
 
         // Localize with a window.process.env variable for libraries relying on it (MST for example)
-        wp_localize_script('react', 'process', array(
-            'env' => array('NODE_ENV' => $isDebug ? 'development' : 'production')
-        ));
+        wp_localize_script('react', 'process', [
+            'env' => ['NODE_ENV' => $isDebug ? 'development' : 'production']
+        ]);
     }
 
     /**
@@ -58,24 +58,24 @@ class Assets extends base\Assets {
      */
     public function localizeScript($context) {
         $i18n = new JsI18n();
-        $common = array(
+        $common = [
             'textDomain' => WPRJSS_TD,
             'version' => WPRJSS_VERSION,
             'i18n' => $i18n->build($context)
-        );
+        ];
 
         if ($context === base\Assets::TYPE_ADMIN) {
-            return array_merge($common, array(
+            return array_merge($common, [
                 'restUrl' => $this->getAsciiUrl(rest\Service::getUrl(rest\Service::SERVICE_NAMESPACE)),
                 'restRoot' => $this->getAsciiUrl(get_rest_url()),
-                'restQuery' => array('_v' => WPRJSS_VERSION),
+                'restQuery' => ['_v' => WPRJSS_VERSION],
                 'restNonce' => wp_installing() && !is_multisite() ? '' : wp_create_nonce('wp_rest'),
                 'publicUrl' => trailingslashit(plugins_url('public', WPRJSS_FILE))
-            ));
+            ]);
         } else {
-            return array_merge($common, array(
+            return array_merge($common, [
                 /* Your frontend variables for the widget */
-            ));
+            ]);
         }
     }
 
