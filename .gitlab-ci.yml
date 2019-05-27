@@ -1,25 +1,50 @@
 stages:
-    - lint
+    - build
 
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
+    npm_config_cache: "$CI_PROJECT_DIR/.npm" # point at the folders we can list as paths in "cache" job settings (https://git.io/fjR4i)
     DOCKER_DRIVER: overlay2
 
 cache:
     key: "$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
-        - node_modules/
+        - .npm/
+        #- node_modules/
         - vendor/
 
-before_script:
-    - npm ci
-    - npx grunt copy-npmLibs
-    - npx grunt cachebuster:public
-    - composer install
+# This is NOT a job and will be ignored by GitLab-CI, it allows before_script per job without duplicate code
+.npmjobs: &npmjobs # This is an anchor
+    before_script: # https://gitlab.com/gitlab-org/gitlab-ce/issues/15403
+        - npm ci
+        - composer install
+        - npx grunt copy-npmLibs
+        - npx grunt cachebuster:public
 
 lint:
-    stage: lint
+    <<: *npmjobs
+    stage: build
     script:
         - npm run lint
+
+serve:
+    <<: *npmjobs
+    stage: build
+    script:
+        - npm run serve
+    artifacts:
+        name: installable-plugin
+        paths:
+            - dist/
+
+docs:
+    <<: *npmjobs
+    stage: build
+    script:
+        - npm run docs
+    artifacts:
+        name: technical-docs
+        paths:
+            - docs/

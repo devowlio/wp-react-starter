@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-node-modules-cachebuster");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-compress");
 
     // Detect SERVE_DIR
     SERVE_DIR = _.trimEnd(grunt.config.get("SERVE_DIR") || "dist", "/");
@@ -35,6 +36,16 @@ module.exports = function(grunt) {
                     "languages/**/*"
                 ],
                 dest: SERVE_DIR
+            }
+        },
+        compress: {
+            serve: {
+                options: {
+                    archive: "dist/<%= pkg.name %>-<%= pkg.version %>-plugin.zip"
+                },
+                expand: true,
+                cwd: "dist",
+                src: "<%= pkg.name %>/**/*"
             }
         },
         cachebuster: {
