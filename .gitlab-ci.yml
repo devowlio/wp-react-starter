@@ -1,0 +1,25 @@
+stages:
+    - lint
+
+image: matzeeable/ci-php-composer-node:latest
+
+variables:
+    DOCKER_DRIVER: overlay2
+
+cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+        - node_modules/
+        - vendor/
+
+before_script:
+    - npm ci
+    - npx grunt copy-npmLibs
+    - npx grunt cachebuster:public
+    - composer install
+
+lint:
+    stage: lint
+    script:
+        - npm run lint
