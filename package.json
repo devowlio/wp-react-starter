@@ -2,6 +2,10 @@
     "name": "wp-reactjs-boilerplate",
     "docker-hub-username": "matzeeable",
     "docker-ci-image-name": "ci-php-composer-node",
+    "db-snapshot": [
+        "wp_posts",
+        "wp_postmeta"
+    ],
     "version": "0.1.0",
     "description": "WordPress Plugin Boilerplate using new web technologies.",
     "author": "Matthias Günter <support@matthias-web.com>",
@@ -17,10 +21,13 @@
     },
     "main": "index.js",
     "scripts": {
-        "start-development": "docker-compose -f docker/development/docker-compose.yml up --build -d && grunt copy-npmLibs && concurrently --raw \"cd docker/development && docker-compose logs -f -t --tail=10\" \"webpack --watch\"",
+        "start-development": "rm -f docker/scripts/.env-wp.lock && docker-compose -f docker/development/docker-compose.yml up --build -d && grunt copy-npmLibs && concurrently --raw \"cd docker/development && docker-compose logs -f -t --tail=10\" \"while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done && rm -f docker/scripts/.env-wp.lock && webpack --watch\"",
         "stop-development": "docker-compose -f docker/development/docker-compose.yml stop",
         "rm-development": "docker-compose -f docker/development/docker-compose.yml down",
         "purge-development": "docker-compose -f docker/development/docker-compose.yml down -v",
+        "wp-cli": "cd docker/development && docker-compose exec --user 33:33 wordpress /bin/bash -c",
+        "db-snapshot": "npm run --silent wp-cli \"wp db export - --tables=$(node -e 'console.log(require(`./package.json`)[`db-snapshot`].join(`,`))')\" >",
+        "db-snapshot-installation": "npm run db-snapshot docker/scripts/startup.sql",
         "build": "NODE_ENV=production webpack",
         "build-dev": "webpack",
         "webpack-build-done": "grunt cachebuster:public",

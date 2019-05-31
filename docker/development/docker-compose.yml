@@ -49,6 +49,7 @@ services:
         command: bash /scripts/container-wordpress-command.sh
         environment:
             WORDPRESS_DB_HOST: mysql:3306
+            # If you adjust he username / password you also have to change the username / password in ../scripts/e2e-tests-autologin-plugin.php
             WORDPRESS_DB_USER: wordpress
             WORDPRESS_DB_PASSWORD: wordpress
             WORDPRESS_DB_NAME: wordpress

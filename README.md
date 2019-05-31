@@ -1,5 +1,5 @@
 <h1><p align="center">WordPress ReactJS Boilerplate :sparkling_heart:</p></h1>
-<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (Frontend Widget, WordPress backend menu page).</p>
+<p align="center">This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin (Frontend Widget, WordPress backend menu page) - within a fully customizable Docker development environment.</p>
 
 ---
 
@@ -7,7 +7,7 @@
 
 [![GitHub tag](https://img.shields.io/github/tag/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter)
 [![license](https://img.shields.io/github/license/matzeeable/wp-reactjs-starter.svg?colorB=green)](https://github.com/matzeeable/wp-reactjs-starter/blob/master/LICENSE)
-[![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://matthiasweb.signup.team/)
+[![Slack channel](https://img.shields.io/badge/Slack-join-green.svg)](https://matthias-web.com/slack)
 
 **Client-side features:** _Familiar React API & patterns (ES6) with TypeScript_
 
@@ -46,12 +46,16 @@
 -   [**Husky**](https://github.com/typicode/husky) integration for code beautifying (PHP, TS) before GIT commit - never have ugly code in your repository
 -   **Husky** is also used for [**commitlint**](https://github.com/conventional-changelog/commitlint) to become a common commit message style in your repository
 -   [**webpackbar**](https://github.com/nuxt/webpackbar) so you can get a real progress bar while development
+-   Predefined [**GitLab CI**](https://about.gitlab.com/product/continuous-integration/) example for Continous Integration / Deployment
+-   [**Docker**](https://www.docker.com/) for a local development environment
+-   Within the Docker environment you have [**WP-CLI**](https://developer.wordpress.org/cli/commands/) available
 
 ## :white_check_mark: Prerequesits
 
 -   [**Node.js**](https://nodejs.org/) `npm` command globally available in CLI
 -   [**Grunt CLI**](https://gruntjs.com/using-the-cli) `grunt` command globally available in CLI
 -   [**Composer**](https://getcomposer.org/) `composer` command globally available in CLI
+-   [**Docker**](https://docs.docker.com/install/) `docker` and `docker-compose` command globally available in CLI
 
 ## :mountain_bicyclist: Getting Started
 
@@ -75,6 +79,7 @@ $ create-wp-react-app create my-plugin
 
 1. [Folder structure](#folder-structure)
 1. [Available commands](#available-commands)
+1. [Local environment](#local-environment)
 1. [Make the boilerplate yours](#make-the-boilerplate-yours)
 1. [Available constants](#available-constants)
 1. [Activation hooks](#activation-hooks)
@@ -90,6 +95,7 @@ $ create-wp-react-app create my-plugin
 ## Folder structure
 
 -   **`build`**: Build relevant files and predefined grunt tasks
+-   **`docker`**: Docker relevant files like containers, scripts and compose files
 -   **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
 -   **`docs`**: Auto generated docs (for example for PHP, JS and API Doc), see [Available commands](#available-commands)
 -   **`inc`**: All server-side files (PHP)
@@ -108,6 +114,7 @@ $ create-wp-react-app create my-plugin
 -   **`index.php`**: The plugins index file. The entry point for your plugin.
 -   **`uninstall.php`**: When uninstalling your plugin this file gets called
 -   _`.babelrc`_: [Babel configuration](https://babeljs.io/docs/usage/babelrc/)
+-   _`.gitlab-ci.yml`_: [GitLab CI configuration](https://docs.gitlab.com/ee/ci/yaml/)
 -   _`.prettierrc`_: [Prettier configuration](https://prettier.io/docs/en/configuration.html)
 -   _`commitlint.config.js`_: [Commitlint configuration](https://commitlint.js.org/#/)
 -   _`composer.json`_: [Composer package configuration](https://getcomposer.org/)
@@ -120,77 +127,50 @@ $ create-wp-react-app create my-plugin
 
 ## Available commands
 
-```sh
-$ npm run build
-```
+| Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Context            | Description                                                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run start-development`                                                                                                                                         | Docker, `.tsx`     | Starts to watch the `public/src` folder for file changes and automatically runs the `build-dev` script. Additionally the npm script `webpack-build-done` is executed after each webpack build. Before the watcher is started the Docker container gets created and started, see also [Local environment](#local-environment) |
+| `npm run stop-development`                                                                                                                                          | Docker             | Stops the docker services                                                                                                                                                                                                                                                                                                    |
+| `npm run rm-development`                                                                                                                                            | Docker             | Removes the docker services. This does not remove any volumes so if you start the development again all is as before (installed plugins, uploaded files, ...)                                                                                                                                                                |
+| `npm run purge-development`                                                                                                                                         | Docker             | Removes and purges the docker services compoletely with volumes included                                                                                                                                                                                                                                                     |
+| `npm run wp-cli <command>`                                                                                                                                          | Docker, WP-CLI     | Run a WP-CLI command within the WordPress environment, for example `npm run wp-cli "wp core version"`. Use `--silent` to suppress the output of npm itself                                                                                                                                                                   |
+| `npm run db-snapshot <file>`                                                                                                                                        | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and safe to a file                                                                                                                                                                                                                       |
+| `npm run db-snapshot-installation`                                                                                                                                  | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and save them in that way, that the next WordPress install will import that snapshot                                                                                                                                                     |
+| `npm run serve`                                                                                                                                                     | Source files       | Bundles all the plugin files together and puts it into the `dist` folder. This folder can be pushed to the wordpress.org SVN. See [Building production plugin](#building-production-plugin).                                                                                                                                 |
+| `npm run build`                                                                                                                                                     | `.tsx`             | Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is not active. Learn more here: [Building production plugin](#building-production-plugin)                                                                                               |
+| `npm run build-dev`                                                                                                                                                 | `.tsx`             | Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is active.                                                                                                                                                                              |
+| `npm run lint`                                                                                                                                                      | `.tsx`             | Prints out errors and warning about coding styles.                                                                                                                                                                                                                                                                           |
+| `npm run phpdocs`                                                                                                                                                   | `.php`             | Generate PHP docs in `docs/php` of `inc`.                                                                                                                                                                                                                                                                                    |
+| `npm run jsdocs`                                                                                                                                                    | `.tsx`             | Generate JS docs in `docs/js` of `public/src`.                                                                                                                                                                                                                                                                               |
+| `npm run apidocs`                                                                                                                                                   | `.php`             | Generate API docs in `docs/api` of `inc`.                                                                                                                                                                                                                                                                                    |
+| `npm run hookdocs`                                                                                                                                                  | `.php`             | Generate Actions and Filters docs in `docs/hooks` of `inc`.                                                                                                                                                                                                                                                                  |
+| `npm run docs`                                                                                                                                                      | Source files       | Generates all docs at once.                                                                                                                                                                                                                                                                                                  |
+| `npm run prettier-write`                                                                                                                                            | Source files       | Iterate all available source files (.tsx, .php) and pretty print them.                                                                                                                                                                                                                                                       |
+| `npm run docker-ci-image-build`                                                                                                                                     | Docker             | Builds `docker/container/ci/Dockerfile` so it can be pushed. Usually you do not need this                                                                                                                                                                                                                                    |
+| `npm run docker-ci-image-push`                                                                                                                                      | Docker             | Pushes the built `docker/container/ci/Dockerfile` to the `docker-hub-username`/`docker-hub-image-name` from `package.json`. Usually you do not need this                                                                                                                                                                     |
+| `grunt public-cachebuster`                                                                                                                                          | Libraries          | Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation.                                                                  |
+| `grunt copy-npmLibs`                                                                                                                                                | Libraries          | Copies the defined public libraries in `Gruntfile.js` to the public/lib folder. See [Add external JavaScript library](#add-external-javascript-library).                                                                                                                                                                     |
 
-Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is not active. Learn more here: [Building production plugin](#building-production-plugin)
+## Local environment
 
-```sh
-$ npm run build-dev
-```
+When running `npm run start-development` a local development environment with Docker Compose is started and you can start development with TypeScript and your PHP files. If you have a look at `docker/development/docker-compose.yml` you can see that services are registered with the following exposed ports:
 
-Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is active.
+| Host / Port      | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `localhost(:80)` | The webserver with WordPress installation itself |
+| `localhost:3306` | The MySQL database server                        |
+| `localhost:8079` | The phpMyAdmin interface                         |
 
-```sh
-$ npm run dev
-```
+#### Initializing database tables
 
-Starts to watch the `public/src` folder for file changes and automatically runs the `build-dev` script. Additionally the npm script `webpack-build-done` is executed after each webpack build.
+Running the above command the `docker/scripts/container-wordpress-command.sh` file is called. There you can define actions which should be executed to prepare your local environment so you have to for example not activate your plugin manually. If you want to initialize specific database tables after WordPress installation you can do the following steps, in this scenario we create a new blog post:
 
-```sh
-$ npm run lint
-```
-
-Prints out errors and warning about coding styles.
-
-```sh
-$ npm run phpdocs
-```
-
-Generate PHP docs in `docs/php` of `inc`.
-
-```sh
-$ npm run jsdocs
-```
-
-Generate JS docs in `docs/js` of `public/src`.
-
-```sh
-$ npm run apidocs
-```
-
-Generate API docs in `docs/api` of `inc`.
-
-```sh
-$ npm run hookdocs
-```
-
-Generate Actions and Filters docs in `docs/hooks` of `inc`.
-
-```sh
-$ npm run docs
-```
-
-Generates all docs at once.
-
-```sh
-$ grunt public-cachebuster
-```
-
-Starts to generate the cachebuster files `inc/others/cachebuster.php` (including `public/dist` and `public/dev` hashes) and `inc/others/cachebuster-lib.php` (including `public/lib`). **Note**: Each build with webpack triggers a cachebuster generation.
-
-```sh
-$ grunt copy-npmLibs
-```
-
-Copies the defined public libraries in `Gruntfile.js` to the public/lib folder. See [Add external JavaScript library](#add-external-javascript-library).
-
-```sh
-$ npm run serve
-```
-
-Bundles all the plugin files together and puts it into the `dist` folder. This folder can be pushed to the wordpress.org SVN. See [Building production plugin](#building-production-plugin).
+1. `npm run start-development` so WordPress is installed in `localhost`
+1. Login to your WordPress instance and create a new post
+1. Define the tables which you want to snapshot for the startup in `package.json#db-snapshot`: `"db-snapshot": ["wp_posts", "wp_postmeta"]`
+1. `npm run db-snapshot-installation` to export the defined database tables into a file in `docker/scripts/startup.sql`
+1. `npm run purge-development` removes your current WordPress installation completely
+1. `npm run start-development` again and you will see that post is immediatly available after creation
 
 ## Make the boilerplate yours
 

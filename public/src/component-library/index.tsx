@@ -19,7 +19,6 @@ async function doTestAjaxCall(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
     e.preventDefault();
 }
 
-// Note: window.wprjssOpts can also be registered as external in webpack.config.js.
 const ComponentLibrary: React.FunctionComponent<{}> = () => {
     return (
         <div className="wp-styleguide">
