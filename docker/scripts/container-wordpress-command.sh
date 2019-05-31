@@ -9,12 +9,11 @@ which netcat || apt-get update
 which netcat || apt-get -y install netcat mysql-client
 which netcat && echo "Skip apt-get installations because they are already installed on this volume"
 while ! nc -z mysql 3306; do sleep 1; done;
-while [ ! -f wp ]; do sleep 1; done;
-echo "WP CLI is available now"
+while [ ! -f "/usr/local/bin/wp" -a ! -f "wp" ]; do sleep 1; done;
 sleep 1; # Just to be sure the file is completely moved here
 
 # Move the installed wp-cli to bin so we can execute it
-mv /var/www/html/wp /usr/local/bin/
+test -f "wp" && mv /var/www/html/wp /usr/local/bin/
 . ~/.bashrc
 
 ####################################################
@@ -40,7 +39,7 @@ if ! $(wp --allow-root core is-installed); then
     rm -rf wp-content/plugins/hello.php
 
     # Import startup.sql script if available
-    test -f /scripts/startup.sql && wp --allow-root db import /scripts/startup.sql
+    test -f "/scripts/startup.sql" && wp --allow-root db import /scripts/startup.sql
 fi
 
 ####################################################
