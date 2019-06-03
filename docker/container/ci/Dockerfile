@@ -23,7 +23,11 @@ RUN apt-get install -y \
     nasm \
     libjpeg-dev \
     libpng-dev \
-    libpng16-16
+    libpng16-16 \
+    # Pyhton is needed for Docker-Compose
+    python \
+    python-pip \
+    python-dev
 
 # PHP
 RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php && apt-get update && apt-get install -y php7.2
@@ -53,6 +57,10 @@ RUN mv composer.phar /usr/local/bin/composer && \
 RUN curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
 RUN bash nodesource_setup.sh
 RUN apt-get install nodejs -y
+
+# Docker and Docker-Compose (via Python, PiP)
+RUN curl -sSL https://get.docker.com/ | sh
+RUN pip install docker-compose
 
 # Display versions installed
 RUN php -v

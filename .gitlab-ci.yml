@@ -1,5 +1,6 @@
 stages:
     - build
+    - test
 
 image: matzeeable/ci-php-composer-node:latest
 
@@ -7,6 +8,7 @@ variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm" # point at the folders we can list as paths in "cache" job settings (https://git.io/fjR4i)
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     DOCKER_DRIVER: overlay2
+    WAIT_ON_TIMEOUT: 600000 # 10 minutes
 
 cache:
     key: "$CI_COMMIT_REF_SLUG"
@@ -14,7 +16,6 @@ cache:
     paths:
         - .npm/
         - .cypress/
-        #- node_modules/
         - vendor/
 
 # This is NOT a job and will be ignored by GitLab-CI, it allows before_script per job without duplicate code
@@ -25,22 +26,6 @@ cache:
         - npx grunt copy-npmLibs
         - npx grunt cachebuster:public
 
-lint:
-    <<: *npmjobs
-    stage: build
-    script:
-        - npm run lint
-
-serve:
-    <<: *npmjobs
-    stage: build
-    script:
-        - npm run serve
-    artifacts:
-        name: installable-plugin
-        paths:
-            - dist/
-
 docs:
     <<: *npmjobs
     stage: build
@@ -50,3 +35,27 @@ docs:
         name: technical-docs
         paths:
             - docs/
+
+lint-and-serve:
+    <<: *npmjobs
+    stage: build
+    script:
+        - npm run lint
+        - npm run serve
+    artifacts:
+        name: installable-plugin
+        paths:
+            - dist/
+
+e2e:
+    <<: *npmjobs
+    stage: test
+    services:
+        - docker:dind
+    script:
+        - npx start-server-and-test "docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build" http://localhost/wp-json/wprjss/v1/plugin test-e2e
+    artifacts:
+        name: test-result
+        paths:
+            - cypress/screenshots
+            - cypress/videos

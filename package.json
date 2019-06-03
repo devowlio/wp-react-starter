@@ -1,12 +1,12 @@
 {
-    "name": "wp-reactjs-boilerplate",
+    "name": "wp-reactjs-starter",
     "docker-hub-username": "matzeeable",
     "docker-ci-image-name": "ci-php-composer-node",
     "db-snapshot": [
         "wp_posts",
         "wp_postmeta"
     ],
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "WordPress Plugin Boilerplate using new web technologies.",
     "author": "Matthias Günter <support@matthias-web.com>",
     "license": "MIT",
@@ -47,7 +47,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run test && pretty-quick --staged",
+            "pre-commit": "pretty-quick --staged",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },
@@ -117,7 +117,7 @@
         "prettier": "^1.17.0",
         "pretty-quick": "^1.10.0",
         "sass-loader": "^7.1.0",
-        "start-server-and-test": "^1.9.1",
+        "start-server-and-test": "github:matzeeable/start-server-and-test",
         "tslint": "^5.16.0",
         "tslint-config-prettier": "^1.18.0",
         "tslint-react": "^4.0.0",

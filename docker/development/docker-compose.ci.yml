@@ -1,0 +1,9 @@
+# This file overrides the file from docker-compose.yml
+# This file is only used for the CI
+
+version: "3"
+
+services:
+    wordpress:
+        volumes:
+            - ../../dist/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
