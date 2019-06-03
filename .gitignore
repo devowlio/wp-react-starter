@@ -11,6 +11,9 @@ docs/
 vendor/
 inc/others/cachebuster-lib.php
 inc/others/cachebuster.php
+docker/scripts/.env-wp.lock
+cypress/videos
+cypress/screenshots
 
 # Logs
 logs

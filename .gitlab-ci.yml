@@ -5,6 +5,7 @@ image: matzeeable/ci-php-composer-node:latest
 
 variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm" # point at the folders we can list as paths in "cache" job settings (https://git.io/fjR4i)
+    CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     DOCKER_DRIVER: overlay2
 
 cache:
@@ -12,6 +13,7 @@ cache:
     untracked: true
     paths:
         - .npm/
+        - .cypress/
         #- node_modules/
         - vendor/
 
