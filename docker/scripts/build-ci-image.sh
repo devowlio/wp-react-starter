@@ -6,4 +6,4 @@ fi
 
 CONTAINER_NAME=$(node -e "console.log(require('./package.json')['docker-ci-image-name'] || '')")
 
-docker build --cache-from "$CONTAINER_NAME:latest" -t "$CONTAINER_NAME:$VERSION" "$@" ./docker/container/ci
+echo "docker build --cache-from \"$CONTAINER_NAME:latest\" -t \"$CONTAINER_NAME:$VERSION\" \"$@\" ./docker/container/ci"

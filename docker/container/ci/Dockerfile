@@ -6,6 +6,11 @@ RUN export LC_ALL=C.UTF-8
 RUN DEBIAN_FRONTEND=noninteractive
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# Registries
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+# Common tools
 RUN apt-get update
 RUN apt-get install -y \
     sudo \
@@ -53,10 +58,10 @@ RUN mv composer.phar /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer && \
     composer self-update --preview
 
-# Node.js
+# Node.js and yarn
 RUN curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
 RUN bash nodesource_setup.sh
-RUN apt-get install nodejs -y
+RUN apt-get install -y nodejs yarn
 
 # Docker and Docker-Compose (via Python, PiP)
 RUN curl -sSL https://get.docker.com/ | sh
@@ -67,3 +72,6 @@ RUN php -v
 RUN composer --version
 RUN node -v
 RUN npm -v
+RUN yarn -v
+RUN docker -v
+RUN docker-compose -v

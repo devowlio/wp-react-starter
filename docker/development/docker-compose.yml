@@ -1,3 +1,7 @@
+# This file defines all needed services for the local development environment.
+# There is another file docker-compose.ci.yml which gets used when running the CI in GitLab.
+# If you add any service please also adjust the docker-compose.ci.yml.
+
 version: "3"
 
 networks:
