@@ -14,19 +14,19 @@ cache:
     untracked: true
     paths:
         - .cypress/
+        - .yarn/
         - node_modules/
         - vendor/
 
 # This is NOT a job and will be ignored by GitLab-CI, it allows before_script per job without duplicate code
-.yarnjobs: &yarnjobs # This is an anchor
-    before_script: # https://gitlab.com/gitlab-org/gitlab-ce/issues/15403
-        - yarn install --frozen-lockfile
-        - composer install
-        - yarn grunt copy-npmLibs
-        - yarn grunt cachebuster:public
+# .yarnjobs: &yarnjobs # This is an anchor and can be used with <<: *yarnjobs (https://gitlab.com/gitlab-org/gitlab-ce/issues/15403)
+before_script:
+    - yarn install --frozen-lockfile
+    - composer install
+    - yarn grunt copy-npmLibs
+    - yarn grunt cachebuster:public
 
 docs:
-    <<: *yarnjobs
     stage: build
     script:
         - yarn docs
@@ -36,7 +36,6 @@ docs:
             - docs/
 
 lint-and-serve:
-    <<: *yarnjobs
     stage: build
     script:
         - yarn lint
@@ -47,7 +46,6 @@ lint-and-serve:
             - dist/
 
 e2e:
-    <<: *yarnjobs
     stage: test
     services:
         - docker:dind

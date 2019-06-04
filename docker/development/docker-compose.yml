@@ -16,7 +16,7 @@ services:
         volumes:
             - wprjss_database:/var/lib/mysql
         ports:
-            - 3306:3306
+            - "3306:3306"
         restart: on-failure
         environment:
             MYSQL_ROOT_PASSWORD: wordpress
@@ -30,7 +30,7 @@ services:
         networks:
             - wprjss
         ports:
-            - 8079:80
+            - "8079:80"
         depends_on:
             - mysql
         environment:
@@ -46,7 +46,7 @@ services:
             - ../../:/var/www/html/wp-content/plugins/wp-reactjs-starter
             - ../scripts:/scripts
         ports:
-            - 80:80
+            - "80:80"
         restart: on-failure
         depends_on:
             - mysql
