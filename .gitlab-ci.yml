@@ -1,4 +1,5 @@
 stages:
+    - validate
     - build
     - test
 
@@ -9,25 +10,73 @@ variables:
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
     WAIT_ON_TIMEOUT: 600000 # 10 minutes
+    DIND_REMOVE_PREFIX_CONTAINER_NAME: wprjss_development_
+
+#############
+### Cache
+#############
 
 cache:
     key: "$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
+        # Because this are a lot of files the compression for the cache in default zip format is very
+        # slow. See also https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173
         - .cypress/
         - .yarn/
         - node_modules/
         - vendor/
 
+.onlypullinstall: &onlypullinstall
+    cache:
+        key: "$CI_COMMIT_REF_SLUG"
+        untracked: true
+        policy: pull
+        paths:
+            - .cypress/
+            - .yarn/
+            - node_modules/
+            - vendor/
+
+#############
+### Others
+#############
+
 # This is NOT a job and will be ignored by GitLab-CI, it allows before_script per job without duplicate code
-# .yarnjobs: &yarnjobs # This is an anchor and can be used with <<: *yarnjobs (https://gitlab.com/gitlab-org/gitlab-ce/issues/15403)
-before_script:
-    - yarn install --frozen-lockfile
-    - composer install
-    - yarn grunt copy-npmLibs
-    - yarn grunt cachebuster:public
+.installsteps:
+    &installsteps # This is an anchor and can be used with <<: *installsteps (https://gitlab.com/gitlab-org/gitlab-ce/issues/15403)
+    before_script:
+        - yarn install --frozen-lockfile
+        - composer install
+        - yarn grunt copy-npmLibs
+        - yarn grunt cachebuster:public
+
+#############
+### Stage: validate
+#############
+
+install:
+    <<: *installsteps
+    stage: validate
+    script: echo .
+
+e2e purge:
+    stage: validate
+    script:
+        # Remove running containers
+        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/$DIND_REMOVE_PREFIX_CONTAINER_NAME/{print $1}')
+        - test "$CURRENT_CONTAINERS" && docker rm -f -v $CURRENT_CONTAINERS
+    only:
+        changes:
+            - docker/**/*
+
+#############
+### Stage: build
+#############
 
 docs:
+    <<: *installsteps
+    <<: *onlypullinstall
     stage: build
     script:
         - yarn docs
@@ -36,7 +85,9 @@ docs:
         paths:
             - docs/
 
-lint-and-serve:
+lint and serve:
+    <<: *installsteps
+    <<: *onlypullinstall
     stage: build
     script:
         - yarn lint
@@ -46,12 +97,25 @@ lint-and-serve:
         paths:
             - dist/
 
-e2e:
+e2e start:
+    stage: build
+    script:
+        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
+
+#############
+### Stage test
+#############
+
+e2e execute:
     stage: test
     services:
         - docker:dind
     script:
-        - yarn start-server-and-test "docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build" http://localhost/wp-json/wprjss/v1/plugin "yarn test-e2e"
+        - yarn start-server-and-test "docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build" http-get://localhost/wp-json/wprjss/v1/plugin "yarn test-e2e"
+    after_script:
+        # Stop running containers
+        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/$DIND_REMOVE_PREFIX_CONTAINER_NAME/{print $1}')
+        - test "$CURRENT_CONTAINERS" && docker stop $CURRENT_CONTAINERS
     artifacts:
         name: test-result
         paths:

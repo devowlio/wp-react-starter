@@ -4,11 +4,6 @@
 version: "3"
 
 services:
-    mysql:
-        ports:
-            # If you are defining ports in your services then expose them only to localhost (https://stackoverflow.com/a/39404707/5506547)
-            - "127.0.0.1:3306:3306"
-
     phpmyadmin:
         entrypoint: ["echo", "Service phpmyadmin disabled"]
         restart: unless-stopped
@@ -16,5 +11,3 @@ services:
     wordpress:
         volumes:
             - ../../dist/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
-        ports:
-            - "127.0.0.1:80:80"
