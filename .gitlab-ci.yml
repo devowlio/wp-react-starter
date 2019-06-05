@@ -6,6 +6,7 @@ image: matzeeable/ci-php-composer-node:latest
 
 variables:
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
+    YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
     WAIT_ON_TIMEOUT: 600000 # 10 minutes
 
