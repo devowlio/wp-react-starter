@@ -62,6 +62,7 @@ install:
 
 e2e purge:
     stage: validate
+    allow_failure: true
     script:
         # Remove running containers
         - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/$DIND_REMOVE_PREFIX_CONTAINER_NAME/{print $1}')

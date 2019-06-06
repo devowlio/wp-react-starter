@@ -6,7 +6,7 @@ version: "3"
 services:
     phpmyadmin:
         entrypoint: ["echo", "Service phpmyadmin disabled"]
-        restart: unless-stopped
+        restart: "no"
 
     wordpress:
         volumes:

@@ -31,6 +31,9 @@ if ! $(wp --allow-root core is-installed); then
     wp --allow-root config set SCRIPT_DEBUG true --raw
     wp --allow-root config set FS_METHOD direct # see https://git.io/fj4IK, https://git.io/fj4Ii
 
+    # Permalink structure
+    wp --allow-root rewrite structure '/%year%/%monthnum%/%postname%/' --hard
+
     # Activate this plugin
     wp --allow-root plugin activate wp-reactjs-starter
 
