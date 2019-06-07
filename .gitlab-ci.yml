@@ -9,12 +9,11 @@ variables:
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
-    WAIT_ON_TIMEOUT: 600000 # 10 minutes
-    DIND_REMOVE_PREFIX_CONTAINER_NAME: wprjss_development_
+    GIT_CLEAN_FLAGS: -ffdx -e docker/scripts/.env-wp.lock # Do not clean WP run status
 
-#############
-### Cache
-#############
+#########################
+### Cache Anchors
+#########################
 
 cache:
     key: "$CI_COMMIT_REF_SLUG"
@@ -22,6 +21,8 @@ cache:
     paths:
         # Because this are a lot of files the compression for the cache in default zip format is very
         # slow. See also https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173
+        # Please consider if your job has not present the below cached folders then you should define
+        # "cache: {}" so the cache is ignored and not erased for the next steps.
         - .cypress/
         - .yarn/
         - node_modules/
@@ -38,9 +39,9 @@ cache:
             - node_modules/
             - vendor/
 
-#############
+#########################
 ### Others
-#############
+#########################
 
 # This is NOT a job and will be ignored by GitLab-CI, it allows before_script per job without duplicate code
 .installsteps:
@@ -52,18 +53,21 @@ cache:
         - yarn grunt cachebuster:public
 
 .purgesteps: &purgesteps
+    cache: {}
     services:
         - docker:dind
     allow_failure: true
     script:
         # Remove running containers
-        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/$DIND_REMOVE_PREFIX_CONTAINER_NAME/{print $1}')
+        - docker ps -a
+        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/wprjss_development_/{print $1}')
+        - echo $CURRENT_CONTAINERS
         - test "$CURRENT_CONTAINERS" && docker rm -f -v $CURRENT_CONTAINERS
         - echo "Successfully removed"
 
-#############
+#########################
 ### Stage: validate
-#############
+#########################
 
 install:
     <<: *installsteps
@@ -83,9 +87,9 @@ e2e purge manual:
     stage: validate
     when: manual
 
-#############
+#########################
 ### Stage: build
-#############
+#########################
 
 docs:
     <<: *installsteps
@@ -112,24 +116,30 @@ lint and serve:
 
 e2e start:
     stage: build
+    cache: {}
     services:
         - docker:dind
     script:
         - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
 
-#############
+#########################
 ### Stage test
-#############
+#########################
 
 e2e execute:
+    <<: *installsteps
+    <<: *onlypullinstall
     stage: test
     services:
         - docker:dind
     script:
-        - yarn start-server-and-test "docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d" http-get://localhost/wp-json/wprjss/v1/plugin "yarn test-e2e"
+        # Wait until WordPress is up and start cypress within a container
+        - while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done
+        - cat docker/scripts/.env-wp.lock
+        - docker run --network development_wprjss -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
     after_script:
         # Stop running containers
-        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/$DIND_REMOVE_PREFIX_CONTAINER_NAME/{print $1}')
+        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/wprjss_development_/{print $1}')
         - test "$CURRENT_CONTAINERS" && docker stop $CURRENT_CONTAINERS
     artifacts:
         name: test-result

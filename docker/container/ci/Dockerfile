@@ -76,3 +76,6 @@ RUN npm -v
 RUN yarn -v
 RUN docker -v
 RUN docker-compose -v
+
+# Global installations via npm
+RUN npm install -g wait-on

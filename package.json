@@ -109,7 +109,6 @@
         "prettier": "^1.17.0",
         "pretty-quick": "^1.10.0",
         "sass-loader": "^7.1.0",
-        "start-server-and-test": "github:matzeeable/start-server-and-test",
         "tslint": "^5.16.0",
         "tslint-config-prettier": "^1.18.0",
         "tslint-react": "^4.0.0",
