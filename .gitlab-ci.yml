@@ -6,6 +6,7 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
+    COMPOSE_PROJECT_NAME: wprjss_ci # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name)
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
@@ -63,7 +64,15 @@ cache:
         - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/wprjss_development_/{print $1}')
         - echo $CURRENT_CONTAINERS
         - test "$CURRENT_CONTAINERS" && docker rm -f -v $CURRENT_CONTAINERS
-        - echo "Successfully removed"
+        # Remove available volumes
+        - docker volume ls
+        - export CURRENT_VOLUMES=$(docker volume ls --format "{{.Name}}" | awk '$1~/wprjss_ci/{print $1}')
+        - test "$CURRENT_VOLUMES" && docker volume remove -f $CURRENT_VOLUMES
+        # Remove available networks
+        - docker network ls
+        - export CURRENT_NETWORKS=$(docker network list --format "{{.Name}}" | awk '$1~/wprjss_ci/{print $1}')
+        - test "$CURRENT_NETWORKS" && docker volume remove -f $CURRENT_NETWORKS
+        - echo "Successfully removed containers, volumes and networks..."
 
 #########################
 ### Stage: validate
@@ -136,13 +145,14 @@ e2e execute:
         # Wait until WordPress is up and start cypress within a container
         - while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done
         - cat docker/scripts/.env-wp.lock
-        - docker run --network development_wprjss -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
+        - docker run --network wprjss_ci_wprjss -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
     after_script:
         # Stop running containers
         - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/wprjss_development_/{print $1}')
         - test "$CURRENT_CONTAINERS" && docker stop $CURRENT_CONTAINERS
     artifacts:
         name: test-result
+        when: always # Always create cypress results
         paths:
             - cypress/screenshots
             - cypress/videos
