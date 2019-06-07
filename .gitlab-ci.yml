@@ -10,35 +10,19 @@ variables:
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
-    GIT_CLEAN_FLAGS: -ffdx -e docker/scripts/.env-wp.lock # Do not clean WP run status
+    GIT_CLEAN_FLAGS: none # -ffdx -e docker/scripts/.env-wp.lock # Do not clean WP run status
 
-#########################
-### Cache Anchors
-#########################
-
-cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-        # Because this are a lot of files the compression for the cache in default zip format is very
-        # slow. See also https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173
-        # Please consider if your job has not present the below cached folders then you should define
-        # "cache: {}" so the cache is ignored and not erased for the next steps.
-        - .cypress/
-        - .yarn/
-        - node_modules/
-        - vendor/
-
-.onlypullinstall: &onlypullinstall
-    cache:
-        key: "$CI_COMMIT_REF_SLUG"
-        untracked: true
-        policy: pull
-        paths:
-            - .cypress/
-            - .yarn/
-            - node_modules/
-            - vendor/
+# Due to the usage of GIT_CLEAN_FLAGS the cache is no longer used because it is very slow.
+#cache:
+#    key: "$CI_COMMIT_REF_SLUG"
+#    untracked: true
+#    paths:
+#        # Because this are a lot of files the compression for the cache in default zip format is very
+#        # slow. See also https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173
+#        - .cypress/
+#        - .yarn/
+#        - node_modules/
+#        - vendor/
 
 #########################
 ### Others
@@ -54,7 +38,6 @@ cache:
         - yarn grunt cachebuster:public
 
 .purgesteps: &purgesteps
-    cache: {}
     services:
         - docker:dind
     allow_failure: true
@@ -78,12 +61,27 @@ cache:
 ### Stage: validate
 #########################
 
-install:
+install: # Install all dependencies with previous caches
     <<: *installsteps
     stage: validate
     script: echo .
+    except:
+        changes:
+            - yarn.lock
+            - composer.lock
 
-e2e purge:
+reinstall: # The reinstall step should install all dependencies from scratch when a lock file got changed
+    <<: *installsteps
+    variables:
+        GIT_CLEAN_FLAGS: -ffdx
+    stage: validate
+    script: echo .
+    only:
+        changes:
+            - yarn.lock
+            - composer.lock
+
+docker purge: # When docker relevant files got changed remove all docker containers automatically
     <<: *purgesteps
     stage: validate
     only:
@@ -91,7 +89,7 @@ e2e purge:
             - docker/**/*
             - .gitlab-ci.yml
 
-e2e purge manual:
+docker purge manual: # Allow also to manually stop the docker containers
     <<: *purgesteps
     stage: validate
     when: manual
@@ -100,9 +98,8 @@ e2e purge manual:
 ### Stage: build
 #########################
 
-docs:
+docs: # Generate technical documents
     <<: *installsteps
-    <<: *onlypullinstall
     stage: build
     script:
         - yarn docs
@@ -111,40 +108,32 @@ docs:
         paths:
             - docs/
 
-lint and serve:
+lint: # Lint the project (TS)
     <<: *installsteps
-    <<: *onlypullinstall
     stage: build
-    script:
-        - yarn lint
-        - yarn serve
+    script: yarn lint
+
+serve: # Create dist files of the plugin
+    <<: *installsteps
+    stage: build
+    script: yarn serve
     artifacts:
         name: installable-plugin
         paths:
             - dist/
 
-e2e start:
-    stage: build
-    cache: {}
-    services:
-        - docker:dind
-    script:
-        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
-
 #########################
 ### Stage test
 #########################
 
-e2e execute:
-    <<: *installsteps
-    <<: *onlypullinstall
+docker e2e:
     stage: test
     services:
         - docker:dind
     script:
         # Wait until WordPress is up and start cypress within a container
+        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
         - while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done
-        - cat docker/scripts/.env-wp.lock
         - docker run --network wprjss_ci_wprjss -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
     after_script:
         # Stop running containers

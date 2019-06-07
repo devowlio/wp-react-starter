@@ -5,9 +5,9 @@ docker-entrypoint.sh apache2
 
 # The database needs to be ready, so netcat it, and also the wp binary must be downloaded and executable
 # Also we need the mysql-client so mysqldump can be used by WP-CLI
+which netcat && echo "Skip apt-get installations because they are already installed on this volume"
 which netcat || apt-get update
 which netcat || apt-get -y install netcat mysql-client
-which netcat && echo "Skip apt-get installations because they are already installed on this volume"
 while ! nc -z mysql 3306; do sleep 1; done;
 while [ ! -f "/usr/local/bin/wp" -a ! -f "wp" ]; do sleep 1; done;
 sleep 1; # Just to be sure the file is completely moved here
