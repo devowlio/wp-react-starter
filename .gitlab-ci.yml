@@ -113,27 +113,38 @@ lint: # Lint the project (TS)
     stage: build
     script: yarn lint
 
-serve: # Create dist files of the plugin
+serve and docker: # Create dist files of the plugin and run it through docker
     <<: *installsteps
     stage: build
-    script: yarn serve
+    services:
+        - docker:dind
+    script:
+        - yarn serve
+        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
+        - yarn wp-wait # Sleep until server is up and running
     artifacts:
         name: installable-plugin
         paths:
             - dist/
+
+#docker start: # Start the docker service
+#    stage: build
+#    cache: {}
+#    dependencies:
+#        - serve
+#    script:
+#        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
 
 #########################
 ### Stage test
 #########################
 
 docker e2e:
+    <<: *installsteps
     stage: test
     services:
         - docker:dind
     script:
-        # Wait until WordPress is up and start cypress within a container
-        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
-        - while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done
         - docker run --network wprjss_ci_wprjss -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
     after_script:
         # Stop running containers

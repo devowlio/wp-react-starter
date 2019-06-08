@@ -21,11 +21,12 @@
     },
     "main": "index.js",
     "scripts": {
-        "start-development": "rm -f docker/scripts/.env-wp.lock && docker-compose -f docker/development/docker-compose.yml up --build -d && grunt copy-npmLibs && concurrently --raw \"cd docker/development && docker-compose logs -f -t --tail=10\" \"while [ ! -f 'docker/scripts/.env-wp.lock' ]; do sleep 1; done && rm -f docker/scripts/.env-wp.lock && webpack --watch\"",
+        "start-development": "rm -f docker/scripts/.env-wp.lock && docker-compose -f docker/development/docker-compose.yml up --build -d && grunt copy-npmLibs && concurrently --raw \"cd docker/development && docker-compose logs -f -t --tail=10\" \"npm run --silent wp-wait && rm -f docker/scripts/.env-wp.lock && webpack --watch\"",
         "stop-development": "docker-compose -f docker/development/docker-compose.yml stop",
         "rm-development": "docker-compose -f docker/development/docker-compose.yml down",
         "purge-development": "docker-compose -f docker/development/docker-compose.yml down -v",
         "wp-cli": "cd docker/development && docker-compose exec --user 33:33 wordpress /bin/bash -c",
+        "wp-wait": "wait-on docker/scripts/.env-wp.lock",
         "db-snapshot": "yarn --silent wp-cli \"wp db export - --tables=$(node -e 'console.log(require(`./package.json`)[`db-snapshot`].join(`,`))')\" >",
         "db-snapshot-installation": "yarn --silent db-snapshot docker/scripts/startup.sql",
         "db-snapshot-import": "yarn --silent wp-cli \"wp db import /scripts/startup.sql\"",
@@ -60,7 +61,8 @@
         "mobx-state-tree": "^3.14.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "setimmediate": "^1.0.5"
+        "setimmediate": "^1.0.5",
+        "wait-on": "^3.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.4.4",
