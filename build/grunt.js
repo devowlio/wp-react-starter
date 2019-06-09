@@ -113,6 +113,16 @@ module.exports = function(grunt) {
     );
 
     /**
+     * Versioning task.
+     */
+    grunt.registerTask("postversion", function() {
+        var version = grunt.config.get("pkg.version"),
+            indexphp = grunt.file.read("index.php"),
+            newindexphp = indexphp.replace(/Version:(\s*)(.*)$/gm, "Version:$1" + version);
+        grunt.file.write("index.php", newindexphp);
+    });
+
+    /**
      * Serve rename readme task
      */
     grunt.registerTask("serveRenameReadme", function() {

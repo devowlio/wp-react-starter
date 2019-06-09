@@ -55,7 +55,6 @@
 
 -   [**Node.js**](https://nodejs.org/) as JavaScript engine
 -   [**Yarn**](https://yarnpkg.com/lang/en/) `yarn` command globally available in CLI (alternative to Node's `npm`)
--   [**Grunt CLI**](https://gruntjs.com/using-the-cli) `grunt` command globally available in CLI
 -   [**Composer**](https://getcomposer.org/) `composer` command globally available in CLI
 -   [**Docker**](https://docs.docker.com/install/) `docker` and `docker-compose` command globally available in CLI
 
@@ -140,6 +139,7 @@ $ create-wp-react-app create my-plugin
 | `yarn db-snapshot-installation`                                                                                                                                     | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and save them in that way, that the next WordPress install will import that snapshot                                                                                                                                                     |
 | `yarn db-snapshot-import`                                                                                                                                           | Docker, WP-CLI, DB | The installation snapshot taken                                                                                                                                                                                                                                                                                              |
 | with `yarn db-snapshot-installation` is imported to the current running Docker instance. This can be useful for tests for example                                   |
+| `yarn release`                                                                                                                                                      | Source files       | A wrapper for [`yarn version`](https://yarnpkg.com/lang/en/docs/cli/version/). You should avoid the original command and use always `yarn release`. For example you can run `yarn release --minor` to create a new minor version                                                                                             |
 | `yarn serve`                                                                                                                                                        | Source files       | Bundles all the plugin files together and puts it into the `dist` folder. This folder can be pushed to the wordpress.org SVN. See [Building production plugin](#building-production-plugin).                                                                                                                                 |
 | `yarn build`                                                                                                                                                        | `.tsx`             | Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is not active. Learn more here: [Building production plugin](#building-production-plugin)                                                                                               |
 | `yarn build-dev`                                                                                                                                                    | `.tsx`             | Create development build of ReactJS files. The files gets generated in `public/dev`. This files should be loaded when `SCRIPT_DEBUG` is active.                                                                                                                                                                              |
@@ -181,9 +181,7 @@ Running the above command the `docker/scripts/container-wordpress-command.sh` fi
 
 ## Make the boilerplate yours
 
-This boilerplate plugin allows you with a simple CLI command to make it yours. _Make it yours?! Sounds crazy._ Yes, it means it can automatically change the **constant names** (PHP), **namespace** prefix (PHP) and the language **`.pot`** filename.
-
-All the magic is done by the command `yarn generate`. It will ask you a few plugin details in the CLI prompt and fully automatically generates the files for you. When the generator is finished just have a look at the `index.php` file.
+_Make it yours?! Sounds crazy._ Yes, it means it can automatically change the **constant names** (PHP), **namespace** prefix (PHP) and the language **`.pot`** filename. All the magic is done by the module [create-wp-react-app](https://github.com/matzeeable/create-wp-react-app). It will ask you a few plugin details in the CLI prompt and fully automatically generates the files for you. When the generator is finished just have a look at the `index.php` file and all is setup for you.
 
 ## Available constants
 
@@ -257,7 +255,7 @@ copy: {
 
 **Note:** The `src` for your npm module can be different. You must have a look at the modules' folder tree.
 
-3. Run the command `grunt copy-npmLibs` to copy the library and generate the new cachebuster for the library files.
+3. Run the command `yarn grunt copy-npmLibs` to copy the library and generate the new cachebuster for the library files.
 4. Go to `Assets.class.php` and enqueue the styles and scripts:
 
 ```php
@@ -342,37 +340,11 @@ const NoticeExample = (
 
 ## Building production plugin
 
-To build production JS and CSS code you simply run `yarn build`.
+Before publishing a new version you should run `yarn release`. It is a wrapper to [`yarn version`](https://yarnpkg.com/lang/en/docs/cli/version/) and you should always use that command instead the original one. The reason is that the boilerplate implementation also adjusts the `index.php` file. The release-command does not create a Git tag, you have to create it manually.
 
-#### Building installable WordPress plugin (WordPress.org)
-
-If you want to publish the plugin you have to change the version. The version is defined in the `index.php` header comment. You do not have to change the version constant. It is also recommended to use the `npm verison` command to set the new version.
-
-After setting the new version and want to build an installable **wordpress.org** plugin you can run the command `yarn serve`. _What does this mean?_ This command creates all **plugin-only** folder and files, without `package.json`, `composer.json`, `public/src`, ... The command does exactly this:
-
-1. Build production and development resources (JS, CSS) (`yarn build && yarn build-dev`)
-1. Create library files in `public/lib` (`grunt copy-npmLibs`)
-1. Generate cachebusters for the resources (JS, CSS) (`grunt public-cachebuster`)
-1. Copy all plugin relevant files to `dist` (= `['composer.json', 'index.php', 'inc/**/*', 'public/**/*', 'LICENSE', 'README.md', 'languages/**/*']`)
-1. Install composer dependencies (no-dev) for `dist`
-1. Delete `composer.json` file
-1. Finished
-
-#### Using wordpress.org SVN repository together with the `serve` command
-
-1. Create the `dist` folder manually
-1. Initialize the wordpress.org SVN repository in `dist`
-1. Change the `SERVE_DIR` in `Gruntfile.js` to the folder where you want to place the build files (example: `dist/trunk`)
-1. wordpress.org needs a `README.txt` instead of `README.md`
-1. Register the predefined rename task as post task for the `serve` command with: `SERVE_POST_TASKS: ['serveRenameReadme']` in `Gruntfile.js`
-1. Run `yarn serve`
+Afterwards simply run `yarn serve` and a folder `dist` gets created with a subfolder of the installable plugin and an installable zip file. It is recommenend to use CI / CD to publish the new version to wordpress.org or other marketplaces. An instroduction how to do this can be read below.
 
 **Note:** Do not forget to adjust the `README.md` to your plugin description.
-
-## :information_desk_person: Useful resources
-
-1. [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
-1. [Install Babel's polyfills](https://babeljs.io/docs/usage/polyfill/)
 
 ## :construction_worker: Todo
 

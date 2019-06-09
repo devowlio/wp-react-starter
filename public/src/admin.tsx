@@ -1,3 +1,7 @@
+/**
+ * The entry point for the admin side wp-admin resource.
+ */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { ComponentLibrary } from "./component-library";

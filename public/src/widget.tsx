@@ -1,3 +1,7 @@
+/**
+ * The entrypoint for the WordPress frontend widget.
+ */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { Widget } from "./widget/";
