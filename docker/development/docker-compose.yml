@@ -5,16 +5,15 @@
 version: "3"
 
 networks:
-    wprjss: {}
+    locl: {}
 
 services:
     mysql:
         image: mariadb:10.3
-        container_name: wprjss_development_mysql
         networks:
-            - wprjss
+            - locl
         volumes:
-            - wprjss_database:/var/lib/mysql
+            - database:/var/lib/mysql
         ports:
             - "3306:3306"
         restart: on-failure
@@ -26,9 +25,8 @@ services:
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        container_name: wprjss_development_phpmyadmin
         networks:
-            - wprjss
+            - locl
         ports:
             - "8079:80"
         depends_on:
@@ -38,11 +36,10 @@ services:
 
     wordpress:
         image: wordpress:5.2.0-apache
-        container_name: wprjss_development_wordpress
         networks:
-            - wprjss
+            - locl
         volumes:
-            - wprjss_www:/var/www/html
+            - www:/var/www/html
             - ../../:/var/www/html/wp-content/plugins/wp-reactjs-starter
             - ../scripts:/scripts
         ports:
@@ -60,12 +57,11 @@ services:
 
     wordpress-cli:
         image: wordpress:cli
-        container_name: wprjss_development_wp_cli
         user: xfs
         networks:
-            - wprjss
+            - locl
         volumes:
-            - wprjss_www:/var/www/html
+            - www:/var/www/html
             - ../scripts:/scripts
         entrypoint: /scripts/container-wordpress-cli-entrypoint.sh
         depends_on:
@@ -73,5 +69,5 @@ services:
             - wordpress
 
 volumes:
-    wprjss_database: {}
-    wprjss_www: {}
+    database: {}
+    www: {}

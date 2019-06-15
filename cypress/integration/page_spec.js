@@ -1,3 +1,5 @@
+const pkg = require("../../package.json");
+
 beforeEach("Automatically login to WordPress dashboard as admin user", function() {
     //cy.exec("yarn db-snapshot-import"); // You can also reset the database before each test
     cy.visit("/wp-login.php?autologin=wordpress");
@@ -5,9 +7,11 @@ beforeEach("Automatically login to WordPress dashboard as admin user", function(
 });
 
 describe("WP Admin Page", function() {
+    const componentId = pkg.name + "-component";
+
     it("Add and rmeove todo item", function() {
-        const todoContainer = () => cy.get("#wp-react-component-library > div > div.wp-styleguide--buttons");
-        cy.get("#toplevel_page_wp-react-component-library > a").click();
+        const todoContainer = () => cy.get("#" + componentId + " > div > div.wp-styleguide--buttons");
+        cy.get("#toplevel_page_" + componentId + " > a").click();
         todoContainer()
             .children("input")
             .type("Test Todo Item")
@@ -29,11 +33,11 @@ describe("WP Admin Page", function() {
     });
 
     it("Test REST API response when clicking URL", function(done) {
-        cy.get("#toplevel_page_wp-react-component-library > a").click();
+        cy.get("#toplevel_page_" + componentId + " > a").click();
         cy.on("window:alert", (text) => {
             expect(text).to.contain("AuthorURI");
             done();
         });
-        cy.get("#wp-react-component-library > div > div:nth-child(3) > p > a").click();
+        cy.get("#" + componentId + " > div > div:nth-child(3) > p > a").click();
     });
 });

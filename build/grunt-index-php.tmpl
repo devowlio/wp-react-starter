@@ -20,6 +20,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' ); // Avoid direct file
 if (defined('${constantPrefix}_PATH')) return;
 define('${constantPrefix}_FILE', __FILE__);
 define('${constantPrefix}_PATH', dirname(${constantPrefix}_FILE));
+define('${constantPrefix}_SLUG', basename(${constantPrefix}_PATH));
 define('${constantPrefix}_INC',	trailingslashit(path_join(${constantPrefix}_PATH, 'inc')));
 define('${constantPrefix}_MIN_PHP', '${minPHP}'); // Minimum of PHP 5.3 required for autoloading and namespacing
 define('${constantPrefix}_MIN_WP', '${minWP}'); // Minimum of WordPress 4.4 required

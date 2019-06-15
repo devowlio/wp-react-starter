@@ -22,6 +22,7 @@ if (defined('WPRJSS_PATH')) {
 }
 define('WPRJSS_FILE', __FILE__);
 define('WPRJSS_PATH', dirname(WPRJSS_FILE));
+define('WPRJSS_SLUG', basename(WPRJSS_PATH));
 define('WPRJSS_INC', trailingslashit(path_join(WPRJSS_PATH, 'inc')));
 define('WPRJSS_MIN_PHP', '5.3.0'); // Minimum of PHP 5.3 required for autoloading and namespacing
 define('WPRJSS_MIN_WP', '4.4.0'); // Minimum of WordPress 4.4 required

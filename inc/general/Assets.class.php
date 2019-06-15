@@ -33,15 +33,15 @@ class Assets extends base\Assets {
         // mobx-state-tree
         $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', ['mobx']);
 
-        // Your assets implementation here... See base\Assets for enqueue* methods.
+        // Your assets implementation here... See base\Assets for enqueue* methods
         if ($type === base\Assets::TYPE_ADMIN) {
-            $this->enqueueScript('wp-reactjs-starter', 'admin.js', ['react-dom']);
-            $this->enqueueStyle('wp-reactjs-starter', 'admin.css');
+            $this->enqueueScript(WPRJSS_SLUG, 'admin.js', ['react-dom']);
+            $this->enqueueStyle(WPRJSS_SLUG, 'admin.css');
         } else {
-            $this->enqueueScript('wp-reactjs-starter', 'widget.js', ['react-dom']);
-            $this->enqueueStyle('wp-reactjs-starter', 'widget.css');
+            $this->enqueueScript(WPRJSS_SLUG, 'widget.js', ['react-dom']);
+            $this->enqueueStyle(WPRJSS_SLUG, 'widget.css');
         }
-        wp_localize_script('wp-reactjs-starter', 'wprjssOpts', $this->localizeScript($type));
+        wp_localize_script(WPRJSS_SLUG, WPRJSS_OPT_PREFIX . 'Opts', $this->localizeScript($type));
 
         // Localize with a window.process.env variable for libraries relying on it (MST for example)
         wp_localize_script('react', 'process', [
@@ -59,6 +59,7 @@ class Assets extends base\Assets {
     public function localizeScript($context) {
         $i18n = new JsI18n();
         $common = [
+            'slug' => WPRJSS_SLUG,
             'textDomain' => WPRJSS_TD,
             'version' => WPRJSS_VERSION,
             'i18n' => $i18n->build($context)
