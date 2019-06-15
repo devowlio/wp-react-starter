@@ -34,7 +34,7 @@
 -   [**Cachebuster**](http://www.adopsinsider.com/ad-ops-basics/what-is-a-cache-buster-and-how-does-it-work/) for public resources (`public`)
 -   Predefined `.po` files for **translating (i18n)** the plugin
 -   [**phpDocumentor**](https://github.com/phpDocumentor/phpDocumentor2) for PHP Documentation
--   [**JSDoc**](http://usejsdoc.org/) for JavaScript Documentation
+-   [**TypeDoc**](https://typedoc.org/guides/doccomments/) for JavaScript Documentation
 -   [**apiDoc**](http://apidocjs.com//) for API Documentation
 -   [**WP HookDoc**](https://github.com/matzeeable/wp-hookdoc) for Filters & Actions Documentation
 
@@ -75,6 +75,8 @@ $ create-wp-react-app create my-plugin
 ```
 
 ![generate cli](https://matthias-web.com/wp-content/uploads/Posts/create-wp-react-app.gif)
+
+**Legacy Note:** Since this starter plugin relies on a complete local environment with Docker, TypeScript and so on you can checkout the `legacy-wo-docker` branch without such technologies. You can use `create-wp-react-app create my-plugin --checkout legacy-wo-docker` to generate your plugin without Docker and TypeScript.
 
 ## :book: Documentation
 
@@ -136,9 +138,8 @@ $ create-wp-react-app create my-plugin
 | `yarn purge-development`                                                                                                                                            | Docker             | Removes and purges the docker services compoletely with volumes included                                                                                                                                                                                                                                                     |
 | `yarn wp-cli <command>`                                                                                                                                             | Docker, WP-CLI     | Run a WP-CLI command within the WordPress environment, for example `yarn wp-cli "wp core version"`. Use `--silent` to suppress the output of npm itself                                                                                                                                                                      |
 | `yarn db-snapshot <file>`                                                                                                                                           | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and safe to a file                                                                                                                                                                                                                       |
-| `yarn db-snapshot-installation`                                                                                                                                     | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and save them in that way, that the next WordPress install will import that snapshot                                                                                                                                                     |
-| `yarn db-snapshot-import`                                                                                                                                           | Docker, WP-CLI, DB | The installation snapshot taken                                                                                                                                                                                                                                                                                              |
-| with `yarn db-snapshot-installation` is imported to the current running Docker instance. This can be useful for tests for example                                   |
+| `yarn db-snapshot-import-on-startup`                                                                                                                                | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and save them in that way, that the next WordPress install will import that snapshot                                                                                                                                                     |
+| `yarn db-snapshot-import`                                                                                                                                           | Docker, WP-CLI, DB | The installation snapshot taken with `yarn db-snapshot-import-on-startup` is imported to the current running Docker instance. This can be useful for tests for example                                                                                                                                                       |
 | `yarn release`                                                                                                                                                      | Source files       | A wrapper for [`yarn version`](https://yarnpkg.com/lang/en/docs/cli/version/). You should avoid the original command and use always `yarn release`. For example you can run `yarn release --minor` to create a new minor version                                                                                             |
 | `yarn serve`                                                                                                                                                        | Source files       | Bundles all the plugin files together and puts it into the `dist` folder. This folder can be pushed to the wordpress.org SVN. See [Building production plugin](#building-production-plugin).                                                                                                                                 |
 | `yarn build`                                                                                                                                                        | `.tsx`             | Create production build of ReactJS files. The files gets generated in `public/dist`. This files should be loaded when `SCRIPT_DEBUG` is not active. Learn more here: [Building production plugin](#building-production-plugin)                                                                                               |
@@ -175,7 +176,7 @@ Running the above command the `docker/scripts/container-wordpress-command.sh` fi
 1. `yarn start-development` so WordPress is installed in `localhost`
 1. Login to your WordPress instance and create a new post
 1. Define the tables which you want to snapshot for the startup in `package.json#db-snapshot`: `"db-snapshot": ["wp_posts", "wp_postmeta"]`
-1. `yarn db-snapshot-installation` to export the defined database tables into a file in `docker/scripts/startup.sql`
+1. `yarn db-snapshot-import-on-startup` to export the defined database tables into a file in `docker/scripts/startup.sql`
 1. `yarn purge-development` removes your current WordPress installation completely
 1. `yarn start-development` again and you will see that post is immediatly available after creation
 
@@ -317,7 +318,7 @@ The boilerplate comes with an automatically created `languages/gyour-plugin-name
 
 To translate the plugin you can use for example a tool like [Poedit](https://poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 
-For frontend localization (`i18n-calypso`)[https://github.com/Automattic/wp-calypso/tree/master/packages/i18n-calypso] is used which is very easy to understand and works with i18n keys instead of direct translations in your TSX files. This module also allows you interpolating components to your translations so you can translate texts with links for example. You have to use the `inc/general/JsI18n.class.php` file to maintain your translation keys - then you can use them as follow in your code (complex example from `public/src/component-library/index.tsx`):
+For frontend localization [`i18n-calypso`](https://github.com/Automattic/wp-calypso/tree/master/packages/i18n-calypso) is used which is very easy to understand and works with i18n keys instead of direct translations in your TSX files. This module also allows you interpolating components to your translations so you can translate texts with links for example. You have to use the `inc/general/JsI18n.class.php` file to maintain your translation keys - then you can use them as follow in your code (complex example from `public/src/component-library/index.tsx`):
 
 ```tsx
 import { translate } from "../util/i18n";

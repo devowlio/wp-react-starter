@@ -1,5 +1,5 @@
 beforeEach("Automatically login to WordPress dashboard as admin user", function() {
-    //cy.exec("npm run db-snapshot-reset"); // You can also reset the database before each test
+    //cy.exec("yarn db-snapshot-import"); // You can also reset the database before each test
     cy.visit("/wp-login.php?autologin=wordpress");
     cy.url().should("contain", "wp-admin");
 });
@@ -28,10 +28,11 @@ describe("WP Admin Page", function() {
             .should("have.text", "No entries");
     });
 
-    it("Test REST API response when clicking URL", function() {
+    it("Test REST API response when clicking URL", function(done) {
         cy.get("#toplevel_page_wp-react-component-library > a").click();
         cy.on("window:alert", (text) => {
             expect(text).to.contain("AuthorURI");
+            done();
         });
         cy.get("#wp-react-component-library > div > div:nth-child(3) > p > a").click();
     });

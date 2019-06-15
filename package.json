@@ -12,10 +12,6 @@
     "license": "MIT",
     "private": true,
     "homepage": "https://matthias-web.com",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/matzeeable/wp-reactjs-starter"
-    },
     "apidoc": {
         "sampleUrl": "/wp-json"
     },
@@ -28,7 +24,7 @@
         "wp-cli": "cd docker/development && docker-compose exec --user 33:33 wordpress /bin/bash -c",
         "wp-wait": "wait-on docker/scripts/.env-wp.lock",
         "db-snapshot": "yarn --silent wp-cli \"wp db export - --tables=$(node -e 'console.log(require(`./package.json`)[`db-snapshot`].join(`,`))')\" >",
-        "db-snapshot-installation": "yarn --silent db-snapshot docker/scripts/startup.sql",
+        "db-snapshot-import-on-startup": "yarn --silent db-snapshot docker/scripts/startup.sql",
         "db-snapshot-import": "yarn --silent wp-cli \"wp db import /scripts/startup.sql\"",
         "build": "NODE_ENV=production webpack",
         "build-dev": "webpack",
