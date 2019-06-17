@@ -2,11 +2,13 @@ stages:
     - validate
     - build
     - test
+    - deploy
 
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
     COMPOSE_PROJECT_NAME: wprjss_ci # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name)
+    PLUGIN_SLUG: wp-reactjs-starter
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
@@ -128,7 +130,7 @@ serve and docker: # Create dist files of the plugin and run it through docker
             - dist/
 
 #########################
-### Stage test
+### Stage: test
 #########################
 
 docker e2e:
@@ -148,3 +150,26 @@ docker e2e:
         paths:
             - cypress/screenshots
             - cypress/videos
+
+#########################
+### Stage: deploy
+#########################
+
+wordpress-dot-org:
+    stage: deploy
+    before_script:
+        - svn co $WPORG_SVN_URL wporg --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
+    script:
+        - rm -rf wporg/assets wporg/trunk
+        - mkdir wporg/assets wporg/trunk
+        - cp -r assets wporg/assets
+        - cp -r dist/$PLUGIN_SLUG wporg/trunk
+        - svn status
+        - svn ci -m "This commit is generated through CI/CD, see the GIT repository for more details ($CI_COMMIT_SHA)" --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
+    only:
+        refs:
+            - master
+        variables:
+            - $WPORG_SVN_URL
+            - $WPORG_SVN_USERNAME
+            - $WPORG_SVN_PASSWORD

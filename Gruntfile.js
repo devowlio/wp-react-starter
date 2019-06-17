@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"), // DO NOT REMOVE
         SERVE_DIR: "dist/<%= pkg.name %>", // The serve folder
-        SERVE_POST_TASKS: ["compress:serve"], // This grunt tasks runs after the serve is complete
+        SERVE_POST_TASKS: ["serveReadmeTxt", "compress:serve"], // This grunt tasks runs after the serve is complete
         clean: {
             /**
              * DO NOT REMOVE. Task to clean the already copied node modules to the public library folder

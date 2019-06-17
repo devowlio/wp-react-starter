@@ -94,9 +94,11 @@ $ create-wp-react-app create my-plugin
 1. [JavaScript state management](#javascript-state-management)
 1. [Localization](#localization)
 1. [Building production plugin](#building-production-plugin)
+1. [Using CI CD](#using-ci-cd)
 
 ## Folder structure
 
+-   **`assets`**: [Plugin assets for wordpress.org](https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 -   **`build`**: Build relevant files and predefined grunt tasks
 -   **`docker`**: Docker relevant files like containers, scripts and compose files
 -   **`dist`**: The production plugin, see [Building production plugin](#building-production-plugin)
@@ -119,11 +121,14 @@ $ create-wp-react-app create my-plugin
 -   _`.babelrc`_: [Babel configuration](https://babeljs.io/docs/usage/babelrc/)
 -   _`.gitlab-ci.yml`_: [GitLab CI configuration](https://docs.gitlab.com/ee/ci/yaml/)
 -   _`.prettierrc`_: [Prettier configuration](https://prettier.io/docs/en/configuration.html)
+-   _`CHANGELOG`_: Changelog file
 -   _`commitlint.config.js`_: [Commitlint configuration](https://commitlint.js.org/#/)
 -   _`composer.json`_: [Composer package configuration](https://getcomposer.org/)
 -   _`Gruntfile.js`_: [Grunt automation file](https://gruntjs.com/sample-gruntfile)
 -   _`package.json`_: [NPM package configuration](https://docs.npmjs.com/files/package.json)
 -   _`postcss.config.js`_: [PostCSS configuration](https://github.com/postcss/postcss-loader#configuration)
+-   _`README.md`_: README file for your Git repository
+-   _`README.wporg.txt`_: [WordPress.org README file](https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/)
 -   _`tsconfig.json`_: [TypeScript configuration](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 -   _`tslint.json`_: [TSLint configuration](https://palantir.github.io/tslint/usage/configuration/)
 -   _`webpack.config.js`_: [webpack configuration](https://webpack.github.io/docs/configuration.html)
@@ -136,7 +141,7 @@ $ create-wp-react-app create my-plugin
 | `yarn stop-development`                                                                                                                                             | Docker             | Stops the docker services                                                                                                                                                                                                                                                                                                    |
 | `yarn rm-development`                                                                                                                                               | Docker             | Removes the docker services. This does not remove any volumes so if you start the development again all is as before (installed plugins, uploaded files, ...)                                                                                                                                                                |
 | `yarn purge-development`                                                                                                                                            | Docker             | Removes and purges the docker services compoletely with volumes included                                                                                                                                                                                                                                                     |
-| `yarn wp-cli <command>`                                                                                                                                             | Docker, WP-CLI     | Run a WP-CLI command within the WordPress environment, for example `yarn wp-cli "wp core version"`. Use `--silent` to suppress the output of npm itself                                                                                                                                                                      |
+| `yarn wp-cli <command>`                                                                                                                                             | Docker, WP-CLI     | Run a WP-CLI command within the WordPress environment, for example `yarn wp-cli "wp core version"`. Use `--silent` to suppress the output of yarn itself                                                                                                                                                                     |
 | `yarn db-snapshot <file>`                                                                                                                                           | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and safe to a file                                                                                                                                                                                                                       |
 | `yarn db-snapshot-import-on-startup`                                                                                                                                | Docker, WP-CLI, DB | Make a snapshot of the current defined database tables (see below how to configure) and save them in that way, that the next WordPress install will import that snapshot                                                                                                                                                     |
 | `yarn db-snapshot-import`                                                                                                                                           | Docker, WP-CLI, DB | The installation snapshot taken with `yarn db-snapshot-import-on-startup` is imported to the current running Docker instance. This can be useful for tests for example                                                                                                                                                       |
@@ -226,7 +231,7 @@ When using external libraries or React components it is recommended to avoid bun
 
 In this example we want to use this NPM package in our WordPress plugin: https://www.npmjs.com/package/jquery-tooltipster. It is a simple tooltip plugin for jQuery.
 
-1. Run `npm install jquery-tooltipster --save-dev` to install the npm module.
+1. Run `yarn add install jquery-tooltipster --dev` to install the npm module.
 2. Add the library name to the `Gruntfile.js` so it looks like this:
 
 ```js
@@ -345,7 +350,45 @@ Before publishing a new version you should run `yarn release`. It is a wrapper t
 
 Afterwards simply run `yarn serve` and a folder `dist` gets created with a subfolder of the installable plugin and an installable zip file. It is recommenend to use CI / CD to publish the new version to wordpress.org or other marketplaces. An instroduction how to do this can be read below.
 
-**Note:** Do not forget to adjust the `README.md` to your plugin description.
+## Using CI CD
+
+This boilerplate plugin is built on top of [GitLab CI](https://docs.gitlab.com/ee/ci/quick_start/) and an own runner. The [`.gitlab-ci.yml`](https://docs.gitlab.com/ee/ci/yaml/#parameter-details) is the entrypoint for the pipeline configuration. If you want still use your own GIT repository you navigate to "New project" and "CI/CD for external repo". However, you should make sure that your GIT repository has two branches:
+
+-   `master`: If you merge something into master the CI/CD automatically pushes the changes to wordpress.org if you have activated that (see below). Also consider to "protect" this branch, this can be for example done in GitLab `Settings > Repository > Protected Branches`
+-   `develop`: Your development branch. All commits will be linted and tested and can only be merged to `master` when all is successful. Here you should do your developments
+
+Also you have to use your own GitLab CI Runner (I think it works also with shared runners, but I have not yet tested this). Here is a best practice how to do this:
+
+1. If you do not have yet your own server navigate to https://scaleway.com and order one (the cheapest Linux server should be enough)
+1. SSH into your server
+1. Install the `gitlab-runner` (see documentation [here](https://docs.gitlab.com/runner/install/linux-repository.html))
+1. Register the GitLab runner onto your GitLab repository (see documentation [here](https://docs.gitlab.com/runner/register/index.html))
+1. Navigate to your repository `Settings > CI / CD` and deactivate the shared runners
+1. You have to adjust some configurations within the GitLab Runner, so open the configuration file (see [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)) and diff it with the file `build/gitlab-runner-config.txt` in this repository. The main differences are `concurrent`, `check_interval`, `cache_dir` and `volumes`
+1. `gitlab-runner restart` and finish!
+
+### Initial release plugin to wordpress.org
+
+In this section it is explained how to release a new plugin to wordpress.org. For example this plugin [wp-reactjs-starter](https://wordpress.org/plugins/wp-reactjs-starter) is built on top of this boilerplate. Generelly the initial release needs to be reviewed by the wordpress.org team so you have to prepare the installable plugin as zip file locally. Later - when upading the plugin - the GitLab CI is used.
+
+1. Add functionality to your plugin
+1. Adjust `CHANGELOG` and `README.wporg.txt` files (you can use a [README validator](https://wordpress.org/plugins/developers/readme-validator/))
+1. Prepare you images (header, icon, screenshots) in `assets` folder
+1. When you think it is ready to release, run `yarn serve`
+1. Navigate to `dist` and you will se a generated zip file
+1. Upload that zip file to https://wordpress.org/plugins/developers/add/ for review
+1. Wait for approval
+
+### Prepare SVN deploy via GitLab CI
+
+When the above initial review got approved you can go on with deployment via CI/CD:
+
+1. Navigate in your repository to `Settings > CI / CD > Variables`
+1. Add the variable `WPORG_SVN_URL`: When the plugin gots approved you will get a SVN url, put it here
+1. Add the variable `WPORG_SVN_USERNAME`: The username of your wordpress.org user
+1. Add the variable `WPORG_SVN_PASSWORD`: The password of your wordpress.org user. You have to protect and mask it. Note: If you password does not meet the requirements of [Masked Variables](https://gitlab.com/help/ci/variables/README#masked-variables) it does not work. It depends on you: Change your password so it works or leave it unmasked
+1. Put some changes to `develop` branche and merge it to `master`
+1. The CI/CD automatically deploys to wordpress.org
 
 ## :construction_worker: Todo
 

@@ -8,6 +8,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.file.defaultEncoding = "utf8";
 
     // Detect SERVE_DIR
     SERVE_DIR = _.trimEnd(grunt.config.get("SERVE_DIR") || "dist", "/");
@@ -32,7 +33,9 @@ module.exports = function(grunt) {
                     "inc/**/*",
                     "public/**/*",
                     "LICENSE",
-                    "README.md",
+                    "CHANGELOG",
+                    // "README.md", The original readme is excluded because it is for GIT only
+                    "README.wporg.txt",
                     "languages/**/*"
                 ],
                 dest: SERVE_DIR
@@ -123,7 +126,23 @@ module.exports = function(grunt) {
     });
 
     /**
+     * Serve README.txt generator
+     *
+     * @legacy
+     */
+    grunt.registerTask("serveReadmeTxt", function() {
+        let publicTxt = grunt.file.read(SERVE_DIR + "/README.wporg.txt");
+        publicTxt = publicTxt.replace(/\[include:([^\]]+)\]/g, (matched, index) =>
+            grunt.file.exists(SERVE_DIR + "/" + index) ? grunt.file.read(SERVE_DIR + "/" + index) : matched
+        );
+        grunt.file.write(SERVE_DIR + "/README.txt", publicTxt);
+        grunt.file.delete(SERVE_DIR + "/README.wporg.txt");
+    });
+
+    /**
      * Serve rename readme task
+     *
+     * @legacy
      */
     grunt.registerTask("serveRenameReadme", function() {
         grunt.file.copy(SERVE_DIR + "/README.md", SERVE_DIR + "/README.txt");

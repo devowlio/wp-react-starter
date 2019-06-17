@@ -18,6 +18,7 @@ RUN apt-get install -y \
     unzip \
     curl \
     git \
+    subversion \
     build-essential \
     apt-utils \
     software-properties-common \
