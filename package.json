@@ -25,7 +25,7 @@
         "dcompose-name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent dcompose ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
         "dcompose-name-wordpress": "COMPOSE_FILE=./docker/development/docker-compose.yml QUALITYSH_PLUGIN_ENVIRONMENT= DCOMPOSE_SERVICE_NAME=wordpress yarn --silent dcompose-name",
         "wp-cli": "cd docker/development && docker-compose exec --user 33:33 wordpress /bin/bash -c",
-        "wp-wait": "docker exec -it $(yarn --silent dcompose-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'",
+        "wp-wait": "docker exec $(yarn --silent dcompose-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'",
         "db-snapshot": "yarn --silent wp-cli \"wp db export - --tables=$(node -e 'console.log(require(`./package.json`)[`db-snapshot`].join(`,`))')\" >",
         "db-snapshot-import-on-startup": "yarn --silent db-snapshot docker/scripts/startup.sql",
         "db-snapshot-import": "yarn --silent wp-cli \"wp db import /scripts/startup.sql\"",
