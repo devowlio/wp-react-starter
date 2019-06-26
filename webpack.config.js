@@ -22,6 +22,8 @@ module.exports = {
         jquery: "jQuery",
         mobx: "mobx",
         "mobx-state-tree": "mobxStateTree",
+        moment: "moment",
+        "moment-timezone": "momentTimezone",
         wp: "wp",
         _: "_",
         wpApiSettings: "wpApiSettings"

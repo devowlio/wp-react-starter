@@ -61,8 +61,5 @@ wp --allow-root core update --minor
 # Change the rights so media / plugins / themes are possible to upload and install
 chown -R www-data:www-data /var/www/html/*
 
-# Create lock file so the host knows the WordPress installation is up and running
-echo $WP_CI_INSTALL_URL > /scripts/.env-wp.lock
-
 # Main CMD from https://git.io/fj4Fe
 apache2-foreground

@@ -366,6 +366,7 @@ Also you have to use your own GitLab CI Runner (I think it works also with share
 1. Navigate to your repository `Settings > CI / CD` and deactivate the shared runners
 1. You have to adjust some configurations within the GitLab Runner, so open the configuration file (see [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)) and diff it with the file `build/gitlab-runner-config.txt` in this repository. The main differences are `concurrent`, `check_interval`, `cache_dir` and `volumes`
 1. `gitlab-runner restart` and finish!
+1. Run also this container for garbage collection: https://gitlab.com/gitlab-org/gitlab-runner-docker-cleanup
 
 ### Initial release plugin to wordpress.org
 

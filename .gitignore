@@ -6,7 +6,6 @@ dist/
 docs/
 vendor/
 inc/others/cachebuster*
-docker/scripts/.env-wp.lock
 cypress/videos
 cypress/screenshots
 wporg

@@ -12,7 +12,7 @@ variables:
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
     DOCKER_DRIVER: overlay2
-    GIT_CLEAN_FLAGS: none # -ffdx -e docker/scripts/.env-wp.lock # Do not clean WP run status
+    GIT_CLEAN_FLAGS: none
 
 # Due to the usage of GIT_CLEAN_FLAGS the cache is no longer used because it is very slow.
 #cache:

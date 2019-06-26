@@ -34,11 +34,12 @@ class Assets extends base\Assets {
         $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', ['mobx']);
 
         // Your assets implementation here... See base\Assets for enqueue* methods
+        $scriptDeps = ['react-dom', 'lodash', 'moment'];
         if ($type === base\Assets::TYPE_ADMIN) {
-            $this->enqueueScript(WPRJSS_SLUG, 'admin.js', ['react-dom']);
+            $this->enqueueScript(WPRJSS_SLUG, 'admin.js', $scriptDeps);
             $this->enqueueStyle(WPRJSS_SLUG, 'admin.css');
         } else {
-            $this->enqueueScript(WPRJSS_SLUG, 'widget.js', ['react-dom']);
+            $this->enqueueScript(WPRJSS_SLUG, 'widget.js', $scriptDeps);
             $this->enqueueStyle(WPRJSS_SLUG, 'widget.css');
         }
         wp_localize_script(WPRJSS_SLUG, WPRJSS_OPT_PREFIX . 'Opts', $this->localizeScript($type));
