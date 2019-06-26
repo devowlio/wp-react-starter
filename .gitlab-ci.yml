@@ -7,7 +7,7 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
-    COMPOSE_PROJECT_NAME: wprjss_ci # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name)
+    COMPOSE_PROJECT_NAME: wp-reactjs-starter # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     PLUGIN_SLUG: wp-reactjs-starter
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
@@ -122,7 +122,7 @@ serve and docker: # Create dist files of the plugin and run it through docker
         - docker:dind
     script:
         - yarn serve
-        - docker-compose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
+        - yarn dcompose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
         - yarn wp-wait # Sleep until server is up and running
     artifacts:
         name: installable-plugin
