@@ -25,7 +25,7 @@ define('WPRJSS_PATH', dirname(WPRJSS_FILE));
 define('WPRJSS_SLUG', basename(WPRJSS_PATH));
 define('WPRJSS_INC', trailingslashit(path_join(WPRJSS_PATH, 'inc')));
 define('WPRJSS_MIN_PHP', '5.3.0'); // Minimum of PHP 5.3 required for autoloading and namespacing
-define('WPRJSS_MIN_WP', '4.4.0'); // Minimum of WordPress 4.4 required
+define('WPRJSS_MIN_WP', '5.0.0'); // Minimum of WordPress 5.0 required
 define('WPRJSS_NS', 'MatthiasWeb\\WPRJSS');
 define('WPRJSS_DB_PREFIX', 'wprjss'); // The table name prefix wp_{prefix}
 define('WPRJSS_OPT_PREFIX', 'wprjss'); // The option name prefix in wp_options

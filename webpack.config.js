@@ -23,7 +23,7 @@ module.exports = {
         mobx: "mobx",
         "mobx-state-tree": "mobxStateTree",
         moment: "moment",
-        "moment-timezone": "momentTimezone",
+        "moment-timezone": "moment",
         wp: "wp",
         _: "_",
         wpApiSettings: "wpApiSettings"
