@@ -1,6 +1,14 @@
-# This file defines all needed services for the local development environment.
-# There is another file docker-compose.ci.yml which gets used when running the CI in GitLab.
-# If you add any service please also adjust the docker-compose.ci.yml.
+# This file defines all needed services for the local development environment without any host-specific options like "ports" .
+#
+# docker-compose.ci.yml:
+#   This file gets used when running the CI in GitLab, it also should not export any "ports".
+# docker-compose.traefik.yml:
+#   This file is used for review applications which are managed on the same server as gitlab-runner and traefik.
+#   It's the same like CI but this containers are stopped when the GitLab environments emits to stop
+# docker-compose.local.yml
+#   This file is used for local development and there you should for example expose "ports".
+#
+# If you add any service please also adjust the docker-compose.ci.yml and docker-compose.traefik.yml.
 
 version: "3"
 
@@ -14,8 +22,6 @@ services:
             - locl
         volumes:
             - database:/var/lib/mysql
-        ports:
-            - "3306:3306"
         restart: on-failure
         environment:
             MYSQL_ROOT_PASSWORD: wordpress
@@ -27,8 +33,6 @@ services:
         image: phpmyadmin/phpmyadmin
         networks:
             - locl
-        ports:
-            - "8079:80"
         depends_on:
             - mysql
         environment:
@@ -42,8 +46,6 @@ services:
             - www:/var/www/html
             - ../../:/var/www/html/wp-content/plugins/wp-reactjs-starter
             - ../scripts:/scripts
-        ports:
-            - "80:80"
         restart: on-failure
         depends_on:
             - mysql

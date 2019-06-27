@@ -7,7 +7,9 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
-    COMPOSE_PROJECT_NAME: wp-reactjs-starter # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
+    # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
+    # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
+    COMPOSE_PROJECT_NAME: wp-reactjs-starter
     PLUGIN_SLUG: wp-reactjs-starter
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
     YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
@@ -39,26 +41,6 @@ variables:
         - yarn grunt copy-npmLibs
         - yarn grunt cachebuster:public
 
-.purgesteps: &purgesteps
-    services:
-        - docker:dind
-    allow_failure: true
-    script:
-        # Remove running containers
-        - docker ps -a
-        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/'"$COMPOSE_PROJECT_NAME"'/{print $1}')
-        - echo $CURRENT_CONTAINERS
-        - test "$CURRENT_CONTAINERS" && docker rm -f -v $CURRENT_CONTAINERS
-        # Remove available volumes
-        - docker volume ls
-        - export CURRENT_VOLUMES=$(docker volume ls --format "{{.Name}}" | awk '$1~/'"$COMPOSE_PROJECT_NAME"'/{print $1}')
-        - test "$CURRENT_VOLUMES" && docker volume remove -f $CURRENT_VOLUMES
-        # Remove available networks
-        - docker network ls
-        - export CURRENT_NETWORKS=$(docker network list --format "{{.Name}}" | awk '$1~/'"$COMPOSE_PROJECT_NAME"'/{print $1}')
-        - test "$CURRENT_NETWORKS" && docker volume remove -f $CURRENT_NETWORKS
-        - echo "Successfully removed containers, volumes and networks..."
-
 #########################
 ### Stage: validate
 #########################
@@ -83,18 +65,17 @@ reinstall: # The reinstall step should install all dependencies from scratch whe
             - yarn.lock
             - composer.lock
 
-docker purge: # When docker relevant files got changed remove all docker containers automatically
-    <<: *purgesteps
+docker e2e purge: # When docker relevant files got changed remove all docker containers automatically
     stage: validate
+    variables:
+        COMPOSE_PROJECT_NAME_SUB: -ci
+    script:
+        - chmod +x ./docker/scripts/purge-ci.sh
+        - ./docker/scripts/purge-ci.sh
     only:
         changes:
             - docker/**/*
             - .gitlab-ci.yml
-
-docker purge manual: # Allow also to manually stop the docker containers
-    <<: *purgesteps
-    stage: validate
-    when: manual
 
 #########################
 ### Stage: build
@@ -115,15 +96,21 @@ lint: # Lint the project (TS)
     stage: build
     script: yarn lint
 
-serve and docker: # Create dist files of the plugin and run it through docker
+serve and docker e2e: # Create dist files of the plugin and run it through docker
     <<: *installsteps
     stage: build
+    variables:
+        COMPOSE_PROJECT_NAME_SUB: -ci
     services:
         - docker:dind
     script:
         - yarn serve
-        - yarn dcompose --log-level ERROR -f docker/development/docker-compose.yml -f docker/development/docker-compose.ci.yml up --build -d
-        - yarn wp-wait # Sleep until server is up and running
+        # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
+        - mkdir -p builds/e2e/$CI_COMMIT_REF_SLUG
+        - cp -r dist/$PLUGIN_SLUG builds/e2e/$CI_COMMIT_REF_SLUG
+        # Start CI for E2E and sleep until server is up and running
+        - yarn dcompose-ci up --build -d
+        - docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     artifacts:
         name: installable-plugin
         paths:
@@ -133,17 +120,23 @@ serve and docker: # Create dist files of the plugin and run it through docker
 ### Stage: test
 #########################
 
-docker e2e:
+docker e2e cypress:
     <<: *installsteps
+    dependencies:
+        - serve and docker e2e
+    variables:
+        COMPOSE_PROJECT_NAME_SUB: -ci
+    when: always # Always try the e2e test because it should be stopped
     stage: test
     services:
         - docker:dind
     script:
-        - docker run --rm --network "$COMPOSE_PROJECT_NAME""_locl" -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
-    after_script:
-        # Stop running containers
-        - export CURRENT_CONTAINERS=$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/'"$COMPOSE_PROJECT_NAME"'/{print $1}')
-        - test "$CURRENT_CONTAINERS" && docker stop $CURRENT_CONTAINERS
+        - docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
+        # Purge also the created dist folder
+        - rm -rf builds/e2e/$CI_COMMIT_REF_SLUG
+    after_script: # Purge
+        - chmod +x ./docker/scripts/purge-ci.sh
+        - ./docker/scripts/purge-ci.sh
     artifacts:
         name: test-result
         when: always # Always create cypress results
@@ -154,6 +147,55 @@ docker e2e:
 #########################
 ### Stage: deploy
 #########################
+
+docker review start:
+    stage: deploy
+    variables:
+        COMPOSE_PROJECT_NAME_SUB: -traefik
+    script:
+        # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
+        - mkdir -p builds/traefik/$CI_COMMIT_REF_SLUG
+        - cp -r dist/$PLUGIN_SLUG builds/traefik/$CI_COMMIT_REF_SLUG
+        - ls -la dist/$PLUGIN_SLUG
+        - ls -la builds/traefik/$CI_COMMIT_REF_SLUG
+        - ls -la builds/traefik/$CI_COMMIT_REF_SLUG/$PLUGIN_SLUG
+        # Start traefik containers and sleep until server is up and running
+        - export WP_CI_INSTALL_URL="$CI_COMMIT_REF_SLUG-$PLUGIN_SLUG-$CI_TRAEFIK_HOST"
+        - yarn dcompose-traefik up --build -d
+        - docker exec $(yarn --silent dcompose-traefik-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+    only:
+        refs:
+            - branches
+        variables:
+            - $CI_TRAEFIK_HOST
+            - $CI_TRAEFIK_BAUTH
+    except:
+        - master
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        url: https://${CI_COMMIT_REF_SLUG}-${PLUGIN_SLUG}-${CI_TRAEFIK_HOST}
+        on_stop: docker review stop
+
+docker review stop:
+    stage: deploy
+    variables:
+        COMPOSE_PROJECT_NAME_SUB: -traefik
+    script:
+        - rm -rf builds/traefik/$CI_COMMIT_REF_SLUG
+        - chmod +x ./docker/scripts/purge-ci.sh
+        - ./docker/scripts/purge-ci.sh
+    when: manual
+    only:
+        refs:
+            - branches
+        variables:
+            - $CI_TRAEFIK_HOST
+            - $CI_TRAEFIK_BAUTH
+    except:
+        - master
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        action: stop
 
 wordpress-dot-org:
     stage: deploy

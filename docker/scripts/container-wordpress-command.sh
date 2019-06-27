@@ -22,10 +22,10 @@ test -f "wp" && mv /var/www/html/wp /usr/local/bin/
 
 # Run the following scripts only when WordPress is started at first time
 # Use always --allow-root because docker runs the service as root user
-[[ $CI ]] && export WP_CI_INSTALL_URL="wordpress" || export WP_CI_INSTALL_URL="localhost"
+[[ $WP_CI_INSTALL_URL ]] && export _WP_CI_INSTALL_URL="$WP_CI_INSTALL_URL" || export _WP_CI_INSTALL_URL="localhost"
 if ! $(wp --allow-root core is-installed); then
     # Install wordpress itself
-    wp --allow-root core install --path="/var/www/html" --url="http://$WP_CI_INSTALL_URL" --title="wpdev" --admin_user=wordpress --admin_password=wordpress --admin_email=admin@test.com
+    wp --allow-root core install --path="/var/www/html" --url="http://$_WP_CI_INSTALL_URL" --title="wpdev" --admin_user=wordpress --admin_password=wordpress --admin_email=admin@test.com
 
     # Config parameters
     wp --allow-root config set WP_DEBUG true --raw
