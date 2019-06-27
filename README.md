@@ -46,7 +46,8 @@
 -   [**Husky**](https://github.com/typicode/husky) integration for code beautifying (PHP, TS) before GIT commit - never have ugly code in your repository
 -   **Husky** is also used for [**commitlint**](https://github.com/conventional-changelog/commitlint) to become a common commit message style in your repository
 -   [**webpackbar**](https://github.com/nuxt/webpackbar) so you can get a real progress bar while development
--   Predefined [**GitLab CI**](https://about.gitlab.com/product/continuous-integration/) example for Continous Integration / Deployment
+-   Predefined [**GitLab CI**](https://about.gitlab.com/product/continuous-integration/) example for Continous Integration, read more [here](#using-ci-cd)
+-   Predefined [**Review Apps**](https://docs.gitlab.com/ee/ci/review_apps/) example for branch deployment, read more [here](#using-ci-cd)
 -   [**Docker**](https://www.docker.com/) for a local development environment
 -   Within the Docker environment you have [**WP-CLI**](https://developer.wordpress.org/cli/commands/) available
 -   [**Cypress**](https://www.cypress.io/) for End-To-End (E2E) tests
@@ -366,7 +367,7 @@ Also you have to use your own GitLab CI Runner (I think it works also with share
 1. Install the `gitlab-runner` (see documentation [here](https://docs.gitlab.com/runner/install/linux-repository.html))
 1. Register the GitLab runner onto your GitLab repository (see documentation [here](https://docs.gitlab.com/runner/register/index.html))
 1. Navigate to your repository `Settings > CI / CD` and deactivate the shared runners
-1. You have to adjust some configurations within the GitLab Runner, so open the configuration file (see [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)) and diff it with the file `build/gitlab-runner-config.txt` in this repository. The main differences are `concurrent`, `check_interval`, `cache_dir` and `volumes`
+1. You have to adjust some configurations within the GitLab Runner, so open the configuration file (see [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)) and diff it with the file `build/gitlab-runner-config.txt` in this repository. The main differences are `concurrent`, `check_interval`, `cache_dir` and `volumes`, so please do not completely replace this file.
 1. `gitlab-runner restart` and finish!
 1. Run also this container for garbage collection: https://gitlab.com/gitlab-org/gitlab-runner-docker-cleanup
 
@@ -392,6 +393,26 @@ When the above initial review got approved you can go on with deployment via CI/
 1. Add the variable `WPORG_SVN_PASSWORD`: The password of your wordpress.org user. You have to protect and mask it. Note: If you password does not meet the requirements of [Masked Variables](https://gitlab.com/help/ci/variables/README#masked-variables) it does not work. It depends on you: Change your password so it works or leave it unmasked
 1. Put some changes to `develop` branche and merge it to `master`
 1. The CI/CD automatically deploys to wordpress.org
+
+### Review applications
+
+When commiting to a development branch (non-master) you can automatically setup a complete virtual server with the complete WordPress installation. This is a so-called "[Review application](https://docs.gitlab.com/ee/ci/review_apps/)". This boilerplate is preconfigured to create such dynamic environments on the same server as your GitLab CI Runner. Here a step-by-step guide how to activate review apps for your plugin together with the [Traefik](https://github.com/containous/traefik) router:
+
+1. **Note:** When talking in the next steps about to replace the server IP then put your IP of your GitLab CI Runner server and replace `.` with `-`, for example `192-168-1-250`. Also, if you add new Traefik frontend hosts consider to not use `.` because it will break Let`s Encrypt SSL certificates
+1. SSH into your GitLab CI Runner (see above how to configure that runner)
+1. `sudo apt install apache2-utils`: This package is necessery for the next command
+1. `htpasswd -nb admin secure_password`: Create a password for the Traefik dashboard, replace `secure_password` with your password
+1. `cd /opt/ && sudo nano traefik.toml`: Create a Traefik configuration file, see `build/traefik.txt`. Copy that file and replace `your_generated_htpasswd` with the output of the previous command. Also replace `your_email` and `your-server-ip`
+1. `sudo docker network create traefik`: Create an unique network for Traefik which is used by all containers which should be available to the web
+1. `sudo touch acme.json && sudo chmod 600 acme.json`: This file simply should be empty, Traefik is storing SSL certificates here
+1. `sudo docker run -d -v /var/run/docker.sock:/var/run/docker.sock -v $PWD/traefik.toml:/traefik.toml -v $PWD/acme.json:/acme.json -p 80:80 -p 443:443 -l traefik.enable=true -l traefik.frontend.rule=Host:monitor-<your-server-ip>.nip.io -l traefik.port=8080 --network traefik --name traefik traefik:1.7.12-alpine`: Create the Traefik container which handles all the routing. Replace `<your-server-ip>`.
+1. Visit `monitor-<your-server-ip>.nip.io`, enter the credentials your generated with `htpasswd` and user `admin` and you will see the Traefik dashboard
+1. **Securing review apps itself?** Yes, that's possible with [Basic Authentication](https://docs.traefik.io/v2.0/middlewares/basicauth/) within Traeffik and also necessery for this boilerplate
+1. Navigate in your repository to `Settings > CI / CD > Variables` and add the variable `CI_TRAEFIK_HOST` with value `<your-server-ip>.nip.io`. Also replace here `your-server-ip`
+1. Additionally generate a new review user with `htpasswd -nb admin secure_password` and store that output as value for the GitLab CI Runner variable `CI_TRAEFIK_BAUTH`. [Note](https://medium.com/@techupbusiness/add-basic-authentication-in-docker-compose-files-with-traefik-34c781234970): `$` must be doubled `$$` for escaping!
+1. Now, your GitLab CD creates dynamic environments, nice!
+
+See also [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-use-traefik-as-a-reverse-proxy-for-docker-containers-on-debian-9) if you want to learn more about Traefik.
 
 ## :construction_worker: Todo
 
