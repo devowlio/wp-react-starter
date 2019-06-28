@@ -22,7 +22,7 @@ async function doTestAjaxCall(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
 const ComponentLibrary: React.FunctionComponent<{}> = () => {
     return (
         <div className="wp-styleguide">
-            <h1>WP React Component Library Overview</h1>
+            <h1>WP React Component Library Overview Treafik Test 1</h1>
 
             <Notice type={ENoticeType.Info}>
                 {translate("textDomainNotice", { args: { textDomain: pluginOptions.textDomain } })}
