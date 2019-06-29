@@ -21,7 +21,7 @@ services:
         networks:
             - traefik
         volumes:
-            - ../../builds/traefik/${CI_COMMIT_REF_SLUG}/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
+            - ../../builds/traefik/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
         labels:
             - traefik.enable=true
             - traefik.frontend.rule=Host:${WP_CI_INSTALL_URL}

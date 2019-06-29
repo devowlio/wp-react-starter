@@ -9,6 +9,6 @@ services:
 
     wordpress:
         volumes:
-            - ../../builds/e2e/${CI_COMMIT_REF_SLUG}/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
+            - ../../builds/e2e/wp-reactjs-starter:/var/www/html/wp-content/plugins/wp-reactjs-starter
         environment:
             WP_CI_INSTALL_URL: wordpress

@@ -7,12 +7,18 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
+    # Modify the GIT_CLONE_PATH with additional branch slug name, this can result for example in:
+    # /builds/custom-938207/john-my-project-development-concurrent-0/ on your runner server
+    # This is necessery in conjunction with GIT_CLEAN_FLAGS=none.
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/custom-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-concurrent-$CI_CONCURRENT_ID
     # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
     COMPOSE_PROJECT_NAME: wp-reactjs-starter
     PLUGIN_SLUG: wp-reactjs-starter
-    CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cypress"
-    YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.yarn"
+    # Define cache folders for yarn and cypress, so they are within the build folder
+    CYPRESS_CACHE_FOLDER: $GIT_CLONE_PATH/.cypress
+    YARN_CACHE_FOLDER: $GIT_CLONE_PATH/.yarn
+    # Additional settings
     DOCKER_DRIVER: overlay2
     GIT_CLEAN_FLAGS: none
 
@@ -106,8 +112,8 @@ serve and docker e2e: # Create dist files of the plugin and run it through docke
     script:
         - yarn serve
         # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
-        - mkdir -p builds/e2e/$CI_COMMIT_REF_SLUG
-        - cp -r dist/$PLUGIN_SLUG builds/e2e/$CI_COMMIT_REF_SLUG
+        - mkdir -p builds/e2e
+        - cp -r dist/$PLUGIN_SLUG builds/e2e
         # Start CI for E2E and sleep until server is up and running
         - yarn dcompose-ci up --build -d
         - docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
@@ -133,7 +139,7 @@ docker e2e cypress:
     script:
         - docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
         # Purge also the created dist folder
-        - rm -rf builds/e2e/$CI_COMMIT_REF_SLUG
+        - rm -rf builds/e2e
     after_script: # Purge
         - chmod +x ./docker/scripts/purge-ci.sh
         - ./docker/scripts/purge-ci.sh
@@ -154,11 +160,8 @@ docker review start:
         COMPOSE_PROJECT_NAME_SUB: -traefik
     script:
         # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
-        - mkdir -p builds/traefik/$CI_COMMIT_REF_SLUG
-        - cp -r dist/$PLUGIN_SLUG builds/traefik/$CI_COMMIT_REF_SLUG
-        - ls -la dist/$PLUGIN_SLUG
-        - ls -la builds/traefik/$CI_COMMIT_REF_SLUG
-        - ls -la builds/traefik/$CI_COMMIT_REF_SLUG/$PLUGIN_SLUG
+        - mkdir -p builds/traefik
+        - cp -r dist/$PLUGIN_SLUG builds/traefik
         # Start traefik containers and sleep until server is up and running
         - export WP_CI_INSTALL_URL="$CI_COMMIT_REF_SLUG-$PLUGIN_SLUG-$CI_TRAEFIK_HOST"
         - yarn dcompose-traefik up --build -d
@@ -181,7 +184,7 @@ docker review stop:
     variables:
         COMPOSE_PROJECT_NAME_SUB: -traefik
     script:
-        - rm -rf builds/traefik/$CI_COMMIT_REF_SLUG
+        - rm -rf builds/traefik
         - chmod +x ./docker/scripts/purge-ci.sh
         - ./docker/scripts/purge-ci.sh
     when: manual
