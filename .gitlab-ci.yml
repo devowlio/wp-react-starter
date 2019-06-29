@@ -111,9 +111,6 @@ serve and docker e2e: # Create dist files of the plugin and run it through docke
         - docker:dind
     script:
         - yarn serve
-        # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
-        - mkdir -p builds/e2e
-        - cp -r dist/$PLUGIN_SLUG builds/e2e
         # Start CI for E2E and sleep until server is up and running
         - yarn dcompose-ci up --build -d
         - docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
@@ -138,8 +135,6 @@ docker e2e cypress:
         - docker:dind
     script:
         - docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
-        # Purge also the created dist folder
-        - rm -rf builds/e2e
     after_script: # Purge
         - chmod +x ./docker/scripts/purge-ci.sh
         - ./docker/scripts/purge-ci.sh
@@ -159,7 +154,7 @@ docker review start:
     variables:
         COMPOSE_PROJECT_NAME_SUB: -traefik
     script:
-        # Create branch-specific copy of the served plugin to avoid conflicts between pipelines
+        # Create branch-specific copy of the served plugin to persist the current state of the plugin
         - mkdir -p builds/traefik
         - cp -r dist/$PLUGIN_SLUG builds/traefik
         # Start traefik containers and sleep until server is up and running
