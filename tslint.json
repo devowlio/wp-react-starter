@@ -1,0 +1,26 @@
+{
+    "defaultSeverity": "error",
+    "extends": ["tslint:latest", "tslint-config-prettier"],
+    "jsRules": {},
+    "rules": {
+        "object-literal-sort-keys": false,
+        "max-classes-per-file": false,
+        "interface-over-type-literal": false,
+        "one-variable-per-declaration": false,
+        "ordered-imports": false,
+        "arrow-parens": true,
+        "only-arrow-functions": false,
+        "no-string-literal": false,
+        "no-empty-interface": false,
+        "no-console": false,
+        "no-implicit-dependencies": false,
+        "member-ordering": [
+            true,
+            {
+                "order": "fields-first"
+            }
+        ],
+        "no-submodule-imports": [true, "i18n-calypso"]
+    },
+    "rulesDirectory": []
+}

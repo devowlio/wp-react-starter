@@ -1,0 +1,12 @@
+# This file overrides the file from docker-compose.yml
+
+version: "3"
+
+services:
+    phpmyadmin:
+        ports:
+            - "8079:80"
+
+    wordpress:
+        ports:
+            - "80:80"

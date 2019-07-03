@@ -1,0 +1,15 @@
+{
+    "arrowParens": "always",
+    "printWidth": 120,
+    "useTabs": false,
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": "*.php",
+            "options": {
+                "singleQuote": true,
+                "braceStyle": "1tbs"
+            }
+        }
+    ]
+}

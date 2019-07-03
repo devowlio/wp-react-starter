@@ -1,16 +1,14 @@
-# Custom
-public/dist/*.js
-public/dist/*.css
-public/dist/*.map
-public/dev/*.js
-public/dev/*.css
-public/dev/*.map
-public/lib/*
+# WordPress plugin
+public/dist/
+public/dev/
+public/lib/
 dist/
 docs/
 vendor/
-inc/others/cachebuster-lib.php
-inc/others/cachebuster.php
+inc/others/cachebuster*
+cypress/videos
+cypress/screenshots
+wporg
 
 # Logs
 logs

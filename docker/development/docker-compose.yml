@@ -1,0 +1,75 @@
+# This file defines all needed services for the local development environment without any host-specific options like "ports" .
+#
+# docker-compose.ci.yml:
+#   This file gets used when running the CI in GitLab, it also should not export any "ports".
+# docker-compose.traefik.yml:
+#   This file is used for review applications which are managed on the same server as gitlab-runner and traefik.
+#   It's the same like CI but this containers are stopped when the GitLab environments emits to stop
+# docker-compose.local.yml
+#   This file is used for local development and there you should for example expose "ports".
+#
+# If you add any service please also adjust the docker-compose.ci.yml and docker-compose.traefik.yml.
+
+version: "3"
+
+networks:
+    locl: {}
+
+services:
+    mysql:
+        image: mariadb:10.3
+        networks:
+            - locl
+        volumes:
+            - database:/var/lib/mysql
+        restart: on-failure
+        environment:
+            MYSQL_ROOT_PASSWORD: wordpress
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        networks:
+            - locl
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+
+    wordpress:
+        image: wordpress:5.2.0-apache
+        networks:
+            - locl
+        volumes:
+            - www:/var/www/html
+            - ../../:/var/www/html/wp-content/plugins/wp-reactjs-starter
+            - ../scripts:/scripts
+        restart: on-failure
+        depends_on:
+            - mysql
+        command: bash /scripts/container-wordpress-command.sh
+        environment:
+            WORDPRESS_DB_HOST: mysql:3306
+            # If you adjust username / password you also have to change username / password in ../scripts/e2e-tests-autologin-plugin.php
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress
+
+    wordpress-cli:
+        image: wordpress:cli
+        user: xfs
+        networks:
+            - locl
+        volumes:
+            - www:/var/www/html
+            - ../scripts:/scripts
+        entrypoint: /scripts/container-wordpress-cli-entrypoint.sh
+        depends_on:
+            - mysql
+            - wordpress
+
+volumes:
+    database: {}
+    www: {}
