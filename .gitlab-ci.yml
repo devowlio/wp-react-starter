@@ -111,9 +111,11 @@ serve and docker e2e: # Create dist files of the plugin and run it through docke
         - docker:dind
     script:
         - yarn serve
+        # Make scripts executable
+        - chmod +x docker/scripts/*
         # Start CI for E2E and sleep until server is up and running
         - yarn dcompose-ci up --build -d
-        - docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+        - timeout=500 docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     artifacts:
         name: installable-plugin
         paths:
@@ -151,16 +153,20 @@ docker e2e cypress:
 
 docker review start:
     stage: deploy
-    variables:
-        COMPOSE_PROJECT_NAME_SUB: -traefik
+    dependencies:
+        - serve and docker e2e
     script:
+        # Make scripts executable
+        - chmod +x docker/scripts/*
+        # Cleanup previous environments
+        - COMPOSE_PROJECT_NAME_SUB=-traefik ./docker/scripts/purge-ci.sh
         # Create branch-specific copy of the served plugin to persist the current state of the plugin
         - mkdir -p builds/traefik
         - cp -r dist/$PLUGIN_SLUG builds/traefik
         # Start traefik containers and sleep until server is up and running
         - export WP_CI_INSTALL_URL="$CI_COMMIT_REF_SLUG-$PLUGIN_SLUG-$CI_TRAEFIK_HOST"
         - yarn dcompose-traefik up --build -d
-        - docker exec $(yarn --silent dcompose-traefik-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+        - timeout=500 docker exec $(yarn --silent dcompose-traefik-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     only:
         refs:
             - branches
