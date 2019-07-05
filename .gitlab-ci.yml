@@ -171,8 +171,7 @@ docker review start:
         refs:
             - branches
         variables:
-            - $CI_TRAEFIK_HOST
-            - $CI_TRAEFIK_BAUTH
+            - $CI_TRAEFIK_HOST && $CI_TRAEFIK_BAUTH
     except:
         - master
     environment:
@@ -193,8 +192,7 @@ docker review stop:
         refs:
             - branches
         variables:
-            - $CI_TRAEFIK_HOST
-            - $CI_TRAEFIK_BAUTH
+            - $CI_TRAEFIK_HOST && $CI_TRAEFIK_BAUTH
     except:
         - master
     environment:
@@ -216,6 +214,4 @@ wordpress-dot-org:
         refs:
             - master
         variables:
-            - $WPORG_SVN_URL
-            - $WPORG_SVN_USERNAME
-            - $WPORG_SVN_PASSWORD
+            - $WPORG_SVN_URL && $WPORG_SVN_USERNAME && $WPORG_SVN_PASSWORD
