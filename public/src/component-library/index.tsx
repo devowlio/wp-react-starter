@@ -3,9 +3,10 @@ import { Notice, ENoticeType } from "../wp";
 import { Todo } from "./Todo";
 import { TodoStore } from "../store";
 import { Provider } from "mobx-react";
-import { pluginOptions, ajax } from "../util";
+import { pluginOptions, ajax, urlBuilder } from "../util";
 import { translate } from "../util/i18n";
 import "./style.scss";
+import { locationRestPluginGet, IRequestRoutePluginGet, IParamsRoutePluginGet, IResponseRoutePluginGet } from "../rest";
 
 // Craete default store
 const todoStore = TodoStore.create();
@@ -13,9 +14,11 @@ const todoStore = TodoStore.create();
 // Do a test ajax call when clicking the REST API url
 async function doTestAjaxCall(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     e.persist();
-    const result = await ajax("plugin"),
-        usedUrl = ajax<true>("plugin", undefined, undefined, true);
-    alert(usedUrl + "\n\n" + JSON.stringify(result, undefined, 4));
+    const result = await ajax<IRequestRoutePluginGet, IParamsRoutePluginGet, IResponseRoutePluginGet>({
+            location: locationRestPluginGet
+        }),
+        usedUrl = urlBuilder({ location: locationRestPluginGet });
+    alert(usedUrl + "\n\n" + JSON.stringify(result, undefined, 4) + "\n\n" + "Name: " + result.Name);
     e.preventDefault();
 }
 
