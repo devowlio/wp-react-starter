@@ -23,6 +23,11 @@ abstract class Assets extends Base {
     const LIB_CACHEBUSTER_REGEX = '/^public\/lib\/([^\/]+)/';
 
     /**
+     * @see general\I18n.class.php
+     */
+    const PUBLIC_JSON_I18N = 'public/languages/json';
+
+    /**
      * Enqueue scripts and styles depending on the type. You can check the
      * type through the $type parameter. In this function you can include your
      * external libraries from public/lib, too.

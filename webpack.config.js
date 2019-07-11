@@ -26,7 +26,8 @@ module.exports = {
         "moment-timezone": "moment",
         wp: "wp",
         _: "_",
-        wpApiSettings: "wpApiSettings"
+        wpApiSettings: "wpApiSettings",
+        "@wordpress/i18n": "wp['i18n']"
     },
     devtool: "#source-map",
     module: {
@@ -78,9 +79,7 @@ module.exports = {
                     setTimeout(function() {
                         console.log("Running webpack-build-done script...");
                     }, 0);
-                    exec("npm run webpack-build-done", function(error, stdout, stderr) {
-                        console.log(stdout);
-                    });
+                    exec("npm run webpack-build-done").stdout.pipe(process.stdout);
                 });
             };
             return WebPackRecreateCachebuster;
