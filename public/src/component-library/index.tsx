@@ -4,7 +4,7 @@ import { Todo } from "./Todo";
 import { TodoStore } from "../store";
 import { Provider } from "mobx-react";
 import { pluginOptions, ajax, urlBuilder } from "../util";
-import { translate } from "../util/i18n";
+import { _i, __ } from "../util/i18n";
 import "./style.scss";
 import { locationRestPluginGet, IRequestRoutePluginGet, IParamsRoutePluginGet, IResponseRoutePluginGet } from "../rest";
 
@@ -28,23 +28,27 @@ const ComponentLibrary: React.FunctionComponent<{}> = () => {
             <h1>WP React Component Library Overview</h1>
 
             <Notice type={ENoticeType.Info}>
-                {translate("textDomainNotice", { args: { textDomain: pluginOptions.textDomain } })}
+                {__("The text domain of the plugin is: %(textDomain)s (localized variable)", {
+                    textDomain: pluginOptions.textDomain
+                })}
             </Notice>
             <Notice type={ENoticeType.Info}>
-                {translate("restUrlNotice", {
-                    args: { restUrl: pluginOptions.restUrl },
-                    components: {
+                {_i(
+                    __("The WP REST API URL of the plugin is: {{a}}%(restUrl)s{{/a}} (localized variable)", {
+                        restUrl: pluginOptions.restUrl
+                    }),
+                    {
                         a: (
                             <a href="#" onClick={doTestAjaxCall}>
                                 {pluginOptions.restUrl}
                             </a>
                         )
                     }
-                })}
+                )}
             </Notice>
-            <Notice type={ENoticeType.Info}>{translate("infoNotice")}</Notice>
-            <Notice type={ENoticeType.Success}>{translate("successNotice")}</Notice>
-            <Notice type={ENoticeType.Error}>{translate("errorNotice")}</Notice>
+            <Notice type={ENoticeType.Info}>{__("The is an informative notice")}</Notice>
+            <Notice type={ENoticeType.Success}>{__("Your action was successful")}</Notice>
+            <Notice type={ENoticeType.Error}>{__("An unexpected error has occurred")}</Notice>
 
             {/* @see https://mobx.js.org/refguide/observer-component.html#connect-components-to-provided-stores-using-inject */}
             <Provider store={todoStore}>

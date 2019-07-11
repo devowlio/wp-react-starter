@@ -7,71 +7,76 @@
 import { I18N } from "i18n-calypso";
 import React from "react";
 import { pluginOptions, process } from "./";
-import $ from "jquery";
+// @ts-ignore @wordpress/i18n has no types, yet
+import * as wpi18n from "@wordpress/i18n";
 
-const i18n = new I18N();
-
-$.each(pluginOptions.i18n, (key: string, value: string) => {
-    i18n.addTranslations({
-        [key]: [value]
-    });
-});
-
-// All available exports but do not export because there are no typings available officially
-// export const moment = i18n.moment;
-// export const numberFormat = i18n.numberFormat.bind(i18n);
-// export const translate = i18n.translate.bind(i18n);
-// export const configure = i18n.configure.bind(i18n);
-// export const setLocale = i18n.setLocale.bind(i18n);
-// export const getLocale = i18n.getLocale.bind(i18n);
-// export const getLocaleSlug = i18n.getLocaleSlug.bind(i18n);
-// export const addTranslations = i18n.addTranslations.bind(i18n);
-// export const reRenderTranslations = i18n.reRenderTranslations.bind(i18n);
-// export const registerComponentUpdateHook = i18n.registerComponentUpdateHook.bind(i18n);
-// export const registerTranslateHook = i18n.registerTranslateHook.bind(i18n);
-// export const state = i18n.state;
-// export const stateObserver = i18n.stateObserver;
-// export const localize = localizeFactory(i18n);
-
-// For devleopment purposes show an error message if a key is accessed which is not available
-if (process.env.NODE_ENV === "development") {
-    i18n.state.jed.options.missing_key_callback = function(key: string) {
-        console.error(
-            "[Localization " +
-                pluginOptions.textDomain +
-                '] The following i18n key could not be found: "' +
-                key +
-                '". Please define it in your JsI18n.class.php!'
-        );
-    };
-}
-
-// Not yet released officially
-// export const on = i18n.on.bind( i18n );
-// export const off = i18n.off.bind( i18n );
-// export const emit = i18n.emit.bind( i18n );
-// export const useTranslate = useTranslateFactory( i18n );
-
-interface ITranslateOptions {
-    plural?: string;
-    args?: any | any[] | string;
-    components?: {
-        [key: string]: React.ReactNode;
-    };
-    comment?: string;
-    context?: string;
-    count?: number;
+/**
+ * Translates and retrieves the singular or plural form based on the supplied number.
+ * For arguments sprintf is used, see http://www.diveintojavascript.com/projects/javascript-sprintf for
+ * specification and usage.
+ *
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#_n
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#sprintf
+ */
+function _n(single: string, plural: string, count: number, ...args: any[]): string {
+    return wpi18n.sprintf(wpi18n._n(single, plural, count, pluginOptions.slug), ...args) as string;
 }
 
 /**
- * Translate an key from the JsI18n class.
+ * Translates and retrieves the singular or plural form based on the supplied number, with gettext context.
+ * For arguments sprintf is used, see http://www.diveintojavascript.com/projects/javascript-sprintf for
+ * specification and usage.
  *
- * @param {string} original - the string key translation, will be used as single version if plural passed
- * @param {object} [options] - properties describing translation requirements for given text
- * @returns string
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#_n
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#sprintf
  */
-function translate(original: string, options: ITranslateOptions = {}): string {
-    return i18n.translate(original, options.plural, options);
+function _nx(single: string, plural: string, count: number, context: string, ...args: any[]): string {
+    return wpi18n.sprintf(wpi18n._nx(single, plural, count, context, pluginOptions.slug), ...args) as string;
 }
 
-export { i18n as default, I18N, translate };
+/**
+ * Retrieve the translation of text.
+ * For arguments sprintf is used, see http://www.diveintojavascript.com/projects/javascript-sprintf for
+ * specification and usage.
+ *
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#_n
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#sprintf
+ */
+function __(single: string, ...args: any[]): string {
+    return wpi18n.sprintf(wpi18n.__(single, pluginOptions.slug), ...args) as string;
+}
+
+/**
+ * Retrieve translated string with gettext context.
+ * For arguments sprintf is used, see http://www.diveintojavascript.com/projects/javascript-sprintf for
+ * specification and usage.
+ *
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#_n
+ * @see https://github.com/WordPress/gutenberg/tree/master/packages/i18n#sprintf
+ */
+function _x(single: string, context: string, ...args: any[]): string {
+    return wpi18n.sprintf(wpi18n._x(single, context, pluginOptions.slug), ...args) as string;
+}
+
+const i18n = new I18N();
+
+/**
+ * This function allows you to interpolate react components to your translations.
+ * You have to pass an already translated string as argument! For this you can use the other
+ * i18n functions like _n() or __().
+ *
+ * A translation can look like this: "Hello {{a}}click me{{/a}}." and you have to pass
+ * a component with key "a".
+ */
+function _i(
+    translation: string,
+    components?: {
+        [key: string]: React.ReactNode;
+    }
+): any {
+    return i18n.translate(translation, {
+        components
+    }) as React.ReactNode;
+}
+
+export { _n, _nx, __, _x, _i };

@@ -36,7 +36,6 @@ class Core extends base\Core {
         // Register all your before init hooks here
         add_action('plugins_loaded', [$this, 'updateDbCheck']);
         add_action('widgets_init', [$this, 'widgets_init']);
-        add_filter('override_load_textdomain', [new JsI18n(), 'override_load_textdomain'], 10, 3);
     }
 
     /**
@@ -51,6 +50,9 @@ class Core extends base\Core {
         add_action('admin_enqueue_scripts', [$this->getAssets(), 'admin_enqueue_scripts']);
         add_action('wp_enqueue_scripts', [$this->getAssets(), 'wp_enqueue_scripts']);
         add_action('admin_menu', [new menu\Page(), 'admin_menu']);
+
+        add_filter('override_load_textdomain', [new Localization(), 'override_load_textdomain'], 10, 3);
+        add_filter('load_script_translation_file', [new Localization(), 'load_script_translation_file'], 10, 3);
     }
 
     /**

@@ -34,15 +34,20 @@ class Assets extends base\Assets {
         $this->enqueueLibraryScript('mobx-state-tree', 'mobx-state-tree/dist/mobx-state-tree.umd.js', ['mobx']);
 
         // Your assets implementation here... See base\Assets for enqueue* methods
-        $scriptDeps = ['react-dom', 'lodash', 'moment'];
+        $scriptDeps = ['react-dom', 'lodash', 'moment', 'wp-i18n'];
         if ($type === base\Assets::TYPE_ADMIN) {
-            $this->enqueueScript(WPRJSS_SLUG, 'admin.js', $scriptDeps);
-            $this->enqueueStyle(WPRJSS_SLUG, 'admin.css');
+            $handle = WPRJSS_SLUG . '-admin';
+            $this->enqueueScript($handle, 'admin.js', $scriptDeps);
+            $this->enqueueStyle($handle, 'admin.css');
+            wp_set_script_translations($handle, WPRJSS_TD, path_join(WPRJSS_PATH, base\Assets::PUBLIC_JSON_I18N));
+            wp_localize_script($handle, WPRJSS_OPT_PREFIX . 'Opts', $this->localizeScript($type));
         } else {
-            $this->enqueueScript(WPRJSS_SLUG, 'widget.js', $scriptDeps);
-            $this->enqueueStyle(WPRJSS_SLUG, 'widget.css');
+            $handle = WPRJSS_SLUG . '-widget';
+            $this->enqueueScript($handle, 'widget.js', $scriptDeps);
+            $this->enqueueStyle($handle, 'widget.css');
+            wp_set_script_translations($handle, WPRJSS_TD, path_join(WPRJSS_PATH, base\Assets::PUBLIC_JSON_I18N));
+            wp_localize_script($handle, WPRJSS_OPT_PREFIX . 'Opts', $this->localizeScript($type));
         }
-        wp_localize_script(WPRJSS_SLUG, WPRJSS_OPT_PREFIX . 'Opts', $this->localizeScript($type));
 
         // Localize with a window.process.env variable for libraries relying on it (MST for example)
         wp_localize_script('react', 'process', [
@@ -58,12 +63,10 @@ class Assets extends base\Assets {
      * @returns array
      */
     public function localizeScript($context) {
-        $i18n = new JsI18n();
         $common = [
             'slug' => WPRJSS_SLUG,
             'textDomain' => WPRJSS_TD,
-            'version' => WPRJSS_VERSION,
-            'i18n' => $i18n->build($context)
+            'version' => WPRJSS_VERSION
         ];
 
         if ($context === base\Assets::TYPE_ADMIN) {
