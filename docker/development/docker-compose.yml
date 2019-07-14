@@ -1,14 +1,14 @@
 # This file defines all needed services for the local development environment without any host-specific options like "ports" .
 #
-# docker-compose.ci.yml:
-#   This file gets used when running the CI in GitLab, it also should not export any "ports".
+# docker-compose.e2e.yml:
+#   This file gets used when running E2E tests in CI in GitLab, it also should not export any "ports".
 # docker-compose.traefik.yml:
 #   This file is used for review applications which are managed on the same server as gitlab-runner and traefik.
-#   It's the same like CI but this containers are stopped when the GitLab environments emits to stop
+#   It's the same like E2E but this containers are stopped when the GitLab environments emits to stop
 # docker-compose.local.yml
 #   This file is used for local development and there you should for example expose "ports".
 #
-# If you add any service please also adjust the docker-compose.ci.yml and docker-compose.traefik.yml.
+# If you add any service please also adjust the docker-compose.e2e.yml and docker-compose.traefik.yml.
 
 version: "3"
 

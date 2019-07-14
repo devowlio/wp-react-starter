@@ -50,9 +50,9 @@
         "//     CI    //": "--",
         "docker-ci-image-build": "./docker/scripts/build-ci-image.sh",
         "docker-ci-image-push": "./docker/scripts/push-ci-image.sh",
-        "dcompose-ci": "COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./docker/development/docker-compose.yml:./docker/development/docker-compose.ci.yml COMPOSE_PROJECT_NAME=${npm_package_name}-ci-${CI_COMMIT_REF_SLUG} docker-compose --log-level ERROR",
-        "dcompose-ci-name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent dcompose-ci ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
-        "dcompose-ci-name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent dcompose-ci-name",
+        "dcompose-e2e": "COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./docker/development/docker-compose.yml:./docker/development/docker-compose.e2e.yml COMPOSE_PROJECT_NAME=${npm_package_name}-ci-${CI_COMMIT_REF_SLUG} docker-compose --log-level ERROR",
+        "dcompose-e2e-name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent dcompose-e2e ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
+        "dcompose-e2e-name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent dcompose-e2e-name",
         "dcompose-traefik": "COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./docker/development/docker-compose.yml:./docker/development/docker-compose.traefik.yml COMPOSE_PROJECT_NAME=${npm_package_name}-traefik-${CI_COMMIT_REF_SLUG} docker-compose --log-level ERROR",
         "dcompose-traefik-name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent dcompose-traefik ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
         "dcompose-traefik-name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent dcompose-traefik-name"

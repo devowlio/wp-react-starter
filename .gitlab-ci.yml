@@ -114,8 +114,8 @@ serve and docker e2e: # Create dist files of the plugin and run it through docke
         # Make scripts executable
         - chmod +x docker/scripts/*
         # Start CI for E2E and sleep until server is up and running
-        - yarn dcompose-ci up --build -d
-        - timeout=500 docker exec $(yarn --silent dcompose-ci-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+        - yarn dcompose-e2e up --build -d
+        - timeout=500 docker exec $(yarn --silent dcompose-e2e-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     artifacts:
         name: installable-plugin
         paths:
