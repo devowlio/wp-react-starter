@@ -114,8 +114,8 @@ serve and docker e2e: # Create dist files of the plugin and run it through docke
         # Make scripts executable
         - chmod +x docker/scripts/*
         # Start CI for E2E and sleep until server is up and running
-        - yarn dcompose-e2e up --build -d
-        - timeout=500 docker exec $(yarn --silent dcompose-e2e-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+        - yarn docker-compose-e2e up --build -d
+        - timeout=500 docker exec $(yarn --silent docker-compose-e2e-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     artifacts:
         name: installable-plugin
         paths:
@@ -165,8 +165,8 @@ docker review start:
         - cp -r dist/$PLUGIN_SLUG builds/traefik
         # Start traefik containers and sleep until server is up and running
         - export WP_CI_INSTALL_URL="$CI_COMMIT_REF_SLUG-$PLUGIN_SLUG-$CI_TRAEFIK_HOST"
-        - yarn dcompose-traefik up --build -d
-        - timeout=500 docker exec $(yarn --silent dcompose-traefik-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
+        - yarn docker-compose-traefik up --build -d
+        - timeout=500 docker exec $(yarn --silent docker-compose-traefik-name-wordpress) bash -c 'while [[ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/wprjss/v1/plugin)\" != \"200\" ]]; do sleep 2; done'
     only:
         refs:
             - branches
