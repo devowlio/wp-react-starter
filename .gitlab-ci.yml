@@ -7,24 +7,27 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
-    # Modify the GIT_CLONE_PATH with additional branch slug name, this can result for example in:
+    # (CACHE WORKAROUND) Modify the GIT_CLONE_PATH with additional branch slug name, this can result for example in:
     # /builds/runner-938207/john/my-project/development/0/ on your runner server
-    # This is necessery in conjunction with GIT_CLEAN_FLAGS=none.
+    # This is necessery in conjunction with GIT_CLEAN_FLAGS=none and /builds must be in your docker shared volume (GitLab Runner).
     GIT_CLONE_PATH: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/$CI_CONCURRENT_ID
-    # When reinstalling modules (yarn, composer) copy it to the other concurrent runners, so they know also from the new modules, see reinstall step
+    # (CACHE WORKAROUND) When reinstalling modules (yarn, composer) copy it to the other concurrent runners, so they know also from the new modules, see reinstall step
     CONCURRENT_COUNT: 4
     # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
     COMPOSE_PROJECT_NAME: wp-reactjs-starter
     PLUGIN_SLUG: wp-reactjs-starter
-    # Define cache folders for yarn and cypress, so they are within the "non-concurrent-build" folder
-    CYPRESS_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.cypress
-    YARN_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.yarn
+    # (CACHE WORKAROUND) Define cache folders for yarn and cypress, so they are within the "non-concurrent-build" folder
+    CYPRESS_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.cypress # ./.cypress
+    YARN_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.yarn # ./.yarn
     # Additional settings
     DOCKER_DRIVER: overlay2
-    GIT_CLEAN_FLAGS: none
+    GIT_CLEAN_FLAGS: none # (CACHE WORKAROUND)
 
 # Due to the usage of GIT_CLEAN_FLAGS the cache is no longer used because it is very slow.
+# There are some workarounds for caching for this CI pipeline.
+# If https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173 gets solved the pipeline will reduce
+# and will use the standard caching system. Workarounds are marked with (CACHE WORKAROUND).
 #cache:
 #    key: "$CI_COMMIT_REF_SLUG"
 #    untracked: true
@@ -50,7 +53,7 @@ variables:
         - yarn grunt copy-npmLibs
         - yarn grunt cachebuster:public
 
-# Copy the cache so the other conccurrent builds know about it in the next stages (split into multiple scripts to see needed time)
+# (CACHE WORKAROUND) Copy the cache so the other conccurrent builds know about it in the next stages (split into multiple scripts to see needed time)
 .copycache: &copycache
     script:
         # Check if we should copy the cache (depends on job name = "reinstall" or first build)
@@ -73,12 +76,10 @@ install: # Install all dependencies with previous caches
     <<: *installsteps
     <<: *copycache
     stage: validate
-    script: echo .
     except:
         changes:
-            - yarn.lock
+            - yarn.lockg
             - composer.lock
-            - .gitlab-ci.yml
 
 reinstall: # The reinstall step should install all dependencies from scratch when a lock file got changed
     <<: *installsteps
@@ -90,7 +91,6 @@ reinstall: # The reinstall step should install all dependencies from scratch whe
         changes:
             - yarn.lock
             - composer.lock
-            - .gitlab-ci.yml
 
 docker e2e purge: # When docker relevant files got changed remove all docker containers automatically
     stage: validate
