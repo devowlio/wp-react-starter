@@ -7,22 +7,27 @@ stages:
 image: matzeeable/ci-php-composer-node:latest
 
 variables:
-    # Modify the GIT_CLONE_PATH with additional branch slug name, this can result for example in:
-    # /builds/custom-938207/john-my-project-development-concurrent-0/ on your runner server
-    # This is necessery in conjunction with GIT_CLEAN_FLAGS=none.
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/custom-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-concurrent-$CI_CONCURRENT_ID
+    # (CACHE WORKAROUND) Modify the GIT_CLONE_PATH with additional branch slug name, this can result for example in:
+    # /builds/runner-938207/john/my-project/development/0/ on your runner server
+    # This is necessery in conjunction with GIT_CLEAN_FLAGS=none and /builds must be in your docker shared volume (GitLab Runner).
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/$CI_CONCURRENT_ID
+    # (CACHE WORKAROUND) When reinstalling modules (yarn, composer) copy it to the other concurrent runners, so they know also from the new modules, see reinstall step
+    CONCURRENT_COUNT: 4
     # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
     COMPOSE_PROJECT_NAME: wp-reactjs-starter
     PLUGIN_SLUG: wp-reactjs-starter
-    # Define cache folders for yarn and cypress, so they are within the build folder
-    CYPRESS_CACHE_FOLDER: $GIT_CLONE_PATH/.cypress
-    YARN_CACHE_FOLDER: $GIT_CLONE_PATH/.yarn
+    # (CACHE WORKAROUND) Define cache folders for yarn and cypress, so they are within the "non-concurrent-build" folder
+    CYPRESS_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.cypress # ./.cypress
+    YARN_CACHE_FOLDER: $CI_BUILDS_DIR/runner-$CI_RUNNER_ID/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG/.yarn # ./.yarn
     # Additional settings
     DOCKER_DRIVER: overlay2
-    GIT_CLEAN_FLAGS: none
+    GIT_CLEAN_FLAGS: none # (CACHE WORKAROUND)
 
 # Due to the usage of GIT_CLEAN_FLAGS the cache is no longer used because it is very slow.
+# There are some workarounds for caching for this CI pipeline.
+# If https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1173 gets solved the pipeline will reduce
+# and will use the standard caching system. Workarounds are marked with (CACHE WORKAROUND).
 #cache:
 #    key: "$CI_COMMIT_REF_SLUG"
 #    untracked: true
@@ -42,10 +47,26 @@ variables:
 .installsteps:
     &installsteps # This is an anchor and can be used with <<: *installsteps (https://gitlab.com/gitlab-org/gitlab-ce/issues/15403)
     before_script:
+        - export IS_FIRST_BUILD=$(test ! -d ../$(($CONCURRENT_COUNT - 1)) && echo 1)
         - yarn install --frozen-lockfile
         - composer install
         - yarn grunt copy-npmLibs
         - yarn grunt cachebuster:public
+
+# (CACHE WORKAROUND) Copy the cache so the other conccurrent builds know about it in the next stages (split into multiple scripts to see needed time)
+.copycache: &copycache
+    script:
+        # Check if we should copy the cache (depends on job name = "reinstall" or first build)
+        - echo $IS_FIRST_BUILD
+        - test "$IS_FIRST_BUILD" != "1" && test $CI_JOB_NAME != "reinstall" && exit 0
+        - export REINSTALL_FOREACH_IN=$(eval echo {0..$(($CONCURRENT_COUNT - 1))})
+        # Remove old caches in other concurrent builds and make sure the concurrent builds exists
+        - time for x in $REINSTALL_FOREACH_IN ; do [[ $x != $CI_CONCURRENT_ID ]] && rm -rf ../$x/node_modules ../$x/vendor; done; # ../$x/.yarn
+        - time for x in $REINSTALL_FOREACH_IN ; do [[ $x != $CI_CONCURRENT_ID && ! -d ../$x ]] && mkdir ../$x; done;
+        # Copy the caches
+        #- time for x in $REINSTALL_FOREACH_IN ; do [[ $x != $CI_CONCURRENT_ID && -d .yarn ]] && cp -R .yarn ../$x; done;
+        - time for x in $REINSTALL_FOREACH_IN ; do [[ $x != $CI_CONCURRENT_ID && -d node_modules ]] && cp -R node_modules ../$x; done;
+        - time for x in $REINSTALL_FOREACH_IN ; do [[ $x != $CI_CONCURRENT_ID && -d vendor ]] && cp -R vendor ../$x; done;
 
 #########################
 ### Stage: validate
@@ -53,19 +74,19 @@ variables:
 
 install: # Install all dependencies with previous caches
     <<: *installsteps
+    <<: *copycache
     stage: validate
-    script: echo .
     except:
         changes:
-            - yarn.lock
+            - yarn.lockg
             - composer.lock
 
 reinstall: # The reinstall step should install all dependencies from scratch when a lock file got changed
     <<: *installsteps
+    <<: *copycache
     variables:
         GIT_CLEAN_FLAGS: -ffdx
     stage: validate
-    script: echo .
     only:
         changes:
             - yarn.lock
@@ -136,7 +157,12 @@ docker e2e cypress:
     services:
         - docker:dind
     script:
-        - docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e -w /e2e cypress/included:3.2.0 run --config baseUrl=http://wordpress
+        - >
+            docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e
+            -e CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG
+            -e CI=1
+            -v /var/run/docker.sock:/var/run/docker.sock -w /e2e matzeeable/cypress-dind:latest run
+            --config baseUrl=http://wordpress
     after_script: # Purge
         - chmod +x ./docker/scripts/purge-ci.sh
         - ./docker/scripts/purge-ci.sh

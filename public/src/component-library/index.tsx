@@ -25,7 +25,7 @@ async function doTestAjaxCall(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
 const ComponentLibrary: React.FunctionComponent<{}> = () => {
     return (
         <div className="wp-styleguide">
-            <h1>WP React Component Library Overview</h1>
+            <h1>WP React Component Library</h1>
 
             <Notice type={ENoticeType.Info}>
                 {__("The text domain of the plugin is: %(textDomain)s (localized variable)", {
