@@ -80,3 +80,13 @@ RUN docker-compose -v
 
 # Global installations via npm
 RUN npm install -g wait-on
+
+# Cypress.io
+RUN apt-get install -y \
+    xvfb \
+    libgtk-3-dev \
+    libnotify-dev \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2

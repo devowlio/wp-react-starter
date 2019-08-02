@@ -157,7 +157,12 @@ docker e2e cypress:
     services:
         - docker:dind
     script:
-        - yarn test-e2e --config baseUrl=http://wordpress
+        - >
+            docker run --rm --network "$COMPOSE_PROJECT_NAME-ci-$CI_COMMIT_REF_SLUG""_locl" -v "${PWD}":/e2e
+            -e CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG
+            -e CI=1
+            -v /var/run/docker.sock:/var/run/docker.sock -w /e2e matzeeable/cypress-dind:latest run
+            --config baseUrl=http://wordpress
     after_script: # Purge
         - chmod +x ./docker/scripts/purge-ci.sh
         - ./docker/scripts/purge-ci.sh
