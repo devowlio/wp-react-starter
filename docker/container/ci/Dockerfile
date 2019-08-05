@@ -90,3 +90,6 @@ RUN apt-get install -y \
     libnss3 \
     libxss1 \
     libasound2
+
+# wput for FTP uploads
+RUN apt-get install -y wput

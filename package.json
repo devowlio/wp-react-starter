@@ -7,7 +7,7 @@
         "wp_posts",
         "wp_postmeta"
     ],
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "WordPress Plugin Boilerplate using new web technologies.",
     "author": "Matthias Günter <support@matthias-web.com>",
     "license": "MIT",
