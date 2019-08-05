@@ -227,6 +227,8 @@ docker review stop:
 
 wordpress-dot-org:
     stage: deploy
+    dependencies:
+        - serve and docker e2e
     before_script:
         - svn co $WPORG_SVN_URL wporg --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
     script:
