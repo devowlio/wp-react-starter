@@ -17,7 +17,7 @@ networks:
 
 services:
     mysql:
-        image: mariadb:10.3
+        image: mariadb:10.4
         networks:
             - locl
         volumes:
@@ -39,7 +39,7 @@ services:
             PMA_HOST: mysql
 
     wordpress:
-        image: wordpress:5.2.0-apache
+        image: wordpress:5.2.2-apache
         networks:
             - locl
         volumes:

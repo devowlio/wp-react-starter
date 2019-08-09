@@ -1,4 +1,4 @@
-FROM cypress/included:3.2.0
+FROM cypress/included:3.4.1
 
 RUN apt-get update
 RUN apt-get install -y \
