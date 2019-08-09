@@ -229,14 +229,17 @@ wordpress-dot-org:
     stage: deploy
     dependencies:
         - serve and docker e2e
+    when: manual
     before_script:
         - svn co $WPORG_SVN_URL wporg --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
     script:
         - rm -rf wporg/assets wporg/trunk
         - mkdir wporg/assets wporg/trunk
-        - cp -r assets wporg/assets
-        - cp -r dist/$PLUGIN_SLUG wporg/trunk
+        - cp -r assets/* wporg/assets
+        - cp -r dist/$PLUGIN_SLUG-lite/* wporg/trunk
+        - cd wporg
         - svn status
+        - svn add --force * --auto-props --parents --depth infinity -q
         - svn ci -m "This commit is generated through CI/CD, see the GIT repository for more details ($CI_COMMIT_SHA)" --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
     only:
         refs:
