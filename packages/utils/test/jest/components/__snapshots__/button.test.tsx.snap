@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`button should render button with default arguments 1`] = `
+<button
+  className="button-secondary"
+>
+  Test
+</button>
+`;
+
+exports[`button should render button with primary type 1`] = `
+<button
+  className="button-primary button-secondary"
+>
+  Test
+</button>
+`;
+
+exports[`button should render button with title attribute 1`] = `
+<button
+  className="button-secondary"
+  title="Test"
+>
+  Test
+</button>
+`;

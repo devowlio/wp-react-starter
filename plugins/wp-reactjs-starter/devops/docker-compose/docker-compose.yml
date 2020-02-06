@@ -1,0 +1,4 @@
+# This file overrides all available configurations (local, traefik, e2e)
+# and should only be used for plugin relevant configuration.
+
+version: "3"

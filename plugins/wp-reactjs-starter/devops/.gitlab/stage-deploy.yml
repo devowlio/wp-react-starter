@@ -1,0 +1,24 @@
+# Do your deployments here, for example upload builds to your license server and publish docs
+wprjss docs deploy:
+    extends: [.wprjss jobs, .only production, .lerna changes]
+    stage: deploy
+    cache: {}
+    dependencies: [wprjss docs, release] # Always rely on "release" so ".lerna changes" works correctly
+    script:
+        - ls -la plugins/$JOB_PACKAGE_NAME/docs/
+
+wprjss build deploy:
+    extends: [.wprjss jobs, .only production, .lerna changes]
+    stage: deploy
+    cache: {}
+    dependencies: [wprjss build production, release]
+    script:
+        - ls -la plugins/$JOB_PACKAGE_NAME/build/
+
+# Publish the plugin changes to wordpress.org/plugins (not depending on lerna changes because it should simply reflect the complete SVN)
+wprjss wordpress.org:
+    extends: [.wprjss jobs, .wprjss only changes, .only production, .wordpress.org]
+    variables:
+        COPY_BUILD_FOLDER: wp-reactjs-starter
+        # WPORG_SVN_URL: # Put your SVN url here
+    dependencies: [wprjss build production, release, semver] # Here we need to rely on "semver" so the updated CHANGELOG.md and package.json is applied

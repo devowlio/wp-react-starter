@@ -1,0 +1,12 @@
+# This file overrides the file from docker-compose.yml
+
+version: "3"
+
+services:
+    phpmyadmin:
+        entrypoint: ["echo", "Service phpmyadmin disabled"]
+        restart: "no"
+
+    wordpress:
+        environment:
+            WP_CI_INSTALL_URL: http://wordpress

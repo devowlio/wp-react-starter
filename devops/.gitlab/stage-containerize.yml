@@ -1,0 +1,23 @@
+# Containerize a Dockerfile to the GitLab CI container registry.
+# The job name represents the folder in devops/docker/$CI_JOB_NAME/*
+# "only.changes" can not be extendable: https://gitlab.com/gitlab-org/gitlab/issues/8177
+.containerize:
+    stage: containerize
+    image:
+        # https://github.com/GoogleContainerTools/kaniko/issues/1002#issuecomment-578856209
+        # > This issue is only affecting people who are using the debug tag which is built on every commit to master. But still, use an explicit version!
+        name: gcr.io/kaniko-project/executor:debug-v0.16.0
+        entrypoint: [""]
+    cache: {}
+    script:
+        - export DOCKER_CONTAINER_FQN=$CI_REGISTRY_IMAGE/$CI_JOB_NAME:$CI_COMMIT_REF_SLUG
+        - echo $DOCKER_CONTAINER_FQN
+        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+        - /kaniko/executor --cache=true --build-arg GL_CI_WORKDIR=$(realpath $CI_PROJECT_DIR) --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/devops/docker/$CI_JOB_NAME/Dockerfile --destination $DOCKER_CONTAINER_FQN
+
+gitlab-ci:
+    extends: [.containerize]
+    only:
+        changes:
+            - devops/.gitlab/stage-containerize.yml
+            - devops/docker/gitlab-ci/*

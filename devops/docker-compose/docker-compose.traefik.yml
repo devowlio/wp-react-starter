@@ -1,0 +1,30 @@
+# This file overrides the file from docker-compose.yml
+
+version: "3"
+
+networks:
+    traefik:
+        external: true
+
+services:
+    phpmyadmin:
+        networks:
+            - traefik
+        labels:
+            - traefik.enable=true
+            - traefik.frontend.rule=Host:pma-${WP_CI_INSTALL_URL}
+            - traefik.frontend.auth.basic.users=${CI_TRAEFIK_BAUTH}
+            - traefik.docker.network=traefik
+            - traefik.port=80
+
+    wordpress:
+        networks:
+            - traefik
+        labels:
+            - traefik.enable=true
+            - traefik.frontend.rule=Host:${WP_CI_INSTALL_URL}
+            - traefik.frontend.auth.basic.users=${CI_TRAEFIK_BAUTH}
+            - traefik.docker.network=traefik
+            - traefik.port=80
+        environment:
+            WP_CI_INSTALL_URL: http://${WP_CI_INSTALL_URL}

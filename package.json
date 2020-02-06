@@ -1,0 +1,162 @@
+{
+    "name": "wp-reactjs-multi-starter",
+    "private": true,
+    "engines": {
+        "node": ">=10.15.3",
+        "yarn": ">=1.19"
+    },
+    "workspaces": {
+        "packages": [
+            "plugins/*",
+            "packages/*"
+        ],
+        "nohoist": [
+            "**/grunt*"
+        ]
+    },
+    "db-snapshot": [
+        "wp_posts",
+        "wp_postmeta"
+    ],
+    "scripts": {
+        "postinstall": "patch-package --patch-dir common/patch-package",
+        "bootstrap": "yarn install$(test $CI && echo ' --frozen-lockfile') && lerna exec -- yarn install$(test $CI && echo ' --frozen-lockfile') && lerna link && lerna run bootstrap --parallel && patch-package --patch-dir common/patch-package",
+        "docker:start": "yarn docker-compose up --build -d && concurrently --raw \"yarn docker-compose logs -f -t --tail=10\" \"yarn --silent wp-wait && yarn --silent docker:start:dev\"",
+        "docker:start:dev": "concurrently --raw \"TS_NODE_PROJECT=common/tsconfig.json yarn parallel-webpack --no-stats --config common/webpack.multi.ts --watch\" \"WORKSPACE_COMMAND='IS_DOCKER_START_COMMAND=1 yarn dev' yarn --silent workspace:concurrently\"",
+        "docker:stop": "yarn docker-compose stop",
+        "docker:rm": "yarn docker-compose down",
+        "docker:purge": "yarn docker-compose down -v",
+        "debug:php:generate": "yarn ts-node common/generate-launch-json.ts && prettier --write .vscode/launch.json",
+        "debug:php:start": "yarn --silent wp-cli:root '(pecl list | grep xdebug || pecl install xdebug) && docker-php-ext-enable xdebug.so && /etc/init.d/apache2 reload'",
+        "debug:php:stop": "yarn --silent wp-cli:root 'rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && /etc/init.d/apache2 reload'",
+        "docker-compose": "PLUGIN_SLUGS=$(yarn --silent workspace:slugs) COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./devops/docker-compose/docker-compose.yml:./devops/docker-compose/docker-compose.local.yml:$(COMPOSE_CONTEXT=local yarn --silent workspace:compose-files) COMPOSE_PROJECT_NAME=${npm_package_name} yarn --silent exposedotenv docker-compose",
+        "docker-compose:name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent docker-compose --log-level ERROR ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
+        "docker-compose:name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent docker-compose:name",
+        "wp-cli": "yarn --silent docker-compose$(test $CI && echo ':e2e' || echo ' --log-level ERROR') exec ${WP_CLI_CONTAINER_ARGS:='--user 33:33'} -T wordpress /bin/bash -c",
+        "wp-cli:root": "WP_CLI_CONTAINER_ARGS='--user 0' yarn --silent wp-cli",
+        "wp-wait": "timeout=500 docker exec -e REST_ENDPOINT=$(cd plugins && ls | head -1) ${WP_WAIT_CONTAINER:=$(yarn --silent docker-compose:name-wordpress)} bash -c 'while [ \"$(curl --insecure -s -o /dev/null -w ''%{http_code}'' localhost/wp-json/$REST_ENDPOINT/v1/plugin)\" != \"200\" ]; do sleep 2; done'",
+        "db:snapshot": "yarn --silent wp-cli \"wp db export - --tables=$(node -e 'console.log(require(`./package.json`)[`db-snapshot`].join(`,`))')\" >",
+        "db:snapshot-import-on-startup": "yarn --silent db:snapshot ./devops/scripts/startup.sql",
+        "db:snapshot-import": "yarn --silent wp-cli \"wp db import /scripts/startup.sql\"",
+        "docker-compose:e2e": "PLUGIN_SLUGS=$(yarn --silent workspace:slugs) COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./devops/docker-compose/docker-compose.yml:./devops/docker-compose/docker-compose.e2e.yml:$(COMPOSE_CONTEXT=e2e yarn --silent workspace:compose-files) COMPOSE_PROJECT_NAME=${npm_package_name}-ci-${JOB_PACKAGE_NAME}-${CI_COMMIT_REF_SLUG} yarn --silent exposedotenv docker-compose --log-level ERROR",
+        "docker-compose:e2e:name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent docker-compose:e2e ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
+        "docker-compose:e2e:name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent docker-compose:e2e:name",
+        "docker-compose:traefik": "PLUGIN_SLUGS=$(yarn --silent workspace:slugs) COMPOSE_PATH_SEPARATOR=: COMPOSE_FILE=./devops/docker-compose/docker-compose.yml:./devops/docker-compose/docker-compose.traefik.yml:$(COMPOSE_CONTEXT=traefik yarn --silent workspace:compose-files) COMPOSE_PROJECT_NAME=${npm_package_name}-traefik-${CI_COMMIT_REF_SLUG} yarn --silent exposedotenv docker-compose --log-level ERROR",
+        "docker-compose:traefik:name": "echo $(docker inspect -f '{{.Name}}' $(yarn --silent docker-compose:traefik ps -q ${DCOMPOSE_SERVICE_NAME}) | cut -c2-)",
+        "docker-compose:traefik:name-wordpress": "DCOMPOSE_SERVICE_NAME=wordpress yarn --silent docker-compose:traefik:name",
+        "workspace:lint": "eslint \"common/**/*.{jsx,js,tsx,ts}\" && ./packages/utils/vendor/bin/phpcs common/ --standard=./common/phpcs.xml && yarn --silent workspaces run lint",
+        "workspace:concurrently": "node -e \"require('concurrently')('$(yarn --silent lerna list --all -p --loglevel silent | tr -s '\r\n' ',')'.split(',').filter(Boolean).map(d => 'cd \\'' + d + '\\' && ' + process.env.WORKSPACE_COMMAND), { raw: true })\"",
+        "workspace:compose-files": "find plugins/*/devops packages/*/devops | grep \"^\\(plugins\\|packages\\)/.*/devops/docker-compose/docker-compose\\.\\(yml\\|$COMPOSE_CONTEXT\\)\" | sed -n -e 'H;${x;s/\\n/:.\\//g;s/^ //;p;}' | sed -e 's/:*$//' | sed -e 's/^://' ",
+        "workspace:slugs": "find plugins/* -maxdepth 0 2>/dev/null | sed -n -e 'H;${x;s/\\n/ /g;s/^ //;p;}' | sed 's/plugins\\///g'",
+        "exposedotenv": "env $(cat ./common/.env-default | xargs) env $(cat ./.env 2>/dev/null | xargs)",
+        "preversion": "WORKSPACE_COMMAND=\"yarn --silent grunt composer:disclaimer --force 2>/dev/null\" yarn --silent workspace:concurrently && WORKSPACE_COMMAND=\"yarn --silent grunt yarn:disclaimer --force 2>/dev/null\" yarn --silent workspace:concurrently && git add \"*LICENSE_3RD_PARTY*\""
+    },
+    "lerna": {
+        "npmClient": "yarn",
+        "useWorkspaces": true,
+        "version": "independent",
+        "command": {
+            "version": {
+                "conventionalCommits": true,
+                "conventionalChangelogg": {
+                    "context": {
+                        "linkReferences": false,
+                        "linkCompare": false
+                    },
+                    "writerOpts": {
+                        "transform": {
+                            "hash": null
+                        },
+                        "commitPartial": "*{{#if scope}} **{{scope}} :**{{~/if}} {{#if subject}}{{~subject}}{{~else}}{{~header}}{{~/if}}\n"
+                    }
+                },
+                "createRelease": "gitlab",
+                "message": "chore(release): publish [ci skip]",
+                "allowBranch": "master"
+            }
+        }
+    },
+    "eslintConfig": {
+        "extends": [
+            "./common/.eslintrc"
+        ]
+    },
+    "eslintIgnore": [
+        "common/create-wp-react-app",
+        "node_modules",
+        ".yarn-integrity",
+        ".yarn"
+    ],
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "prettier --write",
+            "eslint --fix"
+        ],
+        "*.php": [
+            "prettier --write",
+            "./packages/utils/vendor/bin/phpcs --standard=./common/phpcs.xml",
+            "./packages/utils/vendor/bin/phpcbf --standard=./common/phpcs.xml"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ],
+        "rules": {
+            "header-max-length": [
+                2,
+                "always",
+                140
+            ]
+        }
+    },
+    "prettier": {
+        "arrowParens": "always",
+        "printWidth": 120,
+        "useTabs": false,
+        "tabWidth": 4,
+        "endOfLine": "lf",
+        "overrides": [
+            {
+                "files": "*.php",
+                "options": {
+                    "singleQuote": true,
+                    "braceStyle": "1tbs"
+                }
+            }
+        ]
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@prettier/plugin-php": "^0.12.0",
+        "@prettier/plugin-xml": "^0.7.0",
+        "@types/grunt": "^0.4.25",
+        "@types/rimraf": "^2.0.3",
+        "@typescript-eslint/eslint-plugin": "^2.9.0",
+        "@typescript-eslint/parser": "^2.9.0",
+        "concurrently": "^5.1.0",
+        "dotenv": "^8.2.0",
+        "eslint": "^6.7.1",
+        "eslint-config-prettier": "^6.7.0",
+        "eslint-plugin-import": "^2.19.1",
+        "eslint-plugin-jest": "^23.3.0",
+        "eslint-plugin-prettier": "^3.1.1",
+        "eslint-plugin-react": "^7.16.0",
+        "husky": "^4.2.1",
+        "lerna": "^3.18.4",
+        "lint-staged": "^10.0.7",
+        "parallel-webpack": "^2.4.0",
+        "patch-package": "^6.2.0",
+        "postinstall-postinstall": "^2.0.0",
+        "prettier": "^1.19.1",
+        "rimraf": "^3.0.0",
+        "typescript": "~3.7.2"
+    }
+}

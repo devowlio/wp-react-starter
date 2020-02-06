@@ -1,0 +1,13 @@
+# This file overrides the file from docker-compose.yml
+
+version: "3"
+
+services:
+    wordpress:
+        volumes:
+            # Composer PHP files
+            - ../../plugins/wp-reactjs-starter/vendor:/var/www/html/wp-content/plugins/wp-reactjs-starter/vendor
+            # The main plugin source
+            - ../../plugins/wp-reactjs-starter/src:/var/www/html/wp-content/plugins/wp-reactjs-starter
+            # Devops scripts
+            - ../../plugins/wp-reactjs-starter/devops/scripts:/scripts/plugins/wp-reactjs-starter

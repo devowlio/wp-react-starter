@@ -1,0 +1,23 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start xdebug in WordPress container",
+            "command": "${workspaceFolder}/devops/scripts/task-xdebug-start.sh",
+            "presentation": {
+                "reveal": "never",
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "Stop xdebug in WordPress container",
+            "command": "${workspaceFolder}/devops/scripts/task-xdebug-stop.sh",
+            "presentation": {
+                "reveal": "never",
+                "showReuseMessage": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+{
+    "description": "WordPress Plugin Boilerplate using new web technologies.",
+    "license": "GPL-3.0-or-later",
+    "config": {
+        "sort-packages": true
+    },
+    "authors": [
+        {
+            "name": "Matthias Günter"
+        }
+    ],
+    "extra": {
+        "metasyntactical/composer-plugin-license-check": {
+            "whitelist": [
+                "MIT",
+                "ISC",
+                "BSD-2-Clause",
+                "BSD-3-Clause",
+                "BSD",
+                "Apache-2.0",
+                "Apache2",
+                "Artistic-2.0",
+                "WTFPL",
+                "CC-0",
+                "CC0-1.0",
+                "MPL-2.0",
+                "ZLib",
+                "Unlicense",
+                "GPL-2.0",
+                "GPL-2.0-or-later",
+                "GPL-3",
+                "GPL-3.0-or-later",
+                "LGPL-3.0-or-later"
+            ],
+            "blacklist": [
+                "*"
+            ],
+            "packages": [
+                "ignore-packages-here@1.0.0"
+            ]
+        }
+    },
+    "require": {
+        "wp-reactjs-multi-starter/utils": "@dev"
+    },
+    "require-dev": {
+        "10up/wp_mock": "^0.4.2",
+        "antecedent/patchwork": "^2.1.12",
+        "comcast/php-legal-licenses": "^1.1.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+        "metasyntactical/composer-plugin-license-check": "^0.5.0",
+        "nelson6e65/phpdoc-vuepress": "1.0.x-dev",
+        "php-stubs/wordpress-stubs": "^5.3.2",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "phpdocumentor/phpdocumentor": "dev-master",
+        "phpunit/phpunit": "^7",
+        "rregeer/phpunit-coverage-check": "^0.3.1",
+        "squizlabs/php_codesniffer": "^3.5",
+        "wp-coding-standards/wpcs": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "MatthiasWeb\\WPRJSS\\": [
+                "inc/",
+                "src/inc/"
+            ],
+            "MatthiasWeb\\WPRJSS\\Test\\": [
+                "test/phpunit/"
+            ]
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../packages/*",
+            "options": {
+                "symlink": true
+            }
+        }
+    ]
+}

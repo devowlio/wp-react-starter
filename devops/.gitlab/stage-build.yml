@@ -1,0 +1,65 @@
+# Generate technical documents
+.docs:
+    extends: .install
+    stage: build
+    script:
+        - cd $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME
+        - yarn docs
+    artifacts:
+        name: $CI_JOB_NAME
+        paths: [$JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/docs/]
+
+# Lint JavaScript/TypeScript coding
+.lint eslint:
+    extends: .install
+    stage: build
+    script:
+        - cd $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME
+        - yarn lint:eslint
+
+# Lint PHP coding
+.lint phpcs:
+    extends: .install
+    stage: build
+    script:
+        - cd $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME
+        - yarn lint:phpcs
+
+# common/**/* JavaScript/TypeScript linting, others are handled in its own job
+common lint eslint:
+    extends: .install
+    stage: build
+    script:
+        - yarn eslint "common/**/*.{jsx,js,tsx,ts}"
+    only:
+        changes:
+            - common/**/*.{jsx,js,tsx,ts}
+
+# common/**/* PHP linting, others are handled in its own job
+common lint phpcs:
+    extends: .install
+    stage: build
+    script:
+        - ./packages/utils/vendor/bin/phpcs common/ --standard=./common/phpcs.xml
+    only:
+        changes:
+            - common/**/*.php
+
+# Create build files
+.build plugin:
+    extends: .install
+    stage: build
+    script:
+        # If we are in production build check if it is necessary
+        - '[ $CI_JOB_STAGE == "build production" ] && [ ! -f plugins/$JOB_PACKAGE_NAME/.publish ] && echo $LERNA_SKIP_MESSAGE && exit 0'
+        - cd plugins/$JOB_PACKAGE_NAME
+        # Set a revision prerelease version so that version can be sent out to customers for testings
+        - export CURRENT_VERSION=$(node -e "console.log(require('./package.json').version)")
+        - '[ $CI_JOB_STAGE == "build" ] && yarn version --no-git-tag-version --new-version $CURRENT_VERSION"-"$(git rev-list --full-history --all --count)'
+        # Check if typescript .d.ts files can be built for add-ons
+        - yarn tsc -p .
+        # Build the plugin
+        - yarn build
+    artifacts:
+        name: $CI_JOB_NAME
+        paths: [plugins/$JOB_PACKAGE_NAME/build/]

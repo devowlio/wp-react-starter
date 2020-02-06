@@ -1,0 +1,43 @@
+<?php
+/**
+ * Main file for WordPress.
+ *
+ * @wordpress-plugin
+ * Plugin Name: 	${pluginName}
+ * Plugin URI:		${pluginUri}
+ * Description: 	${pluginDesc}
+ * Author:          ${author}
+ * Author URI:		${authorUri}
+ * Version: 		${pluginVersion}
+ * Text Domain:		${slug}
+ * Domain Path:		/languages
+ */
+
+defined('ABSPATH') or die( 'No script kiddies please!' ); // Avoid direct file request
+
+/**
+ * Plugin constants. This file is procedural coding style for initialization of
+ * the plugin core and definition of plugin configuration.
+ */
+if (defined('${constantPrefix}_PATH')) {
+    return;
+}
+define('${constantPrefix}_FILE', __FILE__);
+define('${constantPrefix}_PATH', dirname(${constantPrefix}_FILE));
+define('${constantPrefix}_ROOT_SLUG', '${rootName}');
+define('${constantPrefix}_SLUG', basename(${constantPrefix}_PATH));
+define('${constantPrefix}_INC', trailingslashit(path_join(${constantPrefix}_PATH, 'inc')));
+define('${constantPrefix}_MIN_PHP', '${minPhp}'); // Minimum of PHP 5.3 required for autoloading and namespacing
+define('${constantPrefix}_MIN_WP', '${minWp}'); // Minimum of WordPress 5.0 required
+define('${constantPrefix}_NS', '${namespace}');
+define('${constantPrefix}_DB_PREFIX', '${dbPrefix}'); // The table name prefix wp_{prefix}
+define('${constantPrefix}_OPT_PREFIX', '${optPrefix}'); // The option name prefix in wp_options
+define('${constantPrefix}_SLUG_CAMELCASE', lcfirst(str_replace('-', '', ucwords(${constantPrefix}_SLUG, '-'))));
+//define('${constantPrefix}_TD', ''); This constant is defined in the core class. Use this constant in all your __() methods
+//define('${constantPrefix}_VERSION', ''); This constant is defined in the core class
+//define('${constantPrefix}_DEBUG', true); This constant should be defined in wp-config.php to enable the Base#debug() method
+
+// Check PHP Version and print notice if minimum not reached, otherwise start the plugin core
+require_once ${constantPrefix}_INC .
+    'base/others/' .
+    (version_compare(phpversion(), ${constantPrefix}_MIN_PHP, '>=') ? 'start.php' : 'fallback-php-version.php');

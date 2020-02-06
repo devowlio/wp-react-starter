@@ -1,0 +1,17 @@
+{
+    "redefinable-internals": [
+        "call_user_func",
+        "error_log",
+        "error_reporting",
+        "file_exists",
+        "include",
+        "defined",
+        "constant",
+        "is_readable",
+        "realpath",
+        "glob",
+        "basename",
+        "filemtime",
+        "file_get_contents"
+    ]
+}

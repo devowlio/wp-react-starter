@@ -1,0 +1,69 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-15T15:53:15+01:00\n"
+"PO-Revision-Date: 2020-01-15 16:30+0100\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de_DE\n"
+
+#: admin.js:1800
+msgid "The text domain of the plugin is: %(textDomain)s (localized variable)"
+msgstr ""
+"Die Textdomäne des Plugins ist: %(textDomain)s (lokalisierte Variable)"
+
+#: admin.js:1804
+msgid ""
+"The WP REST API URL of the plugin is: {{a}}%(restUrl)s{{/a}} (localized "
+"variable, click for hello world example)"
+msgstr ""
+"Die WP REST API URL des Plugins lautet: {{a}}%(restUrl)s{{/a}} "
+"(lokalisierte Variable, klicken Sie für Hallo Welt Beispiel)"
+
+#: admin.js:1813
+msgid "The is an informative notice"
+msgstr "Das ist eine informative Mitteilung"
+
+#: admin.js:1815
+msgid "Your action was successful"
+msgstr "Ihre Aktion war erfolgreich"
+
+#: admin.js:1817
+msgid "An unexpected error has occurred"
+msgstr "Ein unerwarteter Fehler ist aufgetreten"
+
+#: admin.js:1872
+msgid "Todo list"
+msgstr "Todo-Liste"
+
+#: admin.js:1872
+msgid "This section demonstrates a MobX Todo list (no peristence to server)."
+msgstr ""
+"Dieser Abschnitt demonstriert eine MobX Todo-Liste (keine Persistenz zum "
+"Server)."
+
+#: admin.js:1879
+msgid "What needs to be done?"
+msgstr "Was muss getan werden?"
+
+#: admin.js:1886
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: admin.js:1950
+msgid "Remove"
+msgstr "Entfernen"
+
+#: widget.js:793
+msgid "Hello, World!"
+msgstr "Hallo Welt!"
+
+#: widget.js:793
+msgid "I got generated from your new plugin!"
+msgstr "Ich wurde von Ihrem neuen Plugin generiert!"

@@ -1,0 +1,7 @@
+{
+    "extends": "../../common/tsconfig.json",
+    "include": ["lib/**/*", "scripts/**/*.ts", "test/jest/**/*"],
+    "compilerOptions": {
+        "outDir": "types/"
+    }
+}

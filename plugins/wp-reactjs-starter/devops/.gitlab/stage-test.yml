@@ -1,0 +1,13 @@
+# Start the cypress e2e test
+wprjss docker e2e cypress:
+    extends: [.wprjss jobs, .wprjss only changes, .docker e2e cypress]
+    # only: # Add dependent plugins so you run also the test if another plugin changes
+    #    changes: ["plugins/{dependent-plugin1,dependent-plugin2}/**/*"]
+
+# Test PHPUnit
+wprjss phpunit:
+    extends: [.wprjss jobs, .wprjss only changes, .phpunit]
+
+# Test Jest
+wprjss jest:
+    extends: [.wprjss jobs, .wprjss only changes, .jest]

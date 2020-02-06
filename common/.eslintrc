@@ -1,0 +1,67 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": ["eslint:recommended", "plugin:react/recommended", "prettier", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "overrides": [
+        {
+            "files": ["**/*.{tsx,ts}"],
+            "extends": [
+                "eslint:recommended",
+                "plugin:react/recommended",
+                "prettier",
+                "plugin:prettier/recommended",
+                "plugin:@typescript-eslint/eslint-recommended",
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "parser": "@typescript-eslint/parser",
+            "plugins": ["react", "@typescript-eslint", "import"],
+            "rules": {
+                "one-var": ["error", "never"],
+                "react/react-in-jsx-scope": 0,
+                "react/prop-types": 0,
+                "prefer-arrow-callback": "error",
+                "prefer-destructuring": "warn",
+                "prefer-template": "warn",
+                "import/no-extraneous-dependencies": "error",
+                "import/no-default-export": "warn",
+                //"sort-imports": "warn",
+                "@typescript-eslint/no-explicit-any": 0,
+                "@typescript-eslint/explicit-function-return-type": 0,
+                "@typescript-eslint/ban-ts-ignore": 0,
+                "@typescript-eslint/member-ordering": "error"
+            }
+        },
+        {
+            "files": ["**/jest/**/*.test.{tsx,ts}"],
+            "plugins": ["jest"],
+            "extends": ["plugin:jest/recommended", "plugin:jest/style"]
+        },
+        {
+            "files": ["**/*.test.{tsx,ts}"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": 0
+            }
+        }
+        //{
+        //    // Those who use plain JavaScript have lost control over their lives ;-)
+        //    "files": ["**/*.{jsx,js}"],
+        //    "extends": ["eslint:recommended", "plugin:react/recommended", "prettier", "plugin:prettier/recommended"],
+        //    "rules": {}
+        //}
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "valeryanm.vscode-phpsab",
+        "felixfbecker.php-debug",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bmewburn.vscode-intelephense-client",
+        "mrorz.language-gettext",
+        "steoates.autoimport",
+        "ms-azuretools.vscode-docker",
+        "stringham.move-ts",
+        "streetsidesoftware.code-spell-checker",
+        "alexkrechik.cucumberautocomplete"
+    ],
+    "unwantedRecommendations": ["vscode.php-language-features"]
+}

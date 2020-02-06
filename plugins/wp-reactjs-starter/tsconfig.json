@@ -1,0 +1,11 @@
+{
+    "extends": "../../common/tsconfig.json",
+    "include": ["src/public/ts/**/*", "scripts/**/*.ts", "test/jest/**/*"],
+    "compilerOptions": {
+        "outDir": "types/"
+    },
+    "typedocOptions": {
+        "mode": "modules",
+        "out": "docs/js"
+    }
+}

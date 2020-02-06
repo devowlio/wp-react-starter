@@ -1,0 +1,25 @@
+# This file overrides the file from docker-compose.yml
+
+version: "3"
+
+services:
+    phpmyadmin:
+        ports:
+            - "8079:80"
+
+    wordpress:
+        depends_on: [dockerhost]
+        ports:
+            - "8080:80"
+        environment:
+            WP_CI_INSTALL_URL: ${WP_LOCAL_INSTALL_URL}
+            XDEBUG_CONFIG: remote_host=dockerhost remote_port=9000 remote_enable=1
+
+    # Make the host machine available in WordPress environment through internal host `dockerhost`.
+    # This is needed for debugging purposes.
+    dockerhost:
+        image: qoomon/docker-host
+        cap_add: ["NET_ADMIN", "NET_RAW"]
+        restart: on-failure
+        networks:
+            - locl

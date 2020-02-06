@@ -1,0 +1,40 @@
+# Copyright (C) 2020 Matthias Guenter
+# This file is distributed under the same license as the WP ReactJS Starter plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP ReactJS Starter 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/src\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-17T14:54:36+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.2.0\n"
+
+#. Plugin Name of the plugin
+msgid "WP ReactJS Starter"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://matthias-web.com/wordpress"
+msgstr ""
+
+#. Description of the plugin
+msgid "This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin."
+msgstr ""
+
+#. Author of the plugin
+msgid "Matthias Guenter"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://matthias-web.com"
+msgstr ""
+
+#: inc/view/widget/Widget.php:23
+msgid "A widget that demonstrates using React."
+msgid_plural "Widgets that demonstrates using React."
+msgstr[0] ""
+msgstr[1] ""

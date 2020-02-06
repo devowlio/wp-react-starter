@@ -1,0 +1,5 @@
+# Build production ready WP plugin
+wprjss build production:
+    extends: [.wprjss jobs, .only production, .build plugin]
+    stage: build production
+    dependencies: [wprjss yarn licenses, release, semver] # Always rely on "release" so ".lerna changes" works correctly

@@ -1,0 +1,5 @@
+{
+    "integrationFolder": "test/cypress/integration",
+    "pluginsFile": "test/cypress/plugins/index.js",
+    "//": "// The cypress configuration is dynamically created through a plugin, see ./test/cypress/plugins/index"
+}

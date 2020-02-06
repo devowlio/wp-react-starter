@@ -1,0 +1,82 @@
+{
+    // Cucumber
+    "cucumberautocomplete.steps": ["plugins/*/test/cypress/step-definitions/**/*.ts"],
+    "cucumberautocomplete.syncfeatures": "plugins/*/test/cypress/integration/*feature",
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    // cSpell
+    "cSpell.enabled": true,
+    // ESLint
+    "eslint.enable": true,
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+    // PHP CodeSniffer
+    "phpsab.composerJsonPath": "packages/utils/composer.json", // use utils package as binary because its the first available package (composer does not support hoisting for monorepos)
+    "phpsab.fixerEnable": true, // disable automatic fixer because it is done by runOnSave
+    "phpsab.snifferEnable": true,
+    "phpsab.snifferMode": "onType",
+    "phpsab.snifferTypeDelay": 500,
+    "phpsab.standard": "common/phpcs.xml",
+    // Editor
+    "editor.useTabStops": false,
+    "editor.formatOnSave": false,
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSaveTimeout": 3000, // Increase because phpcs can take longer
+    // Intelephense
+    "intelephense.files.maxSize": 4000000, // increase max file size so WordPress sub is considered, too
+    // Per language
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[typescriptreact]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[jsonc]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[php]": {
+        "editor.defaultFormatter": "valeryanm.vscode-phpsab",
+        "editor.formatOnSave": true
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.formatOnSave": true
+    },
+    "[yaml]": {
+        "editor.formatOnSave": true
+    },
+    "[xml]": {
+        "editor.formatOnSave": true
+    },
+    // Hide additional files/folders from sidebar because they are caused through Docker volumes
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "devops/scripts/plugins/": true,
+        "plugins/*/src/vendor/": true
+    },
+    // Exclude files from watcher, it can be expensive
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/vendor/*/**": true,
+        "**/vendor-temp/*/**": true
+    }
+}

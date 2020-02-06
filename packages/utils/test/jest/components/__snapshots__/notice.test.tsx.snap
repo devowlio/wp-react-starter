@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`notice should render notice with default arguments 1`] = `
+<div
+  className="notice"
+>
+  <p>
+    Test
+  </p>
+</div>
+`;
+
+exports[`notice should render notice with error type 1`] = `
+<div
+  className="notice notice-error"
+>
+  <p>
+    Test
+  </p>
+</div>
+`;
+
+exports[`notice should render notice with info type 1`] = `
+<div
+  className="notice notice-info"
+>
+  <p>
+    Test
+  </p>
+</div>
+`;
+
+exports[`notice should render notice with success type 1`] = `
+<div
+  className="notice notice-success"
+>
+  <p>
+    Test
+  </p>
+</div>
+`;

@@ -1,0 +1,175 @@
+{
+    "name": "@wp-reactjs-multi-starter/utils",
+    "version": "1.0.0",
+    "description": "Utility functionality for all your WordPress plugins.",
+    "author": "Matthias Günter <support@matthias-web.com>",
+    "homepage": "https://matthias-web.com",
+    "license": "GPL-3.0-or-later",
+    "private": true,
+    "engines": {
+        "node": ">=10.15.3",
+        "yarn": ">=1.19.1"
+    },
+    "main": "lib/index.tsx",
+    "files": [
+        "dist",
+        "dev",
+        "languages/frontend"
+    ],
+    "scripts": {
+        "postinstall": "rm -rf ./node_modules/.cache/cache-loader",
+        "bootstrap": "composer install",
+        "dev": "concurrently --raw \"test $IS_DOCKER_START_COMMAND && exit 0 || yarn webpack --watch\" \"yarn --silent chokidar 'src/**/*.php' -c 'yarn i18n:generate:backend' --silent\"",
+        "i18n:generate:backend": "yarn --silent wp:weak i18n make-pot src/ languages/backend/$(basename \"$(pwd)\").pot --ignore-domain",
+        "i18n:generate:frontend": "yarn --silent wp:weak i18n make-pot dev languages/frontend/$(basename \"$(pwd)\").pot --ignore-domain && rm -rf languages/frontend/json && wp i18n make-json languages/frontend languages/frontend/json --no-purge",
+        "build": "yarn --silent build:js:production && yarn --silent build:js:development",
+        "build:js:production": "NODE_ENV=production yarn webpack",
+        "build:js:development": "yarn webpack",
+        "build:webpack:done": "yarn --silent i18n:generate:frontend",
+        "lint": "yarn --silent lint:phpcs && yarn --silent lint:eslint",
+        "lint:eslint": "eslint \"{lib,scripts,test}/**/*.{js,jsx,tsx,ts}\"",
+        "lint:phpcs": "./vendor/bin/phpcs src/ --standard=../../common/phpcs.xml",
+        "test": "yarn test:phpunit && yarn test:jest --ci",
+        "test:phpunit": "yarn --silent phpunit",
+        "test:phpunit:coverage": "yarn --silent test:phpunit --coverage-text --coverage-html coverage/phpunit --coverage-clover coverage/phpunit/clover.xml && ./vendor/bin/coverage-check coverage/phpunit/clover.xml $npm_package_phpunit_coverage_threshold --only-percentage",
+        "test:jest": "yarn --silent jest --passWithNoTests",
+        "test:jest:coverage": "yarn --silent test:jest --coverage",
+        "root:run": "cd ../.. && yarn --silent",
+        "grunt": "grunt --gruntfile scripts/Gruntfile.ts --base .",
+        "webpack": "webpack --config scripts/webpack.config.ts",
+        "phpunit": "./vendor/bin/phpunit --prepend test/phpunit.xdebug.php --config test/phpunit.xml",
+        "jest": "jest --config test/jest.config.js --rootDir .",
+        "wp:weak": "php -n -dextension=phar.so -dextension=json.so -dextension=mbstring.so -dextension=tokenizer.so -dmemory_limit=512M $(which wp)"
+    },
+    "phpunit-coverage-threshold": 80,
+    "browserslist": [
+        "defaults"
+    ],
+    "babel": {
+        "sourceMaps": true,
+        "presets": [
+            "@babel/preset-typescript",
+            [
+                "@babel/preset-env",
+                {
+                    "useBuiltIns": "entry",
+                    "corejs": 3
+                }
+            ],
+            "@babel/preset-react"
+        ],
+        "plugins": [
+            "@babel/plugin-transform-runtime",
+            [
+                "@babel/plugin-proposal-decorators",
+                {
+                    "legacy": true
+                }
+            ],
+            [
+                "@babel/plugin-proposal-class-properties",
+                {
+                    "loose": true
+                }
+            ]
+        ]
+    },
+    "license-check": {
+        "spdx": [
+            "MIT",
+            "ISC",
+            "BSD-2-Clause",
+            "BSD-3-Clause",
+            "Apache-2.0",
+            "Artistic-2.0",
+            "WTFPL",
+            "CC-0",
+            "CC0-1.0",
+            "MPL-2.0",
+            "ZLib",
+            "Unlicense",
+            "GPL-2.0",
+            "GPL-2.0-or-later",
+            "GPL-3",
+            "GPL-3.0-or-later",
+            "LGPL-3.0-or-later"
+        ],
+        "packages": [
+            "ignore-packages-here@1.0.0"
+        ]
+    },
+    "eslintConfig": {
+        "extends": [
+            "../../common/.eslintrc"
+        ]
+    },
+    "eslintIgnore": [
+        "dist",
+        "dev",
+        "docs",
+        "coverage",
+        "node_modules",
+        "vendor",
+        ".yarn-integrity",
+        ".yarn"
+    ],
+    "dependencies": {
+        "@wordpress/i18n": "^3.6.1",
+        "classnames": "^2.2.6",
+        "core-js": "3",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.2",
+        "i18n-calypso": "^4.0.0",
+        "immer": "^5.3.4",
+        "jquery": "^3.4.1",
+        "react": "^16.11.0",
+        "react-dom": "^16.12.0",
+        "react-test-renderer": "^16.12.0",
+        "setimmediate": "^1.0.5",
+        "url-parse": "^1.4.7"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.7.7",
+        "@babel/plugin-proposal-class-properties": "^7.7.4",
+        "@babel/plugin-proposal-decorators": "^7.7.4",
+        "@babel/plugin-transform-runtime": "^7.7.6",
+        "@babel/preset-env": "^7.7.7",
+        "@babel/preset-react": "^7.7.4",
+        "@babel/preset-typescript": "^7.7.7",
+        "@babel/runtime": "^7.7.2",
+        "@types/classnames": "^2.2.9",
+        "@types/clean-css": "^4.2.1",
+        "@types/enzyme": "^3.10.4",
+        "@types/enzyme-adapter-react-16": "^1.0.5",
+        "@types/jest": "^25.1.1",
+        "@types/jquery": "^3.3.31",
+        "@types/mini-css-extract-plugin": "^0.9.0",
+        "@types/react": "^16.9.11",
+        "@types/react-dom": "^16.9.4",
+        "@types/url-parse": "^1.4.3",
+        "@types/webpack": "^4.41.0",
+        "@types/webpackbar": "^2.6.0",
+        "@types/wordpress__i18n": "^3.4.0",
+        "autoprefixer": "^9.7.1",
+        "babel-jest": "^25.1.0",
+        "babel-loader": "^8.0.6",
+        "cache-loader": "^4.1.0",
+        "chokidar-cli": "^2.1.0",
+        "clean-css": "^4.2.1",
+        "css-loader": "^3.4.2",
+        "fork-ts-checker-webpack-plugin": "^4.0.3",
+        "grunt": "^1.0.4",
+        "grunt-cli": "^1.3.2",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^25.1.0",
+        "mini-css-extract-plugin": "^0.9.0",
+        "node-sass": "^4.13.0",
+        "postcss-loader": "^3.0.0",
+        "sass-loader": "^8.0.2",
+        "thread-loader": "^2.1.3",
+        "ts-node": "^8.5.2",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10",
+        "webpackbar": "^4.0.0"
+    }
+}

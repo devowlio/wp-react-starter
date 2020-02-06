@@ -1,0 +1,77 @@
+{
+    "name": "wp-reactjs-multi-starter/utils",
+    "description": "Utility functionality for all your WordPress plugins",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "config": {
+        "sort-packages": true
+    },
+    "archive": {
+        "exclude": [
+            "lib",
+            "tests"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Matthias Günter"
+        }
+    ],
+    "extra": {
+        "clean-all-except": [
+            "src",
+            "dist",
+            "dev",
+            "languages"
+        ],
+        "metasyntactical/composer-plugin-license-check": {
+            "whitelist": [
+                "MIT",
+                "ISC",
+                "BSD-2-Clause",
+                "BSD-3-Clause",
+                "BSD",
+                "Apache-2.0",
+                "Apache2",
+                "Artistic-2.0",
+                "WTFPL",
+                "CC-0",
+                "CC0-1.0",
+                "MPL-2.0",
+                "ZLib",
+                "Unlicense",
+                "GPL-2.0",
+                "GPL-2.0-or-later",
+                "GPL-3",
+                "GPL-3.0-or-later",
+                "LGPL-3.0-or-later"
+            ],
+            "blacklist": [
+                "*"
+            ],
+            "packages": [
+                "ignore-packages-here@1.0.0"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MatthiasWeb\\Utils\\": "src/",
+            "MatthiasWeb\\Utils\\Test\\": "test/phpunit/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "10up/wp_mock": "^0.4.2",
+        "antecedent/patchwork": "^2.1.12",
+        "comcast/php-legal-licenses": "^1.1.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+        "metasyntactical/composer-plugin-license-check": "^0.5.0",
+        "php-stubs/wordpress-stubs": "^5.3.2",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "phpunit/phpunit": "^7",
+        "rregeer/phpunit-coverage-check": "^0.3.1",
+        "squizlabs/php_codesniffer": "^3.5",
+        "wp-coding-standards/wpcs": "^2.2"
+    }
+}

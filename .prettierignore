@@ -1,0 +1,7 @@
+common/create-wp-react-app
+**/CHANGELOG.md
+**/*.lock
+plugins/*/languages
+plugins/*/public/languages
+plugins/*/build
+**/LICENSE*

@@ -1,0 +1,28 @@
+diff --git a/node_modules/@lerna/conventional-commits/lib/update-changelog.js b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
+index e62a332..010b960 100644
+--- a/node_modules/@lerna/conventional-commits/lib/update-changelog.js
++++ b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
+@@ -11,7 +11,7 @@ const readExistingChangelog = require("./read-existing-changelog");
+ 
+ module.exports = updateChangelog;
+ 
+-function updateChangelog(pkg, type, { changelogPreset, rootPath, tagPrefix = "v", version }) {
++function updateChangelog(pkg, type, { changelogPreset, conventionalChangelog = {}, rootPath, tagPrefix = "v", version }) {
+   log.silly(type, "for %s at %s", pkg.name, pkg.location);
+ 
+   return getChangelogConfig(changelogPreset, rootPath).then(config => {
+@@ -55,7 +55,13 @@ function updateChangelog(pkg, type, { changelogPreset, rootPath, tagPrefix = "v"
+     }
+ 
+     // generate the markdown for the upcoming release.
+-    const changelogStream = conventionalChangelogCore(options, context, gitRawCommitsOpts);
++    const changelogStream = conventionalChangelogCore(
++      Object.assign(options, conventionalChangelog.options),
++      Object.assign(context, conventionalChangelog.context),
++      Object.assign(gitRawCommitsOpts, conventionalChangelog.gitRawCommitsOpts),
++      conventionalChangelog.parserOpts,
++      conventionalChangelog.writerOpts
++    );
+ 
+     return Promise.all([
+       getStream(changelogStream).then(makeBumpOnlyFilter(pkg)),

@@ -1,0 +1,47 @@
+# WordPress plugin
+plugins/*/src/public/dist
+plugins/*/src/public/dev
+plugins/*/src/public/lib
+plugins/*/src/inc/base/others/cachebuster*
+plugins/*/build
+plugins/*/docs
+plugins/*/wporg
+
+# Packages
+packages/*/dist
+packages/*/dev
+
+# Tests
+packages/*/coverage
+plugins/*/coverage
+plugins/*/test/cypress/videos
+plugins/*/test/cypress/screenshots
+
+# Misc
+.publish
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules
+vendor
+vendor-temp
+
+# Cache directories
+.npm
+.eslintcache
+.yarn-integrity
+
+# dotenv environment variables file
+.env

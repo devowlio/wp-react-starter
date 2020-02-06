@@ -1,0 +1,7 @@
+# Validate licenses for yarn packages
+wprjss yarn licenses:
+    extends: [.wprjss jobs, .wprjss only changes, .yarn licenses]
+
+# Validate licenses for composer packages
+wprjss composer licenses:
+    extends: [.wprjss jobs, .wprjss only changes, .composer licenses]
