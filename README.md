@@ -11,6 +11,7 @@ Create (multiple) WordPress plugins that use **React**, **TypeScript**, and **ob
 [![GitHub stars](https://img.shields.io/github/stars/devowlio/wp-react-starter?style=flat&logo=github)](https://github.com/devowlio/wp-react-starter)
 [![Join on Slack](https://img.shields.io/badge/Slack-join-green.svg?style=flat&logo=slack)](https://matthias-web.com/slack)
 [![codecov](https://codecov.io/gl/devowlio/wp-reactjs-starter/branch/master/graph/badge.svg)](https://codecov.io/gl/devowlio/wp-reactjs-starter)
+[![GitLab CI/CD](https://img.shields.io/badge/CI%20%2F%20CD-See%20history-green?logo=gitlab)](https://gitlab.com/devowlio/wp-reactjs-starter/pipelines)
 
 ### **🤗 Why WordPress plugin development is fun with WP React Starter**
 
