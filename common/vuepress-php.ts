@@ -7,7 +7,19 @@
  * @see https://vuepress.vuejs.org/config/#basic-config
  */
 
-// Allow also CI-based based-url /-/my-plugin/-/jobs/219806015/artifacts/docs/php/
+/**
+ * In CI set the basepath to "/vuepress-basepath-replacement/" so you can use `sed`
+ * for find and replace. Why? VuePress does not support relative pathes.
+ *
+ * Use this in your jobs if you deploy to a new basepath url:
+ *
+ * ```
+ * find ./docs/php -type f -exec sed -i -e 's/vuepress-basepath-replacement/my-new\/path/g' {} \;
+ * ```
+ *
+ * @param dfltValue
+ * @see https://github.com/vuejs/vuepress/issues/796
+ */
 function basepath(dfltValue: string) {
     if (!process.env.CI) {
         return dfltValue;
@@ -17,7 +29,7 @@ function basepath(dfltValue: string) {
         return process.env.VUEPRESS_PHP_BASE;
     }
 
-    return `/-/${process.env.CI_PROJECT_NAME}/-/jobs/${process.env.CI_JOB_ID}/artifacts/docs/php/`;
+    return "/vuepress-basepath-replacement/";
 }
 
 const slug = process.env.npm_package_slug;
