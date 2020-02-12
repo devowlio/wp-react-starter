@@ -403,7 +403,7 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, true]
         ]);
         WP_Mock::userFunction('path_join');
-        WP_Mock::userFunction('wp_set_script_translations');
+        WP_Mock::userFunction('wp_set_script_translations', ['times' => 0]);
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);

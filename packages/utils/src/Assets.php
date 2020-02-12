@@ -170,11 +170,15 @@ trait Assets {
 
                 if ($type === 'script') {
                     wp_enqueue_script($useHandle, $url, $deps, $cachebuster, $in_footer);
-                    wp_set_script_translations(
-                        $useHandle,
-                        $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_TEXT_DOMAIN),
-                        path_join($this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH), self::$PUBLIC_JSON_I18N)
-                    );
+
+                    // Only set translations for our own entry points, libraries handle localization usually in another way
+                    if (!$isLib) {
+                        wp_set_script_translations(
+                            $useHandle,
+                            $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_TEXT_DOMAIN),
+                            path_join($this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH), self::$PUBLIC_JSON_I18N)
+                        );
+                    }
                 } else {
                     wp_enqueue_style($useHandle, $url, $deps, $cachebuster, $media);
                 }
