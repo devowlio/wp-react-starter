@@ -58,7 +58,7 @@
         "command": {
             "version": {
                 "conventionalCommits": true,
-                "conventionalChangelogg": {
+                "conventionalChangelog": {
                     "context": {
                         "linkReferences": false,
                         "linkCompare": false
