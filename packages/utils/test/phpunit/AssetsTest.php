@@ -183,7 +183,7 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnFalse();
 
         WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
-        WP_Mock::userFunction('wp_deregister_script', ['times' => 0]);
+        WP_Mock::userFunction('plugins_url', ['times' => 0]);
 
         $this->assets
             ->shouldReceive('enqueueLibraryScript')
@@ -206,13 +206,79 @@ final class AssetsTest extends TestCase {
         redefine(WP_Scripts::class . '::query', always((object) ['ver' => '16.7']));
 
         WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
-        WP_Mock::userFunction('wp_deregister_script', ['times' => 1, 'args' => [Assets::$HANDLE_REACT]]);
-        WP_Mock::userFunction('wp_deregister_script', ['times' => 1, 'args' => [Assets::$HANDLE_REACT_DOM]]);
 
+        $this->assets->shouldReceive('getPublicFolder')->with(true);
+
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
+        ]);
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react-dom/umd/react-dom.production.min.js', PHPUNIT_FILE]
+        ]);
+
+        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
         $this->assets
-            ->shouldReceive('enqueueLibraryScript')
-            ->once()
-            ->with(Assets::$HANDLE_REACT, Mockery::any());
+            ->shouldNotReceive('enqueueLibraryScript')
+            ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
+
+        $this->assets->enqueueReact();
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testEnqueueReactLower168Dev() {
+        $this->assets->shouldReceive('enqueueReact')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+
+        redefine(WP_Scripts::class . '::query', always((object) ['ver' => '16.7']));
+
+        WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
+
+        $this->assets->shouldReceive('getPublicFolder')->with(true);
+
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react/umd/react.development.js', PHPUNIT_FILE]
+        ]);
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react-dom/umd/react-dom.development.js', PHPUNIT_FILE]
+        ]);
+
+        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
+        $this->assets
+            ->shouldNotReceive('enqueueLibraryScript')
+            ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
+
+        $this->assets->enqueueReact();
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testEnqueueReactLower168NoReactDom() {
+        $this->assets->shouldReceive('enqueueReact')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnFalse();
+
+        redefine(WP_Scripts::class . '::query', function ($handle) {
+            if ($handle === 'react') {
+                return (object) ['ver' => '16.7'];
+            } else {
+                return false;
+            }
+        });
+
+        WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
+
+        $this->assets->shouldReceive('getPublicFolder')->with(true);
+
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
+        ]);
+
+        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
         $this->assets
             ->shouldReceive('enqueueLibraryScript')
             ->once()

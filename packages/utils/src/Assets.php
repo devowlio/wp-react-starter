@@ -80,27 +80,42 @@ trait Assets {
      */
     public function enqueueReact() {
         $useNonMinifiedSources = $this->useNonMinifiedSources();
+        $reactDev = 'react/umd/react.development.js';
+        $reactProd = 'react/umd/react.production.min.js';
+        $reactDomDev = 'react-dom/umd/react-dom.development.js';
+        $reactDomProd = 'react-dom/umd/react-dom.production.min.js';
+        $enqueueDom = true;
 
         // React (first check version is minium 16.8 so hooks work correctly)
         $coreReact = wp_scripts()->query(self::$HANDLE_REACT);
         if ($coreReact !== false && version_compare($coreReact->ver, '16.8', '<')) {
-            wp_deregister_script(self::$HANDLE_REACT);
-            wp_deregister_script(self::$HANDLE_REACT_DOM);
+            // Replace the already existing React version with ours
+            $publicFolder = $this->getPublicFolder(true);
+            $publicSrc = $publicFolder . ($useNonMinifiedSources ? $reactDev : $reactProd);
+            $coreReact->src = plugins_url($publicSrc, $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_FILE));
+
+            // Also use our ReactDOM, instead we get this error: https://reactjs.org/docs/error-decoder.html/?invariant=321
+            $coreReactDom = wp_scripts()->query(self::$HANDLE_REACT_DOM);
+            if ($coreReactDom !== false) {
+                $publicSrc = $publicFolder . ($useNonMinifiedSources ? $reactDomDev : $reactDomProd);
+                $coreReactDom->src = plugins_url(
+                    $publicSrc,
+                    $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_FILE)
+                );
+                $enqueueDom = false;
+            }
+        } else {
+            // Enqueue our React version and let WP decide which version to take
+            $this->enqueueLibraryScript(self::$HANDLE_REACT, [[$useNonMinifiedSources, $reactDev], $reactProd]);
         }
 
-        // Both in admin interface (page) and frontend (widgets)
-        $this->enqueueLibraryScript(self::$HANDLE_REACT, [
-            [$useNonMinifiedSources, 'react/umd/react.development.js'],
-            'react/umd/react.production.min.js'
-        ]);
-        $this->enqueueLibraryScript(
-            self::$HANDLE_REACT_DOM,
-            [
-                [$useNonMinifiedSources, 'react-dom/umd/react-dom.development.js'],
-                'react-dom/umd/react-dom.production.min.js'
-            ],
-            self::$HANDLE_REACT
-        );
+        if ($enqueueDom) {
+            $this->enqueueLibraryScript(
+                self::$HANDLE_REACT_DOM,
+                [[$useNonMinifiedSources, $reactDomDev], $reactDomProd],
+                self::$HANDLE_REACT
+            );
+        }
     }
 
     /**
