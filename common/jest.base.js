@@ -3,9 +3,11 @@
 const path = require("path");
 
 const pkg = require(path.resolve(process.env.PWD, "package.json"));
+const isPlugin = !!pkg.slug;
 const rootName = pkg.name.match(/^@(.*)\//)[1];
 
 module.exports = {
+    roots: ["<rootDir>/test/jest/"].concat(isPlugin ? ["<rootDir>/src/public/ts"] : ["<rootDir>/lib"]),
     setupFiles: ["<rootDir>/test/jest.setup.js"],
     testRegex: "(/test/jest/.*(\\.|/)(test|spec))\\.tsx$",
     transform: {

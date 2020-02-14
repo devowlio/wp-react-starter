@@ -2,9 +2,11 @@ import { createLocalizationFactory } from "../../../lib/factory/i18n";
 
 jest.mock("i18n-calypso");
 jest.mock("@wordpress/i18n");
+jest.mock("wp");
 
 const i18nCalypso = require("i18n-calypso");
 const wpi18n = require("@wordpress/i18n");
+const wp = require("wp").default;
 
 describe("i18n", () => {
     const slug = "jest";
@@ -73,5 +75,23 @@ describe("i18n", () => {
 
         expect(i18nCalypso.translate).toHaveBeenCalledWith(single, { components });
         expect(actual).toBe(reactNode);
+    });
+
+    it("should correctly setLocaleData to wp.i18n twice", () => {
+        const localeData = {
+            "Hello World!": ["Hallo Welt!"]
+        };
+        const localeDataSecond = {
+            "Hello Bob!": ["Hallo Bob!"]
+        };
+
+        (global as any).wpi18nLazy = {
+            [slug]: [localeData, localeDataSecond]
+        };
+
+        createLocalizationFactory(slug);
+
+        expect(wp.i18n.setLocaleData).toHaveBeenCalledWith(localeData, slug);
+        expect(wp.i18n.setLocaleData).toHaveBeenCalledWith(localeDataSecond, slug);
     });
 });

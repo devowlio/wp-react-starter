@@ -11,9 +11,6 @@
         "yarn": ">=1.19.1"
     },
     "homepage": "https://matthias-web.com",
-    "apidoc": {
-        "sampleUrl": "/wp-json"
-    },
     "files": [
         "types/"
     ],

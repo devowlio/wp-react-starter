@@ -62,7 +62,7 @@ cache: &cache # see https://gitlab.com/gitlab-org/gitlab-runner/issues/2838#note
 # Only go on with the job if lerna detected changes
 .lerna changes:
     before_script:
-        - "[ ! -f $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/.publish ] && echo $LERNA_SKIP_MESSAGE && exit 0"
+        - "[ ! -f $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/.publish ] && [ ! $LERNA_CHANGES_FORCE ] && echo $LERNA_SKIP_MESSAGE && exit 0"
 
 # Initial installation so the cache gets filled
 install:

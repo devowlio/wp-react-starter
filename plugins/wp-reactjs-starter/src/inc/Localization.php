@@ -1,7 +1,6 @@
 <?php
 namespace MatthiasWeb\WPRJSS;
 
-use MatthiasWeb\Utils\Assets;
 use MatthiasWeb\Utils\Localization as UtilsLocalization;
 use MatthiasWeb\WPRJSS\base\UtilsProvider;
 
