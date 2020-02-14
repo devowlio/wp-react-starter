@@ -173,10 +173,13 @@ trait Assets {
 
                     // Only set translations for our own entry points, libraries handle localization usually in another way
                     if (!$isLib) {
-                        wp_set_script_translations(
+                        $this->setLazyScriptTranslations(
                             $useHandle,
                             $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_TEXT_DOMAIN),
-                            path_join($this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH), self::$PUBLIC_JSON_I18N)
+                            path_join(
+                                $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH),
+                                self::$PUBLIC_JSON_I18N
+                            )
                         );
                     }
                 } else {
@@ -305,7 +308,7 @@ trait Assets {
 
             if ($type === 'script') {
                 wp_enqueue_script($useHandle, $url, $deps, $cachebuster, $in_footer);
-                wp_set_script_translations(
+                $this->setLazyScriptTranslations(
                     $useHandle,
                     $useHandle,
                     path_join($pluginPath, $packageDir . 'languages/frontend/json')
@@ -357,6 +360,37 @@ trait Assets {
      */
     public function wp_enqueue_scripts() {
         $this->enqueue_scripts_and_styles(self::$TYPE_FRONTEND);
+    }
+
+    /**
+     * The function and mechanism of wp_set_script_translations() is great of course. Unfortunately
+     * popular plugins like WP Rocket and Divi are not compatible with it (especially page builders
+     * and caching plugins). Why? Shortly explained, the injected inline scripts relies on `wp.i18n`
+     * which can be deferred or async loaded (the script itself) -> wp is not defined.
+     *
+     * In factory i18n.tsx the `window.wpi18nLazy` is automatically detected and the plugin gets localized.
+     *
+     * @param string $handle
+     * @param string $domain
+     * @param string $path
+     * @see https://developer.wordpress.org/reference/classes/wp_scripts/print_translations/
+     * @see https://developer.wordpress.org/reference/functions/wp_set_script_translations/
+     * @see https://app.clickup.com/t/3mjh0e
+     */
+    public function setLazyScriptTranslations($handle, $domain, $path) {
+        $json_translations = load_script_textdomain($handle, $domain, $path);
+        if (!empty($json_translations)) {
+            $output = <<<JS
+(function(domain, translations) {
+    var localeData = translations.locale_data[domain] || translations.locale_data.messages;
+    localeData[""].domain = domain;
+    window.wpi18nLazy=window.wpi18nLazy || {};
+    window.wpi18nLazy[domain] = window.wpi18nLazy[domain] || [];
+    window.wpi18nLazy[domain].push(localeData);
+})("{$domain}", {$json_translations});
+JS;
+            wp_add_inline_script($handle, $output, 'before');
+        }
     }
 
     /**

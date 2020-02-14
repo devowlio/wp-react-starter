@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import * as i18nCalypso from "i18n-calypso";
 import * as wpi18n from "@wordpress/i18n";
+import wp from "wp";
 
 /**
  * Create multiple functions for a specific plugin so they can be localized.
@@ -11,6 +12,13 @@ import * as wpi18n from "@wordpress/i18n";
  * @returns
  */
 function createLocalizationFactory(slug: string) {
+    const { wpi18nLazy } = window as any;
+    if (wpi18nLazy && wpi18nLazy[slug] && wp && wp.i18n) {
+        for (const localeData of wpi18nLazy[slug]) {
+            wp.i18n.setLocaleData(localeData, slug);
+        }
+    }
+
     /**
      * Translates and retrieves the singular or plural form based on the supplied number.
      * For arguments sprintf is used, see http://www.diveintojavascript.com/projects/javascript-sprintf for

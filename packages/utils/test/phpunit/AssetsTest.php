@@ -334,10 +334,11 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, true]
         ]);
         WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, Assets::$PUBLIC_JSON_I18N]]);
-        WP_Mock::userFunction('wp_set_script_translations', [
-            'times' => 1,
-            'args' => [$should, PHPUNIT_TD, null]
-        ]);
+
+        $this->assets
+            ->shouldReceive('setLazyScriptTranslations')
+            ->once()
+            ->with($should, PHPUNIT_TD, null);
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -403,7 +404,8 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, true]
         ]);
         WP_Mock::userFunction('path_join');
-        WP_Mock::userFunction('wp_set_script_translations', ['times' => 0]);
+
+        $this->assets->shouldNotReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -443,10 +445,11 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, true]
         ]);
         WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, Assets::$PUBLIC_JSON_I18N]]);
-        WP_Mock::userFunction('wp_set_script_translations', [
-            'times' => 1,
-            'args' => [$should, PHPUNIT_TD, null]
-        ]);
+
+        $this->assets
+            ->shouldReceive('setLazyScriptTranslations')
+            ->once()
+            ->with($should, PHPUNIT_TD, null);
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -487,10 +490,11 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, true]
         ]);
         WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, Assets::$PUBLIC_JSON_I18N]]);
-        WP_Mock::userFunction('wp_set_script_translations', [
-            'times' => 1,
-            'args' => [$should, PHPUNIT_TD, null]
-        ]);
+
+        $this->assets
+            ->shouldReceive('setLazyScriptTranslations')
+            ->once()
+            ->with($should, PHPUNIT_TD, null);
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -526,7 +530,8 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $version, 'all']
         ]);
         WP_Mock::userFunction('wp_enqueue_script', ['times' => 0]);
-        WP_Mock::userFunction('wp_set_script_translations', ['times' => 0]);
+
+        $this->assets->shouldNotReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -563,7 +568,8 @@ final class AssetsTest extends TestCase {
             'times' => 1,
             'args' => [$should, $plugins_url, $deps, $version, $in_footer]
         ]);
-        WP_Mock::userFunction('wp_set_script_translations');
+        
+        $this->assets->shouldReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
         $method->setAccessible(true);
@@ -762,10 +768,11 @@ final class AssetsTest extends TestCase {
             'times' => 1,
             'args' => [PHPUNIT_PATH, $packageDir . 'languages/frontend/json']
         ]);
-        WP_Mock::userFunction('wp_set_script_translations', [
-            'times' => 1,
-            'args' => [$should, $should, null]
-        ]);
+
+        $this->assets
+            ->shouldReceive('setLazyScriptTranslations')
+            ->once()
+            ->with($should, $should, null);
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
         $method->setAccessible(true);
@@ -801,7 +808,8 @@ final class AssetsTest extends TestCase {
             'times' => 1,
             'args' => [$should, $plugins_url, [], $packageJsonVersion, true]
         ]);
-        WP_Mock::userFunction('wp_set_script_translations');
+
+        $this->assets->shouldReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
         $method->setAccessible(true);
@@ -870,7 +878,8 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $packageJsonVersion, 'all']
         ]);
         WP_Mock::userFunction('wp_enqueue_style', ['times' => 0]);
-        WP_Mock::userFunction('wp_set_script_translations', ['times' => 0]);
+        
+        $this->assets->shouldNotReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
         $method->setAccessible(true);
@@ -959,7 +968,8 @@ final class AssetsTest extends TestCase {
             'times' => 1,
             'args' => [$should, $plugins_url, $deps, $packageJsonVersion, $in_footer]
         ]);
-        WP_Mock::userFunction('wp_set_script_translations');
+
+        $this->assets->shouldReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
         $method->setAccessible(true);
@@ -1038,6 +1048,41 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('enqueue_scripts_and_styles')->with(Assets::$TYPE_FRONTEND);
 
         $this->assets->wp_enqueue_scripts();
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testSetLazyScriptTranslations() {
+        $path = PHPUNIT_PATH . '/public/languages/json';
+        $script = <<<JS
+(function(domain, translations) {
+    var localeData = translations.locale_data[domain] || translations.locale_data.messages;
+    localeData[""].domain = domain;
+    window.wpi18nLazy=window.wpi18nLazy || {};
+    window.wpi18nLazy[domain] = window.wpi18nLazy[domain] || [];
+    window.wpi18nLazy[domain].push(localeData);
+})("phpunit", []);
+JS;
+
+        $this->assets->shouldReceive('setLazyScriptTranslations')->passthru();
+        
+        WP_Mock::userFunction('load_script_textdomain', ['times' => 1, 'args' => [PHPUNIT_SLUG, PHPUNIT_TD, $path], 'return' => '[]']);
+        WP_Mock::userFunction('wp_add_inline_script', ['times' => 1, 'args' => [PHPUNIT_SLUG, $script, 'before']]);
+
+        $this->assets->setLazyScriptTranslations(PHPUNIT_SLUG, PHPUNIT_TD, $path);
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testSetLazyScriptTranslationsNoJson() {
+        $path = PHPUNIT_PATH . '/public/languages/json';
+
+        $this->assets->shouldReceive('setLazyScriptTranslations')->passthru();
+        
+        WP_Mock::userFunction('load_script_textdomain', ['times' => 1, 'return' => false]);
+        WP_Mock::userFunction('wp_add_inline_script', ['times' => 0]);
+
+        $this->assets->setLazyScriptTranslations(PHPUNIT_SLUG, PHPUNIT_TD, $path);
 
         $this->addToAssertionCount(1);
     }

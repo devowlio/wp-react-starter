@@ -39,7 +39,6 @@ class Assets {
             self::$HANDLE_REACT,
             self::$HANDLE_REACT_DOM,
             self::$HANDLE_MOBX,
-            'lodash',
             'moment',
             'wp-i18n',
             'jquery'
