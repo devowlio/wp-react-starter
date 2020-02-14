@@ -475,7 +475,7 @@ License.
 The following software may be included in this product: @wp-reactjs-multi-starter/utils. This software contains the following license and notice below:
 
 Utility functionality for all your WordPress plugins.
-Copyright (C) 2019 Matthias Günter
+Copyright (C) 2020 devowl.io GmbH
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
@@ -488,7 +488,7 @@ You should have received a copy of the GNU General Public License along with thi
 The following software may be included in this product: @wp-reactjs-multi-starter/wp-reactjs-starter. This software contains the following license and notice below:
 
 WordPress Plugin Boilerplate using new web technologies.
-Copyright (C) 2019 Matthias Günter
+Copyright (C) 2020 devowl.io GmbH
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
@@ -676,6 +676,30 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----
+
+The following software may be included in this product: core-js. A copy of the source code may be downloaded from https://github.com/zloirock/core-js.git. This software contains the following license and notice below:
+
+Copyright (c) 2014-2020 Denis Pushkarev
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 -----
 
@@ -3016,4 +3040,39 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----
+
+The following software may be included in this product: workspace-aggregator-556eb574-d62b-4ac7-83e3-6a7ca6a9ccb9. This software contains the following license and notice below:
+
+The software "WP React Starter" is comprised of multiple parts
+(files in these directories and subdirectories, if the subdirectory
+be under no other licence):
+
+/: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
+/.vscode: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
+/common: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
+/devops: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
+/docs: WP React Starter Licence Agreement v1.0 (wp-react-starter-licence-1.0-or-later)
+/packages/utils: GNU General Public License v3.0 or later (GPL-3.0-or-later)
+/plugins/wp-reactjs-starter: GNU General Public License v3.0 or later (GPL-3.0-or-later)
+
+You can find a copy of both licenses at:
+
+React Starter Licence Agreement v1.0: https://devowl.io/wp-react-starter-licence-agreement/v1.0/
+GNU General Public License v3.0: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+In practice, this means that the build of the WordPress plugins 
+that you create with WP React Starter is only licensed under
+GNU General Public License v3.0 or later. Most or all devtools 
+are licensed under WP React Starter Licence Agreement v1.0 or later.
+
+If you want to use WP React Starter, please get a license from 
+https://devowl.io/wp-react-starter/licence/.
+
+In addition to the license agreements, you must agree to 
+the following documents when you order a license:
+
+devowl.io General terms and conditions: https://devowl.io/terms/
+devowl.io Privacy Policy: https://devowl.io/privacy-policy/
 
