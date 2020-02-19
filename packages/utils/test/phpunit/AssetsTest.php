@@ -238,6 +238,8 @@ final class AssetsTest extends TestCase {
 
         $this->assets->shouldReceive('getPublicFolder')->with(true);
 
+        redefine('file_exists', always(true));
+
         WP_Mock::userFunction('plugins_url', [
             'times' => 1,
             'args' => ['react/umd/react.development.js', PHPUNIT_FILE]
@@ -273,6 +275,8 @@ final class AssetsTest extends TestCase {
 
         $this->assets->shouldReceive('getPublicFolder')->with(true);
 
+        redefine('file_exists', always(true));
+
         WP_Mock::userFunction('plugins_url', [
             'times' => 1,
             'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
@@ -282,6 +286,37 @@ final class AssetsTest extends TestCase {
         $this->assets
             ->shouldReceive('enqueueLibraryScript')
             ->once()
+            ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
+
+        $this->assets->enqueueReact();
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testEnqueueReactLower168DevNotExisting() {
+        $this->assets->shouldReceive('enqueueReact')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+
+        redefine(WP_Scripts::class . '::query', always((object) ['ver' => '16.7']));
+
+        WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
+
+        $this->assets->shouldReceive('getPublicFolder')->with(true);
+
+        redefine('file_exists', always(false));
+
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
+        ]);
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react-dom/umd/react-dom.production.min.js', PHPUNIT_FILE]
+        ]);
+
+        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
+        $this->assets
+            ->shouldNotReceive('enqueueLibraryScript')
             ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
 
         $this->assets->enqueueReact();

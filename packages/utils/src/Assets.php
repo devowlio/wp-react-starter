@@ -91,13 +91,16 @@ trait Assets {
         if ($coreReact !== false && version_compare($coreReact->ver, '16.8', '<')) {
             // Replace the already existing React version with ours
             $publicFolder = $this->getPublicFolder(true);
-            $publicSrc = $publicFolder . ($useNonMinifiedSources ? $reactDev : $reactProd);
+            $devFileExists = file_exists(
+                $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH) . '/' . $publicFolder . $reactDev
+            );
+            $publicSrc = $publicFolder . ($useNonMinifiedSources && $devFileExists ? $reactDev : $reactProd);
             $coreReact->src = plugins_url($publicSrc, $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_FILE));
 
             // Also use our ReactDOM, instead we get this error: https://reactjs.org/docs/error-decoder.html/?invariant=321
             $coreReactDom = wp_scripts()->query(self::$HANDLE_REACT_DOM);
             if ($coreReactDom !== false) {
-                $publicSrc = $publicFolder . ($useNonMinifiedSources ? $reactDomDev : $reactDomProd);
+                $publicSrc = $publicFolder . ($useNonMinifiedSources && $devFileExists ? $reactDomDev : $reactDomProd);
                 $coreReactDom->src = plugins_url(
                     $publicSrc,
                     $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_FILE)
