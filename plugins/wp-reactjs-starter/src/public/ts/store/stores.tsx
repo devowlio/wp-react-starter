@@ -14,17 +14,38 @@ configure({
  * @see https://mobx.js.org/best/store.html#combining-multiple-stores
  */
 class RootStore {
+    private static me: RootStore;
+
     public todoStore: TodoStore;
+
     public optionStore: OptionStore;
 
-    constructor() {
+    private contextMemo: {
+        StoreContext: React.Context<RootStore>;
+        StoreProvider: React.FC<{}>;
+        useStores: () => RootStore;
+    };
+
+    public get context() {
+        return this.contextMemo
+            ? this.contextMemo
+            : (this.contextMemo = createContextFactory((this as unknown) as RootStore));
+    }
+
+    private constructor() {
         this.todoStore = new TodoStore(this);
         this.optionStore = new OptionStore(this);
     }
+
+    public static get StoreProvider() {
+        return RootStore.get.context.StoreProvider;
+    }
+
+    public static get get() {
+        return RootStore.me ? RootStore.me : (RootStore.me = new RootStore());
+    }
 }
 
-const rootStore = new RootStore();
+const useStores = () => RootStore.get.context.useStores();
 
-const { StoreContext, StoreProvider, useStores } = createContextFactory(rootStore);
-
-export { RootStore, rootStore, StoreContext, StoreProvider, useStores };
+export { RootStore, useStores };

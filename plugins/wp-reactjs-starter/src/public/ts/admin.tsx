@@ -6,16 +6,16 @@
 import "@wp-reactjs-multi-starter/utils"; // Import once for startup polyfilling (e. g. setimmediate)
 import { render } from "react-dom";
 import { ComponentLibrary } from "./components";
-import { StoreProvider, rootStore } from "./store";
+import { RootStore } from "./store";
 import "./style/admin.scss";
 
-const node = document.getElementById(`${rootStore.optionStore.slug}-component`);
+const node = document.getElementById(`${RootStore.get.optionStore.slug}-component`);
 
 if (node) {
     render(
-        <StoreProvider>
+        <RootStore.StoreProvider>
             <ComponentLibrary />
-        </StoreProvider>,
+        </RootStore.StoreProvider>,
         node
     );
 }
