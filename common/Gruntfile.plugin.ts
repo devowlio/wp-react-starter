@@ -132,7 +132,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
         const lock = readFileSync(lockFile)
             .toString()
             .replace(/"symlink": true/gm, `"symlink": false`)
-            .replace(/"url": "\.\.\/\.\.\/packages\/utils",/gm, `"url": "../../../../packages/utils",`);
+            .replace(/"url": "\.\.\/\.\.\/packages\/(.*)",/gm, `"url": "../../../../packages/$1",`);
         writeFileSync(lockFile, lock);
 
         // Iterate through dependent packages and temp deactivate their vendor folder for new installation (only non-dev)
