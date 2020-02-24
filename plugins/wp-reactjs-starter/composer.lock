@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6967acf40460325f71770e161fe9d11e",
+    "content-hash": "b691c05f3724639aaae7f894a9c4ceca",
     "packages": [
         {
             "name": "wp-reactjs-multi-starter/utils",
@@ -1119,57 +1119,6 @@
                 "object graph"
             ],
             "time": "2019-12-15T19:12:40+00:00"
-        },
-        {
-            "name": "nelson6e65/phpdoc-vuepress",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nelson6e65/phpdoc-vuepress.git",
-                "reference": "e52fa51754091d6dbf78c8185db1717c36d4f3f2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nelson6e65/phpdoc-vuepress/zipball/e52fa51754091d6dbf78c8185db1717c36d4f3f2",
-                "reference": "e52fa51754091d6dbf78c8185db1717c36d4f3f2",
-                "shasum": ""
-            },
-            "require-dev": {
-                "jms/serializer": "1.7.*",
-                "phpdocumentor/phpdocumentor": "^2.9"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "NelsonMartell\\VuePress\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nelson Martell",
-                    "email": "nelson6e65@gmail.com"
-                }
-            ],
-            "description": "Template for generating your PHP API documentation in a pretty VuePress format.",
-            "homepage": "https://github.com/nelson6e65/phpdoc-vuepress",
-            "keywords": [
-                "VuePress",
-                "documentation",
-                "markdown",
-                "php",
-                "phpDocumentor",
-                "phpdoc"
-            ],
-            "time": "2019-03-06T17:28:41+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4826,7 +4775,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "wp-reactjs-multi-starter/utils": 20,
-        "nelson6e65/phpdoc-vuepress": 20,
         "phpdocumentor/phpdocumentor": 20
     },
     "prefer-stable": false,
