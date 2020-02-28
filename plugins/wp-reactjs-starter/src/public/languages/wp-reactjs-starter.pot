@@ -7,54 +7,54 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-02-05T08:50:33+01:00\n"
+"POT-Creation-Date: 2020-03-03T08:04:44+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.2.0\n"
+"X-Generator: WP-CLI 2.4.0\n"
 
-#: admin.js:1859
+#: admin.js:302
 msgid "The text domain of the plugin is: %(textDomain)s (localized variable)"
 msgstr ""
 
-#: admin.js:1863
+#: admin.js:306
 msgid "The WP REST API URL of the plugin is: {{a}}%(restUrl)s{{/a}} (localized variable, click for hello world example)"
 msgstr ""
 
-#: admin.js:1872
+#: admin.js:315
 msgid "The is an informative notice"
 msgstr ""
 
-#: admin.js:1874
+#: admin.js:317
 msgid "Your action was successful"
 msgstr ""
 
-#: admin.js:1876
+#: admin.js:319
 msgid "An unexpected error has occurred"
 msgstr ""
 
-#: admin.js:1931
+#: admin.js:374
 msgid "Todo list"
 msgstr ""
 
-#: admin.js:1931
+#: admin.js:374
 msgid "This section demonstrates a MobX Todo list (no peristence to server)."
 msgstr ""
 
-#: admin.js:1938
+#: admin.js:381
 msgid "What needs to be done?"
 msgstr ""
 
-#: admin.js:1945
+#: admin.js:388
 msgid "Add"
 msgstr ""
 
-#: admin.js:2009
+#: admin.js:452
 msgid "Remove"
 msgstr ""
 
-#: widget.js:795
+#: widget.js:658
 msgid "Hello, World!"
 msgstr ""
 
-#: widget.js:795
+#: widget.js:658
 msgid "I got generated from your new plugin!"
 msgstr ""

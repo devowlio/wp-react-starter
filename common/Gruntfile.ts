@@ -3,6 +3,8 @@
  */
 
 import { execSync } from "child_process";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { basename, dirname } from "path";
 
 /**
  * Create "pre:" and "post:" hooks for an array of tasks.
@@ -127,6 +129,23 @@ function applyDefaultRunnerConfiguration(grunt: IGrunt) {
             grunt.log.oklns("All production licenses passed!");
         }
     });
+
+    /**
+     * This is a workaround to this solved issue: https://github.com/wp-cli/i18n-command/issues/203
+     *
+     * Unfortunately the fix / PR is merged but not yet released. Due to the fact that the below also works for us, it's ok.
+     */
+    grunt.registerTask("i18n:prepare:wp", () =>
+        grunt.file.expand([`${pkg.slug ? "src/public/dev" : "dev"}/*.js`, "!**/*vendor~*"]).forEach((file) => {
+            const content = readFileSync(file, { encoding: "UTF-8" });
+            const regex = /(Object\([A-Za-z0-9_]+__WEBPACK_IMPORTED_MODULE[A-Za-z0-9_]+\[)\/\* ?(__|_n|_x|_nx) \*\/ "[A-Za-z0-9_]"/gm;
+            const target = `${dirname(file)}/i18n-dir/`;
+            !existsSync(target) && mkdirSync(target);
+            writeFileSync(`${target}${basename(file)}`, content.replace(regex, `$1"$2"`), {
+                encoding: "UTF-8"
+            });
+        })
+    );
 }
 
 export { hookable, applyDefaultRunnerConfiguration };

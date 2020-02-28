@@ -133,6 +133,25 @@ trait Assets {
     }
 
     /**
+     * Checks if a `vendor~` file is created for a given script and enqueue it.
+     *
+     * @param string $handle
+     * @param boolean $isLib
+     * @param string $src
+     * @param string[] $deps
+     * @param boolean $in_footer
+     * @param string $media
+     */
+    protected function probablyEnqueueChunk($handle, $isLib, $src, &$deps, $in_footer, $media) {
+        if (!$isLib) {
+            $handle = $this->enqueue('vendor~' . $handle, 'vendor~' . $src, $deps, false, 'script', $in_footer, $media);
+            if ($handle !== false) {
+                array_push($deps, $handle);
+            }
+        }
+    }
+
+    /**
      * Enqueue helper for entry points and libraries. See dependents for more documentation.
      *
      * @param string $handle
@@ -165,13 +184,15 @@ trait Assets {
                 continue;
             }
 
-            $publicSrc = $publicFolder . (is_array($s) ? $s[1] : $s);
+            $useSrc = (is_array($s) ? $s[1] : $s);
+            $publicSrc = $publicFolder . $useSrc;
             $path = path_join($this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH), $publicSrc);
             if (file_exists($path)) {
                 $url = plugins_url($publicSrc, $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_FILE));
                 $cachebuster = $this->getCachebusterVersion($publicSrc, $isLib);
 
                 if ($type === 'script') {
+                    $this->probablyEnqueueChunk($useHandle, $isLib, $useSrc, $deps, $in_footer, $media);
                     wp_enqueue_script($useHandle, $url, $deps, $cachebuster, $in_footer);
 
                     // Only set translations for our own entry points, libraries handle localization usually in another way
@@ -270,14 +291,32 @@ trait Assets {
     }
 
     /**
+     * Checks if a `vendor~` file is created for a given script in a composer package and enqueue it.
+     *
+     * @param string $handle
+     * @param string $src
+     * @param string[] $deps
+     * @param boolean $in_footer
+     * @param string $media
+     */
+    protected function probablyEnqueueComposerChunk($handle, $src, &$deps, $in_footer, $media) {
+        $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
+        $handle = $this->enqueueComposer($handle, 'vendor~' . $src, $deps, 'script', $in_footer, $media, 'vendor~' . $rootSlug . '-' . $handle);
+        if ($handle !== false) {
+            array_push($deps, $handle);
+        }
+    }
+
+    /**
      * Enqueue helper for monorepo packages. See dependents for more documentation.
      *
      * @param string $handle
-     * @param mixed $src
+     * @param string $src
      * @param string[] $deps
      * @param string $type Can be 'script' or 'style'
      * @param boolean $in_footer
      * @param string $media
+     * @param string $vendorHandle
      * @return string|boolean The used handle
      */
     protected function enqueueComposer(
@@ -286,10 +325,11 @@ trait Assets {
         $deps = [],
         $type = 'script',
         $in_footer = true,
-        $media = 'all'
+        $media = 'all',
+        $vendorHandle = null
     ) {
         $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
-        $useHandle = $rootSlug . '-' . $handle;
+        $useHandle = $vendorHandle !== null ? $vendorHandle : $rootSlug . '-' . $handle;
         $useNonMinifiedSources = $this->useNonMinifiedSources();
         $packageDir = 'vendor/' . $rootSlug . '/' . $handle . '/';
         $packageSrc = $packageDir . ($useNonMinifiedSources ? 'dev' : 'dist') . '/' . $src;
@@ -310,6 +350,7 @@ trait Assets {
             }
 
             if ($type === 'script') {
+                $this->probablyEnqueueComposerChunk($handle, $src, $deps, $in_footer, $media);
                 wp_enqueue_script($useHandle, $url, $deps, $cachebuster, $in_footer);
                 $this->setLazyScriptTranslations(
                     $useHandle,

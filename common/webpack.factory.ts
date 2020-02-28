@@ -8,7 +8,7 @@
 
 import { resolve, join } from "path";
 import fs from "fs";
-import { Configuration, DefinePlugin, Compiler } from "webpack";
+import { Configuration, DefinePlugin, Compiler, Options } from "webpack";
 import { spawn, execSync } from "child_process";
 import WebpackBar from "webpackbar";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
@@ -174,6 +174,35 @@ function createDefaultSettings(
     const pluginSettings: Configuration = {
         context: pwd,
         mode: NODE_ENV,
+        optimization: {
+            usedExports: true,
+            sideEffects: true,
+            splitChunks: {
+                cacheGroups:
+                    type === "plugin"
+                        ? {
+                              // Dynamically get the entries from first-level files so every entrypoint get's an own vendor file (https://git.io/Jv2XY)
+                              ...plugins
+                                  .filter(({ location }) => location === pwd)
+                                  .reduce((map: { [key: string]: Options.CacheGroupsOptions }, obj) => {
+                                      map[`vendor~${obj.entrypointName}`] = {
+                                          test: /node_modules/,
+                                          chunks: (chunk) => chunk.name === obj.entrypointName,
+                                          name: `vendor~${obj.entrypointName}`,
+                                          enforce: true
+                                      };
+                                      return map;
+                                  }, {})
+                          }
+                        : {
+                              vendor: {
+                                  test: /node_modules/,
+                                  chunks: "initial",
+                                  enforce: true
+                              }
+                          }
+            }
+        },
         output: {
             path: outputPath,
             filename: "[name].js",

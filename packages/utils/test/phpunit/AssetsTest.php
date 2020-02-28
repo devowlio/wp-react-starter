@@ -259,6 +259,37 @@ final class AssetsTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
+    public function testEnqueueReactLower168DevNotExisting() {
+        $this->assets->shouldReceive('enqueueReact')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+
+        redefine(WP_Scripts::class . '::query', always((object) ['ver' => '16.7']));
+
+        WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
+
+        $this->assets->shouldReceive('getPublicFolder')->with(true);
+
+        redefine('file_exists', always(false));
+
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
+        ]);
+        WP_Mock::userFunction('plugins_url', [
+            'times' => 1,
+            'args' => ['react-dom/umd/react-dom.production.min.js', PHPUNIT_FILE]
+        ]);
+
+        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
+        $this->assets
+            ->shouldNotReceive('enqueueLibraryScript')
+            ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
+
+        $this->assets->enqueueReact();
+
+        $this->addToAssertionCount(1);
+    }
+
     public function testEnqueueReactLower168NoReactDom() {
         $this->assets->shouldReceive('enqueueReact')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnFalse();
@@ -293,37 +324,6 @@ final class AssetsTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
-    public function testEnqueueReactLower168DevNotExisting() {
-        $this->assets->shouldReceive('enqueueReact')->passthru();
-        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
-
-        redefine(WP_Scripts::class . '::query', always((object) ['ver' => '16.7']));
-
-        WP_Mock::userFunction('wp_scripts', ['return' => new WP_Scripts()]);
-
-        $this->assets->shouldReceive('getPublicFolder')->with(true);
-
-        redefine('file_exists', always(false));
-
-        WP_Mock::userFunction('plugins_url', [
-            'times' => 1,
-            'args' => ['react/umd/react.production.min.js', PHPUNIT_FILE]
-        ]);
-        WP_Mock::userFunction('plugins_url', [
-            'times' => 1,
-            'args' => ['react-dom/umd/react-dom.production.min.js', PHPUNIT_FILE]
-        ]);
-
-        $this->assets->shouldNotReceive('enqueueLibraryScript')->with(Assets::$HANDLE_REACT, Mockery::any());
-        $this->assets
-            ->shouldNotReceive('enqueueLibraryScript')
-            ->with(Assets::$HANDLE_REACT_DOM, Mockery::any(), Assets::$HANDLE_REACT);
-
-        $this->assets->enqueueReact();
-
-        $this->addToAssertionCount(1);
-    }
-
     public function testEnqueueMobx() {
         $this->assets->shouldReceive('enqueueMobx')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnFalse();
@@ -335,6 +335,50 @@ final class AssetsTest extends TestCase {
         $this->assets->enqueueMobx();
 
         $this->addToAssertionCount(1);
+    }
+
+    public function testProbablyEnqueueChunk() {
+        $deps = ['jquery'];
+        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets
+            ->shouldReceive('enqueue')
+            ->once()
+            ->with('vendor~admin', 'vendor~admin.js', $deps, false, 'script', true, 'all')
+            ->andReturn('vendor~admin');
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
+        $method->setAccessible(true);
+        $method->invokeArgs($this->assets, ['admin', false, 'admin.js', &$deps, true, 'all']);
+
+        $this->assertCount(2, $deps);
+    }
+
+    public function testProbablyEnqueueChunkFromLib() {
+        $deps = ['jquery'];
+        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets->shouldNotReceive('enqueue');
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
+        $method->setAccessible(true);
+        $method->invokeArgs($this->assets, ['admin', true, 'admin.js', &$deps, true, 'all']);
+
+        $this->assertCount(1, $deps);
+    }
+
+    public function testProbablyEnqueueChunkFailing() {
+        $deps = ['jquery'];
+        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets
+            ->shouldReceive('enqueue')
+            ->once()
+            ->with('vendor~admin', 'vendor~admin.js', $deps, false, 'script', true, 'all')
+            ->andReturnFalse();
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
+        $method->setAccessible(true);
+        $method->invokeArgs($this->assets, ['admin', false, 'admin.js', &$deps, true, 'all']);
+
+        $this->assertCount(1, $deps);
     }
 
     // enqueue start
@@ -363,6 +407,7 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, false)
             ->andReturn($version);
+        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -433,7 +478,8 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, $isLib)
             ->andReturn($version);
-
+        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($handle, true, $script, [], true, 'all');
+        
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
             'args' => [$should, $plugins_url, [], $version, true]
@@ -475,6 +521,8 @@ final class AssetsTest extends TestCase {
             ->with($publicFolder . $script, false)
             ->andReturn($version);
 
+        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
+        
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
             'args' => [$should, $plugins_url, [], $version, true]
@@ -519,6 +567,7 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, false)
             ->andReturn($version);
+        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -598,6 +647,7 @@ final class AssetsTest extends TestCase {
         ]);
 
         $this->assets->shouldReceive('getCachebusterVersion')->andReturn($version);
+        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, $deps, $in_footer, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -760,6 +810,37 @@ final class AssetsTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
+    public function testProbablyEnqueueComposerChunk() {
+        $deps = ['jquery'];
+        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueComposerChunk')->passthru();
+        $this->assets
+            ->shouldReceive('enqueueComposer')
+            ->once()
+            ->with('utils', 'vendor~index.js', $deps, 'script', true, 'all', 'vendor~' . PHPUNIT_ROOT_SLUG . '-utils')
+            ->andReturn('phpunit-vendor~admin');
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueComposerChunk');
+        $method->setAccessible(true);
+        $method->invokeArgs($this->assets, ['utils', 'index.js', &$deps, true, 'all']);
+
+        $this->assertCount(2, $deps);
+    }
+
+    public function testProbablyEnqueueComposerChunkFailing() {
+        $deps = ['jquery'];
+        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueComposerChunk')->passthru();
+        $this->assets
+            ->shouldReceive('enqueueComposer')
+            ->once()
+            ->andReturnFalse();
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueComposerChunk');
+        $method->setAccessible(true);
+        $method->invokeArgs($this->assets, ['utils', 'index.js', &$deps, true, 'all']);
+
+        $this->assertCount(1, $deps);
+    }
+
     // enqueueComposer start
     public function testEnqueueComposer() {
         $handle = 'utils';
@@ -795,6 +876,8 @@ final class AssetsTest extends TestCase {
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
 
+        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, 'index.js', [], true, 'all');
+
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
             'args' => [$should, $plugins_url, [], $packageJsonVersion, true]
@@ -820,7 +903,6 @@ final class AssetsTest extends TestCase {
     public function testEnqueueComposerInLernaRepo() {
         $handle = 'utils';
         $should = PHPUNIT_ROOT_SLUG . '-' . $handle;
-        $packageDir = 'vendor/' . PHPUNIT_ROOT_SLUG . '/' . $handle . '/';
         $packageSrc = 'vendor/phpunit-root/utils/dev/index.js';
         $plugins_url = 'http://localhost/wp-content/plugins/phpunit/' . $packageSrc;
         $ts = time();
@@ -838,6 +920,8 @@ final class AssetsTest extends TestCase {
 
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
+
+        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, 'index.js', [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -998,6 +1082,8 @@ final class AssetsTest extends TestCase {
 
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
+
+        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, $src, $deps, $in_footer, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
