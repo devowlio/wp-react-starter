@@ -20,7 +20,7 @@
     ],
     "scripts": {
         "postinstall": "patch-package --patch-dir common/patch-package",
-        "bootstrap": "yarn install$(test $CI && echo ' --frozen-lockfile') && lerna exec -- yarn install$(test $CI && echo ' --frozen-lockfile') && lerna link && lerna run bootstrap && patch-package --patch-dir common/patch-package",
+        "bootstrap": "yarn install$(test $CI && echo ' --frozen-lockfile') --network-concurrency 15 && lerna exec -- yarn install$(test $CI && echo ' --frozen-lockfile') && lerna link && lerna run bootstrap && patch-package --patch-dir common/patch-package",
         "docker:start": "yarn docker-compose up --build -d && concurrently --raw \"yarn docker-compose logs -f -t --tail=10\" \"yarn --silent wp-wait && yarn --silent docker:start:dev\"",
         "docker:start:dev": "concurrently --raw \"TS_NODE_PROJECT=common/tsconfig.json yarn parallel-webpack --no-stats --config common/webpack.multi.ts --watch\" \"WORKSPACE_COMMAND='IS_DOCKER_START_COMMAND=1 yarn dev' yarn --silent workspace:concurrently\"",
         "docker:stop": "yarn docker-compose stop",
