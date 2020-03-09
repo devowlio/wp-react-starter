@@ -3043,7 +3043,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----
 
-The following software may be included in this product: workspace-aggregator-27fe96bb-a7ed-4fe1-be33-419a928c826a. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-e1df0c80-ade2-465a-9400-413d7e9c27e0. This software contains the following license and notice below:
 
 The software "WP React Starter" is comprised of multiple parts
 (files in these directories and subdirectories, if the subdirectory
