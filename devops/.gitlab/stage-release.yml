@@ -49,13 +49,30 @@ docker review start:
         url: http://${CI_COMMIT_REF_SLUG}-${COMPOSE_PROJECT_NAME}-${CI_TRAEFIK_HOST}
         on_stop: docker review stop
 
-# Listen to review stop so the docker container can be removed
 docker review stop:
     stage: release
     variables:
         COMPOSE_PROJECT_NAME_SUFFIX: -traefik
+        # We do not need to fetch anything from coding
+        GIT_STRATEGY: none
     script:
-        - ./devops/scripts/purge-ci.sh
+        # - ./devops/scripts/purge-ci.sh Can not be used because it is not fetched at this time
+        # Remove running containers
+        - echo "[CONTAINERS]"
+        - export CURRENT_CONTAINERS="$(docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2~/'"$COMPOSE_PROJECT_NAME$COMPOSE_PROJECT_NAME_SUFFIX-$CI_COMMIT_REF_SLUG"'/{print $1}')"
+        - test "$CURRENT_CONTAINERS" && echo "Removing..." && docker rm -f -v $CURRENT_CONTAINERS
+        # Remove available volumes
+        - echo
+        - echo "[VOLUMES]"
+        - export CURRENT_VOLUMES="$(docker volume ls --format "{{.Name}}" | awk '$1~/'"$COMPOSE_PROJECT_NAME$COMPOSE_PROJECT_NAME_SUFFIX-$CI_COMMIT_REF_SLUG"'/{print $1}')"
+        - test "$CURRENT_VOLUMES" && echo "Removing..." && docker volume remove -f $CURRENT_VOLUMES
+        # Remove available networks
+        - echo
+        - echo "[NETWORKS]"
+        - export CURRENT_NETWORKS="$(docker network list --format "{{.Name}}" | awk '$1~/'"$COMPOSE_PROJECT_NAME$COMPOSE_PROJECT_NAME_SUFFIX-$CI_COMMIT_REF_SLUG"'/{print $1}')"
+        - test "$CURRENT_NETWORKS" && echo "Removing..." && docker network remove $CURRENT_NETWORKS
+        - echo
+        - echo "Purged"
     when: manual
     tags: [traefik]
     only:
