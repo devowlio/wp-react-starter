@@ -186,7 +186,7 @@ function createDefaultSettings(
                                   .filter(({ location }) => location === pwd)
                                   .reduce((map: { [key: string]: Options.CacheGroupsOptions }, obj) => {
                                       map[`vendor~${obj.entrypointName}`] = {
-                                          test: /node_modules/,
+                                          test: /node_modules.*(?<!\.css)(?<!\.scss)(?<!\.less)$/,
                                           chunks: (chunk) => chunk.name === obj.entrypointName,
                                           name: `vendor~${obj.entrypointName}`,
                                           enforce: true
@@ -196,7 +196,7 @@ function createDefaultSettings(
                           }
                         : {
                               vendor: {
-                                  test: /node_modules/,
+                                  test: /node_modules.*(?<!\.css)(?<!\.scss)(?<!\.less)$/,
                                   chunks: "initial",
                                   enforce: true
                               }
