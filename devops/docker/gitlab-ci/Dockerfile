@@ -57,7 +57,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN npm install -g \
     # Global installations of npm packages
-    wait-on && \
-    composer global require \
+    wait-on
+    # && \
+    # composer global require \
     # Global installations of composer packages
-    hirak/prestissimo
+    # hirak/prestissimo Prestissimo is currently not possible together with Lerna and CI due to a RC (https://git.io/JvPkZ)... wait for Composer v2
