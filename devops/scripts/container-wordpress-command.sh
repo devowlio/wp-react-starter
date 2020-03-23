@@ -62,7 +62,7 @@ wp --allow-root core update --minor
 # Change the rights so media / plugins / themes are possible to upload and install
 echo Chown www-data...
 chown -R www-data:www-data /var/www/html/wp-content/uploads
-chown www-data:www-data /var/www/html/wp-content/plugins /var/www/html/wp-content/themes /var/www/html/wp-content/upgrade
+chown www-data:www-data /var/www/html/wp-content /var/www/html/wp-content/plugins /var/www/html/wp-content/themes /var/www/html/wp-content/upgrade
 echo Chown www-data done!
 
 # Main CMD from https://git.io/fj4Fe
