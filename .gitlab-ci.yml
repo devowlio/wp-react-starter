@@ -15,8 +15,9 @@ variables:
     # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
     COMPOSE_PROJECT_NAME: wp-reactjs-multi-starter
     # Define cache folders for yarn and cypress so they can be cached
-    CYPRESS_CACHE_FOLDER: .cypress
-    YARN_CACHE_FOLDER: .yarn
+    CYPRESS_CACHE_FOLDER: $CI_PROJECT_DIR/.cypress
+    YARN_CACHE_FOLDER: $CI_PROJECT_DIR/.yarn
+    COMPOSER_HOME: $CI_PROJECT_DIR/.composer
     # This is set to 1 by your project variables so jobs like E2E and review apps gets activated. Currently I do not know another way to detect that, feel free to contribute...
     # DOCKER_DAEMON_ALLOW_UP: 1
     # Additional settings
@@ -38,17 +39,18 @@ cache: &cache # see https://gitlab.com/gitlab-org/gitlab-runner/issues/2838#note
     paths:
         - .yarn/
         - .cypress/
+        - .composer/
         - node_modules/
-        - plugins/*/.yarn/*
         - plugins/*/node_modules/*
         - plugins/*/vendor/*
-        - packages/*/.yarn/*
         - packages/*/node_modules/*
         - packages/*/vendor/*
 
 # Install all needed node and composer modules as extendable job
 .install:
     before_script:
+        # Set composer github token to avoid API rate limit (https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
+        - test $PHP_COMPOSER_GITHUB_TOKEN && composer config -g github-oauth.github.com $PHP_COMPOSER_GITHUB_TOKEN
         # Make sure all dependencies are installed correctly
         - yarn bootstrap
         # Make sure cypress is installed correctly
