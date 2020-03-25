@@ -65,12 +65,14 @@ function getPlugins(pwd: string) {
 
     // We determine the externals due the entry points
     const tsFolder = "src/public/ts";
-    const plugins: Array<LernaListItem & {
-        modulePath: string;
-        moduleId: string;
-        externalId: string;
-        entrypointName: string;
-    }> = [];
+    const plugins: Array<
+        LernaListItem & {
+            modulePath: string;
+            moduleId: string;
+            externalId: string;
+            entrypointName: string;
+        }
+    > = [];
 
     pluginList.forEach((item) =>
         fs
@@ -105,9 +107,11 @@ function getPackages(pwd: string, rootSlugCamelCased: string) {
     const packageList = lernaList.filter(({ location }) => location.startsWith(resolve(pwd, "../..", "packages")));
 
     // We determine the externals due the entry points
-    const packages: Array<LernaListItem & {
-        externalId: string;
-    }> = [];
+    const packages: Array<
+        LernaListItem & {
+            externalId: string;
+        }
+    > = [];
 
     packageList.forEach((item) => {
         packages.push({ ...item, externalId: `${rootSlugCamelCased}_${item.name.split("/")[1]}` });
