@@ -20,6 +20,11 @@ const { OptionStore } = require("../../../src/public/ts/store/option");
 const { createContextFactory } = require("@wp-reactjs-multi-starter/utils");
 
 describe("stores", () => {
+    beforeEach(() => {
+        // @ts-ignore Currently the easiest way to reset private singleton variable
+        RootStore.me = undefined;
+    });
+
     describe("configure", () => {
         it("should call configure to always force actions", () => {
             expect(mobx.configure).toHaveBeenCalledWith(expect.objectContaining({ enforceActions: "always" }));
