@@ -7,7 +7,7 @@
  * Plugin URI:		https://matthias-web.com/wordpress
  * Description: 	This WordPress plugin demonstrates how to setup a plugin that uses React and ES6 in a WordPress plugin.
  * Author:			Matthias Guenter
- * Version: 		1.0.2
+ * Version: 		1.0.3
  * Author URI:		https://matthias-web.com
  * Text Domain:		wp-reactjs-starter
  * Domain Path:		/languages

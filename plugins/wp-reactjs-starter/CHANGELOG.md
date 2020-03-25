@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.3 (2020-03-25)
+
+
+### chore
+
+* update dependencies (#3cj43t)
+
+
+### fix
+
+* exclude public i18n strings in backend .pot file
+
+
+### style
+
+* run prettier@2 on all files (#3cj43t)
+
+
+### test
+
+* configure jest setupFiles correctly with enzyme and clearMocks (#4akeab)
+
+
+
+
+
 ## 1.0.2 (2020-03-09)
 
 
