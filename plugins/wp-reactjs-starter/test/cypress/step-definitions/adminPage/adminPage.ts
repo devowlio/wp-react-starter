@@ -20,11 +20,7 @@ Then("I click on REST API link in the admin notice and alert contains {string}",
 Then("I type {string} and add todo, check it, afterwards delete it", (todo: string) => {
     AdminPageObject.todoInput.type(todo);
     AdminPageObject.todoAddButton.click();
-    AdminPageObject.todoItem(0)
-        .should("contain.text", "Test Todo Item")
-        .find(":checkbox")
-        .check()
-        .should("be.checked");
+    AdminPageObject.todoItem(0).should("contain.text", "Test Todo Item").find(":checkbox").check().should("be.checked");
     AdminPageObject.todoItemRemoveLink(0).click();
     AdminPageObject.todoItem(0).should("have.text", "No entries");
 });

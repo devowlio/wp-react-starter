@@ -122,6 +122,7 @@
         "useTabs": false,
         "tabWidth": 4,
         "endOfLine": "lf",
+        "trailingComma": "none",
         "overrides": [
             {
                 "files": "*.php",
