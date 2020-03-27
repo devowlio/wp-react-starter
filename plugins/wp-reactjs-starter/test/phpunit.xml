@@ -22,4 +22,8 @@
             </exclude>
         </whitelist>
     </filter>
+
+    <logging>
+        <log type="junit" target="./junit/phpunit.xml" />
+    </logging>
 </phpunit>

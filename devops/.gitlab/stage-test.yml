@@ -27,6 +27,8 @@ collect all artifacts:
         when: always
         paths:
             - $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/coverage/phpunit
+        reports:
+            junit: $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/test/junit/phpunit.xml
 
 # Jest a package with coverage
 .jest:
@@ -41,6 +43,8 @@ collect all artifacts:
         when: always
         paths:
             - $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/coverage/jest
+        reports:
+            junit: $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/test/junit/jest.xml
 
 # Start the cypress e2e test
 .docker e2e cypress:
@@ -72,6 +76,8 @@ collect all artifacts:
         paths:
             - plugins/$JOB_PACKAGE_NAME/test/cypress/screenshots
             - plugins/$JOB_PACKAGE_NAME/test/cypress/videos
+        reports:
+            junit: plugins/$JOB_PACKAGE_NAME/test/junit/cypress.xml
     only:
         variables:
             # Skip this step on shared runners

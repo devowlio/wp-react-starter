@@ -41,6 +41,13 @@ function applyConfig(config) {
     if (isCI) {
         // CI relevant options
         config.baseUrl = "http://wordpress";
+
+        // Currently, cypress does not support multiple reporters out-of-the-box and if
+        // junit report is enabled, the console does not longer output error messages locally.
+        config.reporter = "junit";
+        config.reporterOptions = {
+            mochaFile: "test/junit/cypress.xml"
+        };
     } else {
         // Local development
         const wpContainer = JSON.parse(

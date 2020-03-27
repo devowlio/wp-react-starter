@@ -26,6 +26,16 @@ module.exports = {
     },
     transformIgnorePatterns: ["node_modules/(?!@" + rootName + ")"],
     collectCoverage: false,
+    reporters: [
+        "default",
+        [
+            "jest-junit",
+            {
+                outputDirectory: "./test/junit",
+                outputName: "jest.xml"
+            }
+        ]
+    ],
     coverageDirectory: "<rootDir>/coverage/jest",
     collectCoverageFrom: [
         "<rootDir>/lib/**/*.{tsx,ts}", // Packages

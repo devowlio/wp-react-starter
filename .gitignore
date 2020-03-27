@@ -13,7 +13,9 @@ packages/*/dev
 
 # Tests
 packages/*/coverage
+packages/*/test/junit
 plugins/*/coverage
+plugins/*/test/junit
 plugins/*/test/cypress/videos
 plugins/*/test/cypress/screenshots
 
