@@ -21,6 +21,8 @@
     "editor.tabSize": 4,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSaveTimeout": 3000, // Increase because phpcs can take longer
+    // Prettier
+    "prettier.prettierPath": "./node_modules/prettier",
     // Intelephense
     "intelephense.files.maxSize": 4000000, // increase max file size so WordPress sub is considered, too
     // Per language
