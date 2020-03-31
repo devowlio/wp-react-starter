@@ -49,7 +49,7 @@
         "workspace:compose-files": "find plugins/*/devops packages/*/devops | grep \"^\\(plugins\\|packages\\)/.*/devops/docker-compose/docker-compose\\.\\(yml\\|$COMPOSE_CONTEXT\\)\" | sed -n -e 'H;${x;s/\\n/:.\\//g;s/^ //;p;}' | sed -e 's/:*$//' | sed -e 's/^://' ",
         "workspace:slugs": "find plugins/* -maxdepth 0 2>/dev/null | sed -n -e 'H;${x;s/\\n/ /g;s/^ //;p;}' | sed 's/plugins\\///g'",
         "exposedotenv": "env $(cat ./common/.env-default | xargs) env $(cat ./.env 2>/dev/null | xargs)",
-        "preversion": "WORKSPACE_COMMAND=\"yarn --silent grunt composer:disclaimer\" yarn --silent workspace:concurrently && WORKSPACE_COMMAND=\"yarn --silent grunt yarn:disclaimer\" yarn --silent workspace:concurrently && git add \"*LICENSE_3RD_PARTY*\""
+        "preversion": "WORKSPACE_COMMAND=\"yarn --silent grunt composer:disclaimer\" yarn --silent workspace:concurrently && lerna exec --concurrency 1 -- yarn grunt yarn:disclaimer && git add \"*LICENSE_3RD_PARTY*\""
     },
     "lerna": {
         "npmClient": "yarn",

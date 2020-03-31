@@ -39,9 +39,13 @@ function applyDefaultRunnerConfiguration(grunt: IGrunt) {
      */
     grunt.registerTask("yarn:disclaimer", () => {
         const cwd = process.cwd();
-        execSync("yarn --silent licenses generate-disclaimer --production > LICENSE_3RD_PARTY_JS.md", {
-            cwd
-        });
+        execSync(
+            // Use one concurrency network request https://github.com/yarnpkg/yarn/issues/6312#issuecomment-430674746
+            "yarn --silent licenses generate-disclaimer --production --network-concurrency 1 > LICENSE_3RD_PARTY_JS.md",
+            {
+                cwd
+            }
+        );
     });
 
     /**
