@@ -479,7 +479,7 @@ final class AssetsTest extends TestCase {
             ->with($publicFolder . $script, $isLib)
             ->andReturn($version);
         $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($handle, true, $script, [], true, 'all');
-        
+
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
             'args' => [$should, $plugins_url, [], $version, true]
@@ -522,7 +522,7 @@ final class AssetsTest extends TestCase {
             ->andReturn($version);
 
         $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
-        
+
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
             'args' => [$should, $plugins_url, [], $version, true]
@@ -653,7 +653,7 @@ final class AssetsTest extends TestCase {
             'times' => 1,
             'args' => [$should, $plugins_url, $deps, $version, $in_footer]
         ]);
-        
+
         $this->assets->shouldReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueue');
@@ -997,7 +997,7 @@ final class AssetsTest extends TestCase {
             'args' => [$should, $plugins_url, [], $packageJsonVersion, 'all']
         ]);
         WP_Mock::userFunction('wp_enqueue_style', ['times' => 0]);
-        
+
         $this->assets->shouldNotReceive('setLazyScriptTranslations');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
@@ -1013,7 +1013,7 @@ final class AssetsTest extends TestCase {
         $src = 'another.css';
         $deps = [Assets::$HANDLE_REACT];
         $media = 'print';
-        $should = PHPUNIT_ROOT_SLUG . '-' . $handle;
+        $should = PHPUNIT_ROOT_SLUG . '-' . $handle . '-another';
         $packageSrc = 'vendor/phpunit-root/utils/dev/another.css';
         $plugins_url = 'http://localhost/wp-content/plugins/phpunit/' . $packageSrc;
         $ts = time();
@@ -1057,7 +1057,7 @@ final class AssetsTest extends TestCase {
         $src = 'another.js';
         $deps = [Assets::$HANDLE_REACT];
         $in_footer = false;
-        $should = PHPUNIT_ROOT_SLUG . '-' . $handle;
+        $should = PHPUNIT_ROOT_SLUG . '-' . $handle . '-another';
         $packageSrc = 'vendor/phpunit-root/utils/dev/another.js';
         $plugins_url = 'http://localhost/wp-content/plugins/phpunit/' . $packageSrc;
         $ts = time();
@@ -1186,7 +1186,7 @@ final class AssetsTest extends TestCase {
 JS;
 
         $this->assets->shouldReceive('setLazyScriptTranslations')->passthru();
-        
+
         WP_Mock::userFunction('load_script_textdomain', ['times' => 1, 'args' => [PHPUNIT_SLUG, PHPUNIT_TD, $path], 'return' => '[]']);
         WP_Mock::userFunction('wp_add_inline_script', ['times' => 1, 'args' => [PHPUNIT_SLUG, $script, 'before']]);
 
@@ -1199,7 +1199,7 @@ JS;
         $path = PHPUNIT_PATH . '/public/languages/json';
 
         $this->assets->shouldReceive('setLazyScriptTranslations')->passthru();
-        
+
         WP_Mock::userFunction('load_script_textdomain', ['times' => 1, 'return' => false]);
         WP_Mock::userFunction('wp_add_inline_script', ['times' => 0]);
 

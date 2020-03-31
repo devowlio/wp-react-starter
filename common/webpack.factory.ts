@@ -243,12 +243,12 @@ function createDefaultSettings(
             "moment-timezone": "moment",
             // Get dynamically a map of externals for add-on development
             ...plugins.reduce((map: { [key: string]: string }, obj) => {
-                map[obj.externalId] = obj.moduleId;
+                map[obj.moduleId] = obj.externalId;
                 return map;
             }, {}),
             // Get dynamically a map of external package dependencies
             ...packages.reduce((map: { [key: string]: string }, obj) => {
-                map[obj.name] = obj.externalId;
+                map[obj.name] = obj.externalId.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
                 return map;
             }, {})
         },

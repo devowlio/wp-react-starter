@@ -301,7 +301,8 @@ trait Assets {
      */
     protected function probablyEnqueueComposerChunk($handle, $src, &$deps, $in_footer, $media) {
         $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
-        $handle = $this->enqueueComposer($handle, 'vendor~' . $src, $deps, 'script', $in_footer, $media, 'vendor~' . $rootSlug . '-' . $handle);
+        $scriptSuffix = $src === 'index.js' || $src === 'index.css' ? '' : '-' . pathinfo($src, PATHINFO_FILENAME);
+        $handle = $this->enqueueComposer($handle, 'vendor~' . $src, $deps, 'script', $in_footer, $media, 'vendor~' . $rootSlug . '-' . $handle . $scriptSuffix);
         if ($handle !== false) {
             array_push($deps, $handle);
         }
@@ -329,7 +330,8 @@ trait Assets {
         $vendorHandle = null
     ) {
         $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
-        $useHandle = $vendorHandle !== null ? $vendorHandle : $rootSlug . '-' . $handle;
+        $scriptSuffix = $src === 'index.js' || $src === 'index.css' ? '' : '-' . pathinfo($src, PATHINFO_FILENAME);
+        $useHandle = $vendorHandle !== null ? $vendorHandle : $rootSlug . '-' . $handle . $scriptSuffix;
         $useNonMinifiedSources = $this->useNonMinifiedSources();
         $packageDir = 'vendor/' . $rootSlug . '/' . $handle . '/';
         $packageSrc = $packageDir . ($useNonMinifiedSources ? 'dev' : 'dist') . '/' . $src;
