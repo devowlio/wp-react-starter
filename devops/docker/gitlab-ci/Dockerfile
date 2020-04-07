@@ -35,7 +35,11 @@ RUN apt-get update && apt-get install -y \
     libgconf-2-4 \
     libnss3 \
     libxss1 \
-    libasound2 && \
+    libasound2 \
+    # libssl-dev is needed for Phar (https://raspberrypi.stackexchange.com/a/36379)
+    libssl-dev && \
+    # PHP dependencies (https://git.io/JvAFa)
+    docker-php-ext-install -j4 phar json mbstring tokenizer && \
     # xdebug (can be activated with `docker-php-ext-enable xdebug`, not by default because it slows down PHP)
     pecl install xdebug && \
     # Composer
@@ -53,7 +57,12 @@ RUN apt-get update && apt-get install -y \
     apt-get update && apt-get install -y yarn && \
     # Docker and Docker-Compose (via Python, PiP)
     curl -sSL https://get.docker.com/ | sh && \
-    pip install docker-compose
+    pip install docker-compose && \
+    # WP CLI
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    php wp-cli.phar --info && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp
 
 RUN npm install -g \
     # Global installations of npm packages
