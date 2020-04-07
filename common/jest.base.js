@@ -49,6 +49,6 @@ module.exports = {
     },
     snapshotSerializers: [],
     moduleNameMapper: {
-        "\\.(css|less)$": "identity-obj-proxy"
+        "\\.(css|less|scss)$": "identity-obj-proxy"
     }
 };
