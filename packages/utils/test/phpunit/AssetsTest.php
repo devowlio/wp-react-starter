@@ -339,7 +339,10 @@ final class AssetsTest extends TestCase {
 
     public function testProbablyEnqueueChunk() {
         $deps = ['jquery'];
-        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('probablyEnqueueChunk')
+            ->passthru();
         $this->assets
             ->shouldReceive('enqueue')
             ->once()
@@ -355,7 +358,10 @@ final class AssetsTest extends TestCase {
 
     public function testProbablyEnqueueChunkFromLib() {
         $deps = ['jquery'];
-        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('probablyEnqueueChunk')
+            ->passthru();
         $this->assets->shouldNotReceive('enqueue');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
@@ -367,7 +373,10 @@ final class AssetsTest extends TestCase {
 
     public function testProbablyEnqueueChunkFailing() {
         $deps = ['jquery'];
-        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueChunk')->passthru();
+        $this->assets
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('probablyEnqueueChunk')
+            ->passthru();
         $this->assets
             ->shouldReceive('enqueue')
             ->once()
@@ -407,7 +416,10 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, false)
             ->andReturn($version);
-        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueChunk')
+            ->once()
+            ->with($should, false, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -478,7 +490,10 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, $isLib)
             ->andReturn($version);
-        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($handle, true, $script, [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueChunk')
+            ->once()
+            ->with($handle, true, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -521,7 +536,10 @@ final class AssetsTest extends TestCase {
             ->with($publicFolder . $script, false)
             ->andReturn($version);
 
-        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueChunk')
+            ->once()
+            ->with($should, false, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -567,7 +585,10 @@ final class AssetsTest extends TestCase {
             ->shouldReceive('getCachebusterVersion')
             ->with($publicFolder . $script, false)
             ->andReturn($version);
-        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueChunk')
+            ->once()
+            ->with($should, false, $script, [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -647,7 +668,10 @@ final class AssetsTest extends TestCase {
         ]);
 
         $this->assets->shouldReceive('getCachebusterVersion')->andReturn($version);
-        $this->assets->shouldReceive('probablyEnqueueChunk')->once()->with($should, false, $script, $deps, $in_footer, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueChunk')
+            ->once()
+            ->with($should, false, $script, $deps, $in_footer, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -812,7 +836,10 @@ final class AssetsTest extends TestCase {
 
     public function testProbablyEnqueueComposerChunk() {
         $deps = ['jquery'];
-        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueComposerChunk')->passthru();
+        $this->assets
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->passthru();
         $this->assets
             ->shouldReceive('enqueueComposer')
             ->once()
@@ -828,7 +855,10 @@ final class AssetsTest extends TestCase {
 
     public function testProbablyEnqueueComposerChunkFailing() {
         $deps = ['jquery'];
-        $this->assets->shouldAllowMockingProtectedMethods()->shouldReceive('probablyEnqueueComposerChunk')->passthru();
+        $this->assets
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->passthru();
         $this->assets
             ->shouldReceive('enqueueComposer')
             ->once()
@@ -876,7 +906,10 @@ final class AssetsTest extends TestCase {
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
 
-        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, 'index.js', [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->once()
+            ->with($handle, 'index.js', [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -921,7 +954,10 @@ final class AssetsTest extends TestCase {
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
 
-        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, 'index.js', [], true, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->once()
+            ->with($handle, 'index.js', [], true, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -1083,7 +1119,10 @@ final class AssetsTest extends TestCase {
         redefine('filemtime', always($ts));
         redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
 
-        $this->assets->shouldReceive('probablyEnqueueComposerChunk')->once()->with($handle, $src, $deps, $in_footer, 'all');
+        $this->assets
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->once()
+            ->with($handle, $src, $deps, $in_footer, 'all');
 
         WP_Mock::userFunction('wp_enqueue_script', [
             'times' => 1,
@@ -1187,7 +1226,11 @@ JS;
 
         $this->assets->shouldReceive('setLazyScriptTranslations')->passthru();
 
-        WP_Mock::userFunction('load_script_textdomain', ['times' => 1, 'args' => [PHPUNIT_SLUG, PHPUNIT_TD, $path], 'return' => '[]']);
+        WP_Mock::userFunction('load_script_textdomain', [
+            'times' => 1,
+            'args' => [PHPUNIT_SLUG, PHPUNIT_TD, $path],
+            'return' => '[]'
+        ]);
         WP_Mock::userFunction('wp_add_inline_script', ['times' => 1, 'args' => [PHPUNIT_SLUG, $script, 'before']]);
 
         $this->assets->setLazyScriptTranslations(PHPUNIT_SLUG, PHPUNIT_TD, $path);

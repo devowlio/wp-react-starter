@@ -184,7 +184,7 @@ trait Assets {
                 continue;
             }
 
-            $useSrc = (is_array($s) ? $s[1] : $s);
+            $useSrc = is_array($s) ? $s[1] : $s;
             $publicSrc = $publicFolder . $useSrc;
             $path = path_join($this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH), $publicSrc);
             if (file_exists($path)) {
@@ -302,7 +302,15 @@ trait Assets {
     protected function probablyEnqueueComposerChunk($handle, $src, &$deps, $in_footer, $media) {
         $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
         $scriptSuffix = $src === 'index.js' || $src === 'index.css' ? '' : '-' . pathinfo($src, PATHINFO_FILENAME);
-        $handle = $this->enqueueComposer($handle, 'vendor~' . $src, $deps, 'script', $in_footer, $media, 'vendor~' . $rootSlug . '-' . $handle . $scriptSuffix);
+        $handle = $this->enqueueComposer(
+            $handle,
+            'vendor~' . $src,
+            $deps,
+            'script',
+            $in_footer,
+            $media,
+            'vendor~' . $rootSlug . '-' . $handle . $scriptSuffix
+        );
         if ($handle !== false) {
             array_push($deps, $handle);
         }

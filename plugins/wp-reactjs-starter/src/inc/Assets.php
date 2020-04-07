@@ -35,14 +35,7 @@ class Assets {
         // Your assets implementation here... See utils Assets for enqueue* methods
         // $useNonMinifiedSources = $this->useNonMinifiedSources(); // Use this variable if you need to differ between minified or non minified sources
         // Our utils package relies on jQuery, but this shouldn't be a problem as the most themes still use jQuery (might be replaced with https://github.com/github/fetch)
-        $scriptDeps = [
-            self::$HANDLE_REACT,
-            self::$HANDLE_REACT_DOM,
-            self::$HANDLE_MOBX,
-            'moment',
-            'wp-i18n',
-            'jquery'
-        ];
+        $scriptDeps = [self::$HANDLE_REACT, self::$HANDLE_REACT_DOM, self::$HANDLE_MOBX, 'moment', 'wp-i18n', 'jquery'];
 
         // Enqueue external utils package
         $handleUtils = $this->enqueueComposerScript('utils', $scriptDeps);

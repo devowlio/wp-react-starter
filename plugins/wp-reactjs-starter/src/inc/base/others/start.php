@@ -31,7 +31,7 @@ if (version_compare($wp_version, WPRJSS_MIN_WP, '>=')) {
         }
 
         require_once WPRJSS_INC . 'Core.php';
-        call_user_func(array(WPRJSS_NS . '\\Core', 'getInstance'));
+        call_user_func([WPRJSS_NS . '\\Core', 'getInstance']);
     } else {
         // WP REST API version not reached
         require_once WPRJSS_INC . 'base/others/fallback-rest-api.php';
