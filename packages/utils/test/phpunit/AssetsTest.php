@@ -884,7 +884,78 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldAllowMockingProtectedMethods();
         $this->assets->shouldReceive('enqueueComposer')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
-        $this->expectCallbacksReached(['isLernaRepo']);
+        $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
+
+        redefine('is_dir', function($dir) use ($self, $packageDir) {
+            $self->addCallbackReached('devDirExists', $dir === $packageDir . 'dev');
+            return true;
+        });
+
+        WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, $packageSrc]]);
+        WP_Mock::userFunction('path_join', [
+            'times' => 1,
+            'args' => [WP_CONTENT_DIR, 'packages/' . $handle . '/tsconfig.json']
+        ]);
+
+        redefine('file_exists', function () {
+            if (!$this->hasCallbackReached('isLernaRepo')) {
+                $this->addCallbackReached('isLernaRepo');
+                return false;
+            }
+            return true;
+        });
+
+        WP_Mock::userFunction('plugins_url', ['args' => [$packageSrc, PHPUNIT_FILE], 'return' => $plugins_url]);
+        WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, $packageDir . 'package.json']]);
+
+        redefine('filemtime', always($ts));
+        redefine('file_get_contents', always('{"version": "' . $packageJsonVersion . '"}'));
+
+        $this->assets
+            ->shouldReceive('probablyEnqueueComposerChunk')
+            ->once()
+            ->with($handle, 'index.js', [], true, 'all');
+
+        WP_Mock::userFunction('wp_enqueue_script', [
+            'times' => 1,
+            'args' => [$should, $plugins_url, [], $packageJsonVersion, true]
+        ]);
+        WP_Mock::userFunction('path_join', [
+            'times' => 1,
+            'args' => [PHPUNIT_PATH, $packageDir . 'languages/frontend/json']
+        ]);
+
+        $this->assets
+            ->shouldReceive('setLazyScriptTranslations')
+            ->once()
+            ->with($should, $should, null);
+
+        $method = new ReflectionMethod(AssetsImpl::class, 'enqueueComposer');
+        $method->setAccessible(true);
+        $actual = $method->invoke($this->assets, $handle);
+
+        $this->assertEquals($should, $actual);
+        $this->assertCallbacksReached();
+    }
+
+    public function testEnqueueComposerDevFolderNotExists() {
+        $handle = 'utils';
+        $should = PHPUNIT_ROOT_SLUG . '-' . $handle;
+        $packageDir = 'vendor/' . PHPUNIT_ROOT_SLUG . '/' . $handle . '/';
+        $packageSrc = 'vendor/phpunit-root/utils/dist/index.js';
+        $plugins_url = 'http://localhost/wp-content/plugins/phpunit/' . $packageSrc;
+        $ts = time();
+        $packageJsonVersion = '1.0.0';
+
+        $this->assets->shouldAllowMockingProtectedMethods();
+        $this->assets->shouldReceive('enqueueComposer')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+        $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
+
+        redefine('is_dir', function($dir) use ($self, $packageDir) {
+            $self->addCallbackReached('devDirExists', $dir === $packageDir . 'dev');
+            return false;
+        });
 
         WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, $packageSrc]]);
         WP_Mock::userFunction('path_join', [
@@ -945,6 +1016,8 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('enqueueComposer')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
 
+        redefine('is_dir', always(true));
+
         WP_Mock::userFunction('path_join');
 
         redefine('file_exists', always(true));
@@ -981,6 +1054,8 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('enqueueComposer')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
 
+        redefine('is_dir', always(true));
+
         WP_Mock::userFunction('path_join');
 
         redefine('file_exists', always(false));
@@ -1007,6 +1082,8 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('enqueueComposer')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
         $this->expectCallbacksReached(['isLernaRepo']);
+
+        redefine('is_dir', always(true));
 
         WP_Mock::userFunction('path_join', ['times' => 1, 'args' => [PHPUNIT_PATH, $packageSrc]]);
         WP_Mock::userFunction('path_join', [
@@ -1060,6 +1137,8 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
         $this->expectCallbacksReached(['isLernaRepo']);
 
+        redefine('is_dir', always(true));
+
         WP_Mock::userFunction('path_join');
 
         redefine('file_exists', function () {
@@ -1103,6 +1182,8 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('enqueueComposer')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
         $this->expectCallbacksReached(['isLernaRepo']);
+
+        redefine('is_dir', always(true));
 
         WP_Mock::userFunction('path_join');
 
@@ -1333,6 +1414,21 @@ JS;
 
         $this->assets->shouldReceive('getPublicFolder')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+
+        redefine('is_dir', always(true));
+
+        $actual = $this->assets->getPublicFolder();
+
+        $this->assertEquals($should, $actual);
+    }
+
+    public function testGetPublicFolderDevButDoesNotExist() {
+        $should = 'public/dist/';
+
+        $this->assets->shouldReceive('getPublicFolder')->passthru();
+        $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
+
+        redefine('is_dir', always(false));
 
         $actual = $this->assets->getPublicFolder();
 

@@ -35,6 +35,14 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                 cwd: "<%= BUILD_PLUGIN_DIR %>",
                 src: ["public/ts", "public/dev/*.map", `vendor/${mainPkg.name}/*/dev/*.map`]
             },
+            /**
+             * Remove all `dev` folders. This is an optional task and must be added via grunt.registerTask("post:clean:productionSource", ["clean:webpackDevBundles"]).
+             */
+            webpackDevBundles: {
+                expand: true,
+                cwd: "<%= BUILD_PLUGIN_DIR %>",
+                src: ["public/dev/", `vendor/${mainPkg.name}/*/dev/`]
+            },
             packageManageFiles: ["<%= BUILD_PLUGIN_DIR %>/?(composer|package).*"]
         },
         strip_code: /* eslint-disable-line @typescript-eslint/camelcase */ {

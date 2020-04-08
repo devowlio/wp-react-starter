@@ -60,6 +60,8 @@ common lint phpcs:
         - yarn tsc -p .
         # Build the plugin
         - yarn build
+        # Output artifact size of plugin zip
+        - du -sh build/*
     artifacts:
         name: $CI_JOB_NAME
         paths: [plugins/$JOB_PACKAGE_NAME/build/]

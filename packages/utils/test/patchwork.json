@@ -12,6 +12,7 @@
         "glob",
         "basename",
         "filemtime",
-        "file_get_contents"
+        "file_get_contents",
+        "is_dir"
     ]
 }

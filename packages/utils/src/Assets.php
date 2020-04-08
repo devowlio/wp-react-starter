@@ -342,7 +342,8 @@ trait Assets {
         $useHandle = $vendorHandle !== null ? $vendorHandle : $rootSlug . '-' . $handle . $scriptSuffix;
         $useNonMinifiedSources = $this->useNonMinifiedSources();
         $packageDir = 'vendor/' . $rootSlug . '/' . $handle . '/';
-        $packageSrc = $packageDir . ($useNonMinifiedSources ? 'dev' : 'dist') . '/' . $src;
+        $devBundlesExists = is_dir($packageDir . 'dev');
+        $packageSrc = $packageDir . ($useNonMinifiedSources && $devBundlesExists ? 'dev' : 'dist') . '/' . $src;
         $pluginPath = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH);
         $composerPath = path_join($pluginPath, $packageSrc);
         $isInLernaRepo = file_exists(path_join(WP_CONTENT_DIR, 'packages/' . $handle . '/tsconfig.json'));
@@ -523,7 +524,16 @@ JS;
      * @return string
      */
     public function getPublicFolder($isLib = false) {
-        return 'public/' . ($isLib ? 'lib' : ($this->useNonMinifiedSources() ? 'dev' : 'dist')) . '/';
+        if ($isLib) {
+            return 'public/lib/';
+        } elseif ($this->useNonMinifiedSources()) {
+            // Check if dev folder exists because it can be removed in some builds
+            $path = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH);
+            if (is_dir($path . '/public/dev') || is_dir($path . '/src/public/dev') /* monorepo development */) {
+                return 'public/dev/';
+            }
+        }
+        return 'public/dist/';
     }
 
     /**
