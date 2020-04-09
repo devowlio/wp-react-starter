@@ -1,6 +1,8 @@
 <?php
 namespace MatthiasWeb\Utils;
 
+use WP_REST_Response;
+
 // @codeCoverageIgnoreStart
 defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
 // @codeCoverageIgnoreEnd
@@ -36,7 +38,7 @@ class Service {
      * Response for /plugin route.
      */
     public function routePlugin() {
-        return new \WP_REST_Response($this->getCore()->getPluginData());
+        return new WP_REST_Response($this->getCore()->getPluginData());
     }
 
     /**

@@ -72,6 +72,7 @@ _Avoid repetitive work and develop more feature_
 -   Plugin creation with **monorepo integration**: `create-wp-react-app create-plugin`
 -   Package creation with **monorepo integration**: `create-wp-react-app create-package`
 -   Predefined [**GitLab CI**](https://about.gitlab.com/product/continuous-integration/) example for **Continous Integration** ([read more](./#using-ci-cd))
+-   [**Scoping**](https://github.com/humbug/php-scoper) your PHP coding and dependencies so they are isolated (avoid dependency version conflicts)
 -   **Packaging and publishing** of you plugin [wordpress.org](https://wordpress.org/plugins/developers/) ([read more](https://devowlio.gitbook.io/wp-react-starter/gitlab-integration/deploy-wp-org))
 -   [**license-checker**](https://www.npmjs.com/package/license-checker) for automated **3th-party-code license scanning** and compliance check
 
@@ -88,6 +89,7 @@ _Providing the right development environment for high quality plugins_
 -   [**lerna**](https://lerna.js.org/) for **semantic versioning** and **changelog generation**
 -   [**webpackbar**](https://github.com/nuxt/webpackbar) so you can get a real progress bar while development
 -   [**Docker**](https://www.docker.com/) for a **local development** environment
+-   Predefined WordPress **Stubs** so you get autocompletion for WordPress classes and functions, e. g. `add_action`
 -   Within the Docker environment you have [**WP-CLI**](https://developer.wordpress.org/cli/commands/) available
 -   Predefined [**Review Apps**](https://docs.gitlab.com/ee/ci/review_apps/) example for branch deployment, read more [here](./#using-ci-cd)
 -   Predefined VSCode **PHP debugging** environment

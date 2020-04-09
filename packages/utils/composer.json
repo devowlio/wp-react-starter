@@ -56,7 +56,11 @@
     },
     "autoload": {
         "psr-4": {
-            "MatthiasWeb\\Utils\\": "src/",
+            "MatthiasWeb\\Utils\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "MatthiasWeb\\Utils\\Test\\": "test/phpunit/"
         }
     },
@@ -71,6 +75,7 @@
         "phpcompatibility/php-compatibility": "^9.3",
         "phpunit/phpunit": "^7",
         "rregeer/phpunit-coverage-check": "^0.3.1",
+        "slevomat/coding-standard": "^6.0@dev",
         "squizlabs/php_codesniffer": "^3.5",
         "wp-coding-standards/wpcs": "^2.2"
     }

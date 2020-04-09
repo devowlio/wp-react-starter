@@ -76,6 +76,10 @@
             "ignore-packages-here@1.0.0"
         ]
     },
+    "stubs": [
+        "./vendor/php-stubs/wordpress-stubs/wordpress-stubs.php",
+        "../../common/stubs.php"
+    ],
     "eslintConfig": {
         "extends": [
             "../../common/.eslintrc"

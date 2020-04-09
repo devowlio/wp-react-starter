@@ -4,6 +4,7 @@
 
 Please make sure that the following components are installed on your local computer:
 
+-   [**PHP**](https://www.php.net/manual/en/install.unix.debian.php): PHP runtime (version >= 7.2)
 -   [**Node.js**](https://nodejs.org/): JavaScript runtime (version >= 10.17)
 -   [**Yarn**](https://yarnpkg.com/lang/en/): Dependency manager for JavaScript (version >= 1.19)
 -   [**Composer**](https://getcomposer.org/): Dependency manager for PHP (version >= 1.9)

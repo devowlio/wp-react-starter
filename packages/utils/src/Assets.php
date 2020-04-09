@@ -1,6 +1,9 @@
 <?php
 namespace MatthiasWeb\Utils;
 
+use Requests_IDNAEncoder;
+use Requests_IRI;
+
 defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
 
 /**
@@ -552,8 +555,8 @@ JS;
         if (!class_exists('Requests_IDNAEncoder')) {
             require_once ABSPATH . WPINC . '/Requests/IDNAEncoder.php';
         }
-        $iri = new \Requests_IRI($url);
-        $iri->host = \Requests_IDNAEncoder::encode($iri->host);
+        $iri = new Requests_IRI($url);
+        $iri->host = Requests_IDNAEncoder::encode($iri->host);
         return $iri->uri;
     }
 

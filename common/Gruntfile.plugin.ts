@@ -3,11 +3,12 @@
  */
 
 import { execSync, spawnSync } from "child_process";
-import { resolve, dirname } from "path";
+import { resolve, dirname, basename } from "path";
 import { renameSync } from "fs";
 import { readFileSync, writeFileSync, lstatSync } from "fs";
 import { applyDefaultRunnerConfiguration, hookable } from "./Gruntfile";
 import rimraf from "rimraf";
+import { extractGlobalStubIdentifiers } from "./php-scope-stub";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mainPkg = require("../package.json");
@@ -251,6 +252,73 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
     });
 
     /**
+     * Scope our PHP plugin. See also php-scoper.php.
+     *
+     * @see https://github.com/humbug/php-scoper
+     */
+    grunt.registerTask("php:scope", () => {
+        const cwd = process.cwd();
+        const buildPluginDir = resolve(grunt.config.get<string>("BUILD_PLUGIN_DIR"));
+        const configFile = resolve("../../common/php-scoper.php");
+        const outputDir = `${buildPluginDir}-scoped`;
+        const tmpStubFile = resolve(buildPluginDir, "php-scoper.php.json");
+
+        // Whitelist stubs, write them to a temporary file so php-scoper.php can consume it
+        const stubPathes = grunt.config.get<string[]>("pkg.stubs").map((relative) => resolve(cwd, relative));
+        const addOnPathes = grunt.file
+            .expand(
+                {
+                    cwd: resolve("../")
+                },
+                ["*/src/inc/**/*.php", `!${basename(cwd)}/**/*`]
+            )
+            .map((relative) => resolve("..", relative));
+        const whitelist = extractGlobalStubIdentifiers(stubPathes.concat(addOnPathes));
+        writeFileSync(tmpStubFile, JSON.stringify(whitelist), {
+            encoding: "UTF-8"
+        });
+
+        // Execute the php-scoper
+        spawnSync(`php-scoper add-prefix --output-dir="${outputDir}" --config "${configFile}"`, {
+            cwd: buildPluginDir,
+            stdio: "inherit",
+            shell: true
+        });
+
+        // Overwrite back all scoped files to main directory
+        grunt.file
+            .expand(
+                {
+                    cwd: outputDir,
+                    filter: "isFile"
+                },
+                "**/*"
+            )
+            .forEach((relative) => renameSync(resolve(outputDir, relative), resolve(buildPluginDir, relative)));
+
+        // It is essential to reload the autoloader files
+        const rebuildAutoloader = (cwd: string) =>
+            spawnSync(`composer dump-autoload --classmap-authoritative`, {
+                cwd,
+                stdio: "inherit",
+                shell: true
+            });
+        grunt.file
+            .expand(
+                {
+                    cwd: buildPluginDir,
+                    filter: "isDirectory"
+                },
+                "vendor/*/*"
+            )
+            .forEach((folder) => rebuildAutoloader(resolve(buildPluginDir, folder)));
+        rebuildAutoloader(buildPluginDir);
+
+        rimraf.sync(outputDir);
+        rimraf.sync(tmpStubFile);
+    });
+
+    /**
      * Build the whole plugin to the distribution files.
      */
     grunt.registerTask(
@@ -274,6 +342,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                 "composer:clean:production",
                 "clean:productionSource",
                 "strip_code:productionSource",
+                "php:scope",
                 "clean:packageManageFiles"
             ].concat(grunt.config.get("BUILD_POST_TASKS") || [])
         )

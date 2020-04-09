@@ -1,6 +1,7 @@
 <?php
 namespace MatthiasWeb\WPRJSS\view\widget;
 use MatthiasWeb\WPRJSS\base\UtilsProvider;
+use WP_Widget;
 
 // @codeCoverageIgnoreStart
 defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
@@ -11,7 +12,7 @@ defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file req
  *
  * @codeCoverageIgnore Example implementations gets deleted the most time after plugin creation!
  */
-class Widget extends \WP_Widget {
+class Widget extends WP_Widget {
     use UtilsProvider;
 
     /**

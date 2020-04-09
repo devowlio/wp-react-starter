@@ -62,7 +62,11 @@ RUN apt-get update && apt-get install -y \
     curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     php wp-cli.phar --info && \
     chmod +x wp-cli.phar && \
-    mv wp-cli.phar /usr/local/bin/wp
+    mv wp-cli.phar /usr/local/bin/wp && \
+    # PHP Scoper
+    curl -O -L https://github.com/humbug/php-scoper/releases/download/0.13.1/php-scoper.phar && \
+    chmod +x php-scoper.phar && \
+    mv php-scoper.phar /usr/local/bin/php-scoper
 
 RUN npm install -g \
     # Global installations of npm packages

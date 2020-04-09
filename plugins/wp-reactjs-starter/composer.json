@@ -54,15 +54,21 @@
         "phpdocumentor/phpdocumentor": "dev-master",
         "phpunit/phpunit": "^7",
         "rregeer/phpunit-coverage-check": "^0.3.1",
+        "slevomat/coding-standard": "^6.0@dev",
         "squizlabs/php_codesniffer": "^3.5",
         "wp-coding-standards/wpcs": "^2.2"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "MatthiasWeb\\WPRJSS\\": [
                 "inc/",
                 "src/inc/"
-            ],
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "MatthiasWeb\\WPRJSS\\Test\\": [
                 "test/phpunit/"
             ]

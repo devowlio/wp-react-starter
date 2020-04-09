@@ -1,5 +1,8 @@
 <?php
 // We have now ensured that we are running the minimum PHP version.
+
+use MatthiasWeb\WPRJSS\Core;
+
 defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
 
 // Check minimum WordPress version
@@ -24,14 +27,19 @@ if (version_compare($wp_version, WPRJSS_MIN_WP, '>=')) {
             require_once $composer_path;
         }
 
+        // Dependents scoper autoload (PHP Scoper)
+        $depAutoloaders = glob(path_join(WPRJSS_PATH, 'vendor/*/*/vendor/scoper-autoload.php'));
+        foreach ($depAutoloaders as $composer_path) {
+            require_once $composer_path;
+        }
+
         // Dependents autoload
         $depAutoloaders = glob(path_join(WPRJSS_PATH, 'vendor/' . WPRJSS_ROOT_SLUG . '/*/vendor/autoload.php'));
         foreach ($depAutoloaders as $composer_path) {
             require_once $composer_path;
         }
 
-        require_once WPRJSS_INC . 'Core.php';
-        call_user_func([WPRJSS_NS . '\\Core', 'getInstance']);
+        Core::getInstance();
     } else {
         // WP REST API version not reached
         require_once WPRJSS_INC . 'base/others/fallback-rest-api.php';

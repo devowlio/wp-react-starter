@@ -156,6 +156,7 @@
         "lint-staged": "^10.0.9",
         "parallel-webpack": "^2.4.0",
         "patch-package": "^6.2.1",
+        "php-parser": "^3.0.0",
         "postinstall-postinstall": "^2.0.0",
         "prettier": "^2.0.2",
         "rimraf": "^3.0.2",
