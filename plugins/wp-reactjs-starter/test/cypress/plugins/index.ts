@@ -11,11 +11,13 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const child_process = require("child_process");
-const cypressWebpackPreprocessor = require("@cypress/webpack-preprocessor");
-const path = require("path");
+import { execSync } from "child_process";
+import cypressWebpackPreprocessor from "@cypress/webpack-preprocessor";
+import { resolve } from "path";
+
+// eslint-disable-next-line import/no-extraneous-dependencies
 require("dotenv").config({
-    path: path.resolve(process.env.PWD, "../../.env")
+    path: resolve(process.env.PWD, "../../.env")
 });
 
 /**
@@ -29,7 +31,7 @@ function applyConfig(config) {
 
     config.screenshotsFolder = "test/cypress/screenshots";
     config.videosFolder = "test/cypress/videos";
-    config.supportFile = "test/cypress/support/index.js";
+    config.supportFile = "test/cypress/support/index.ts";
     config.fixturesFolder = "test/cypress/fixtures";
     config.ignoreTestFiles = "*.ts";
     // config.testFiles = "test/cypress/integration/**/*.{feature,features}";
@@ -50,13 +52,11 @@ function applyConfig(config) {
         };
     } else {
         // Local development
-        const wpContainer = JSON.parse(
-            child_process
-                .execSync("docker container inspect $(yarn --silent root:run docker-compose:name-wordpress)")
-                .toString()
-        )[0];
+        const [wpContainer] = JSON.parse(
+            execSync("docker container inspect $(yarn --silent root:run docker-compose:name-wordpress)").toString()
+        );
         const definedPort = wpContainer.HostConfig.PortBindings["80/tcp"][0].HostPort;
-        config.baseUrl = process.env.WP_LOCAL_INSTALL_URL || "http://localhost:" + definedPort;
+        config.baseUrl = process.env.WP_LOCAL_INSTALL_URL || `http://localhost:${definedPort}`;
     }
 }
 
@@ -78,6 +78,7 @@ module.exports = (on, config) => {
                     extensions: [".ts", ".js"]
                 },
                 // @see https://git.io/JeAtF
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 node: { fs: "empty", child_process: "empty", readline: "empty" },
                 module: {
                     rules: [
@@ -86,7 +87,7 @@ module.exports = (on, config) => {
                             exclude: /(disposables)/,
                             use: {
                                 loader: "babel-loader",
-                                options: require(path.resolve(process.env.PWD, "package.json")).babel
+                                options: require(resolve(process.env.PWD, "package.json")).babel
                             }
                         },
                         {
@@ -103,11 +104,9 @@ module.exports = (on, config) => {
         })
     );
 
-    on("test:before:run", () => {
-        console.log("Check if docker container is reachable...");
-        child_process.execSync(`yarn --silent root:run wp-cli "wp core version"`);
-        console.log("Reachable");
-    });
+    console.log("Check if docker container is reachable...");
+    execSync(`yarn --silent root:run wp-cli "wp core version"`);
+    console.log("Reachable");
 
     return config;
 };

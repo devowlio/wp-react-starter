@@ -193,7 +193,7 @@
         "classnames": "^2.2.6",
         "clean-css": "^4.2.1",
         "css-loader": "^3.4.2",
-        "cypress": "~3.4.1",
+        "cypress": "~4.4.0",
         "cypress-cucumber-preprocessor": "^2.0.1",
         "fork-ts-checker-webpack-plugin": "^4.1.1",
         "grunt": "^1.1.0",

@@ -30,12 +30,15 @@ RUN apt-get update && apt-get install -y \
     python-dev \
     # Cypress.io dependencies
     xvfb \
-    libgtk-3-dev \
+    libgtk2.0-0 \
+    libgtk-3-0 \
     libnotify-dev \
     libgconf-2-4 \
     libnss3 \
     libxss1 \
     libasound2 \
+    libxtst6 \
+    xauth \
     # libssl-dev is needed for Phar (https://raspberrypi.stackexchange.com/a/36379)
     libssl-dev && \
     # PHP dependencies (https://git.io/JvAFa)

@@ -14,7 +14,7 @@ Please make sure that the following components are installed on your local compu
 -   (optional) [**Visual Studio Code**](https://code.visualstudio.com/): IDE with the best integration for tools used in `wp-react-starter`
 
 {% hint style="warning" %}
-The boilerplate is **not** yet fully supported on Windows systems. Feel free to contribute or use a [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/install-win10) or [Windows Subsystem 2 for Linux (WSL2)](https://docs.microsoft.com/windows/wsl/wsl2-install).
+The boilerplate is **not** yet fully supported on Windows systems. Feel free to contribute or use a [Windows Subsystem 2 for Linux (WSL2)](https://docs.microsoft.com/windows/wsl/wsl2-install).
 {% endhint %}
 
 ## Installation
