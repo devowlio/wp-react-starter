@@ -341,13 +341,13 @@ trait Assets {
         $vendorHandle = null
     ) {
         $rootSlug = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_ROOT_SLUG);
+        $pluginPath = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH);
         $scriptSuffix = $src === 'index.js' || $src === 'index.css' ? '' : '-' . pathinfo($src, PATHINFO_FILENAME);
         $useHandle = $vendorHandle !== null ? $vendorHandle : $rootSlug . '-' . $handle . $scriptSuffix;
         $useNonMinifiedSources = $this->useNonMinifiedSources();
         $packageDir = 'vendor/' . $rootSlug . '/' . $handle . '/';
-        $devBundlesExists = is_dir($packageDir . 'dev');
+        $devBundlesExists = is_dir($pluginPath . '/' . $packageDir . 'dev');
         $packageSrc = $packageDir . ($useNonMinifiedSources && $devBundlesExists ? 'dev' : 'dist') . '/' . $src;
-        $pluginPath = $this->getPluginConstant(PluginReceiver::$PLUGIN_CONST_PATH);
         $composerPath = path_join($pluginPath, $packageSrc);
         $isInLernaRepo = file_exists(path_join(WP_CONTENT_DIR, 'packages/' . $handle . '/tsconfig.json'));
 

@@ -273,7 +273,15 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                 ["*/src/inc/**/*.php", `!${basename(cwd)}/**/*`]
             )
             .map((relative) => resolve("..", relative));
-        const whitelist = extractGlobalStubIdentifiers(stubPathes.concat(addOnPathes));
+        const apiPathes = grunt.file
+            .expand(
+                {
+                    cwd: resolve("../")
+                },
+                "*/src/inc/api/**/*.php"
+            )
+            .map((relative) => resolve("..", relative));
+        const whitelist = extractGlobalStubIdentifiers(stubPathes.concat(addOnPathes, apiPathes));
         writeFileSync(tmpStubFile, JSON.stringify(whitelist), {
             encoding: "UTF-8"
         });

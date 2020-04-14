@@ -18,6 +18,8 @@ foreach ($whiteListPlugins as $key => $plugin) {
     $whiteListPlugins[$key] = array_keys($composerJson['autoload']['psr-4'])[0] . '*';
 }
 
+$apiFolder = getcwd() . '/inc/api/';
+
 return [
     'prefix' => $psr4 . 'Vendor',
     'finders' => [
@@ -32,6 +34,21 @@ return [
         Finder::create()->append(['composer.json'])
     ],
     'patchers' => [
+        /**
+         * Allow to remove namespace for a file, when the defined functions should be globally available.
+         * This is useful for plugin APIs.
+         */
+        function ($filePath, $prefix, $content) use ($apiFolder) {
+            if (strpos($filePath, $apiFolder, 0) === 0) {
+                $prefixDoubleSlashed = str_replace('\\', '\\\\', $prefix);
+                return preg_replace(sprintf('/^namespace %s;$/m', $prefixDoubleSlashed), '', $content, 1);
+            }
+            return $content;
+        },
+        /**
+         * This callback removes un-prefix all classes and functions obtained from stubs because
+         * they are available globally in our WP ecosystem.
+         */
         function ($filePath, $prefix, $content) use ($stubsJson) {
             $prefixDoubleSlashed = str_replace('\\', '\\\\', $prefix);
             $quotes = ['\'', '"', '`'];
@@ -53,6 +70,19 @@ return [
         }
     ],
     'whitelist' => $whiteListPlugins,
+    'files-whitelist' => array_merge(
+        array_map(
+            'realpath',
+            array_keys(
+                iterator_to_array(
+                    Finder::create()
+                        ->files()
+                        ->in('inc/base/others')
+                        ->notName('start.php')
+                )
+            )
+        )
+    ),
     'whitelist-global-constants' => true,
     'whitelist-global-classes' => false,
     'whitelist-global-functions' => false

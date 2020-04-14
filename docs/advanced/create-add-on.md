@@ -31,6 +31,10 @@ Wow! Additionally our [`webpack.factory.ts`](../usage/folder-structure/root.md#f
 You have to replace `wp-reactjs-multi-starter` and `wp-reactjs-starter` with your names.
 {% endhint %}
 
+## Provide public PHP API
+
+If you aim to provide a public PHP API to your WordPress users you mostly create prefixed functions, for example `wp_rml_get_object()`. This is a recommend way but you should not create too much functions, furthermore work with factory functions and let the user work with class instances. Never mind, usually all PHP files in your plugin are scoped but there is one exception: `plugins/*/src/inc/api/**/*.php` files. Create all your public functions there and they will be available in the global scope.
+
 ## Deploy types to npmjs.com
 
 Perhaps it can be interesting making types available to third-party developers so they are able to extend your plugin. For this, you need to do the following:

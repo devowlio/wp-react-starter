@@ -40,6 +40,8 @@ common lint phpcs:
     extends: .install
     stage: build
     script:
+        # Try to delete templates because they should not be considered
+        - rm -rf common/create-wp-react-app
         - ./packages/utils/vendor/bin/phpcs common/ --standard=./common/phpcs.xml
     only:
         changes:

@@ -887,7 +887,7 @@ final class AssetsTest extends TestCase {
         $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
 
         redefine('is_dir', function($dir) use ($self, $packageDir) {
-            $self->addCallbackReached('devDirExists', $dir === $packageDir . 'dev');
+            $self->addCallbackReached('devDirExists', $dir === PHPUNIT_PATH . '/' . $packageDir . 'dev');
             return true;
         });
 
@@ -953,7 +953,7 @@ final class AssetsTest extends TestCase {
         $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
 
         redefine('is_dir', function($dir) use ($self, $packageDir) {
-            $self->addCallbackReached('devDirExists', $dir === $packageDir . 'dev');
+            $self->addCallbackReached('devDirExists', $dir === PHPUNIT_PATH . '/' . $packageDir . 'dev');
             return false;
         });
 
