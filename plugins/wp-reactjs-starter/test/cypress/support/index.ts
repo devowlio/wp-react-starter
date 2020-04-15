@@ -18,3 +18,8 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// See https://docs.cypress.io/api/cypress-api/cookies.html#Whitelist-accepts
+Cypress.Cookies.defaults({
+    whitelist: /wordpress_/
+});
