@@ -11,6 +11,7 @@
             - plugins/wp-reactjs-starter/**/*
             - packages/utils/**/*
             - common/**/*
+            - devops/**/*
             - "*.{yml,json,lock}"
 
 include:

@@ -10,9 +10,8 @@
         changes:
             - packages/utils/**/*
             - common/**/*
-            - "*.yml"
-            - "*.json"
-            - "*.lock"
+            - devops/**/*
+            - "*.{yml,json,lock}"
 
 include:
     - /packages/utils/devops/.gitlab/stage-validate.yml
