@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.1.0 (2020-04-15)
+
+
+### build
+
+* optional clean:webpackDevBundles grunt task to remove dev bundles in build artifact (#4jjq0u)
+
+
+### ci
+
+* correctly build i18n frontend files (#4jjq0u)
+* run package jobs also on devops changes
+
+
+### feat
+
+* introduce php-scoper to scope our complete plugin dependencies (#4jnk84)
+* provide global PHP functions in api folder (#4jnk84)
+
+
+### fix
+
+* enqueue composer scripts generates unique handle (#4cnu3q)
+* typo in utils test file
+
+
+### style
+
+* reformat php codebase (#4gg05b)
+
+
+### test
+
+* show test reports in Gitlab MR (#4cg6tp)
+
+
+
+
+
 ## 1.0.3 (2020-03-25)
 
 

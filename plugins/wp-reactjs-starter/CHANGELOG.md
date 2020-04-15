@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.1.0 (2020-04-15)
+
+
+### chore
+
+* update to Cypress v4 (#2wee38)
+
+
+### ci
+
+* correctly build i18n frontend files (#4jjq0u)
+* run package jobs also on devops changes
+
+
+### feat
+
+* introduce php-scoper to scope our complete plugin dependencies (#4jnk84)
+
+
+### style
+
+* reformat php codebase (#4gg05b)
+
+
+### test
+
+* avoid session expired error in E2E tests (#3rmp6q)
+* show test reports in Gitlab MR (#4cg6tp)
+
+
+
+
+
 ## 1.0.3 (2020-03-25)
 
 
