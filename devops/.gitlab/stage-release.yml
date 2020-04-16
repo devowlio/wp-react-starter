@@ -100,6 +100,8 @@ docker review stop:
         - cd wporg
         - svn status
         - svn add --force * --auto-props --parents --depth infinity -q
+        # Prune SVN repository (https://stackoverflow.com/a/61255370/5506547)
+        - '(svn status | grep "^!" | cut -c2- | xargs -i{} svn delete "{}") || :'
         - svn ci -m "This commit is generated through CI/CD, see the GIT repository for more details ($CI_COMMIT_SHA)" --username "$WPORG_SVN_USERNAME" --password "$WPORG_SVN_PASSWORD" --non-interactive --no-auth-cache
     only:
         refs: [master]
