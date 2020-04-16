@@ -60,11 +60,8 @@ class Service {
      * @return string Example: https://example.com/wp-json
      */
     public static function getUrl($instance, $namespace = null, $endpoint = '') {
-        return site_url(rest_get_url_prefix()) .
-            '/' .
-            ($namespace === null ? Service::getNamespace($instance) : $namespace) .
-            '/' .
-            $endpoint;
+        $path = ($namespace === null ? Service::getNamespace($instance) : $namespace) . '/' . $endpoint;
+        return rest_url($path);
     }
 
     /**

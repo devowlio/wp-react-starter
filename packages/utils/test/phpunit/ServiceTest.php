@@ -55,8 +55,7 @@ final class ServiceTest extends TestCase {
         $mockCore = Mockery::mock(CoreImpl::class);
         $mockCore->shouldReceive('getPluginConstant')->andReturnUsing('mockGetPluginConstant');
 
-        WP_Mock::userFunction('site_url', ['return' => 'http://localhost/wp-json']);
-        WP_Mock::userFunction('rest_get_url_prefix');
+        WP_Mock::userFunction('rest_url', ['return' => $should, 'args' => ['test/v1/']]);
 
         redefine(Service::class . '::getNamespace', always('test/v1'));
 
@@ -71,8 +70,7 @@ final class ServiceTest extends TestCase {
         $mockCore = Mockery::mock(CoreImpl::class);
         $mockCore->shouldReceive('getPluginConstant')->andReturnUsing('mockGetPluginConstant');
 
-        WP_Mock::userFunction('site_url', ['return' => 'http://localhost/wp-json']);
-        WP_Mock::userFunction('rest_get_url_prefix');
+        WP_Mock::userFunction('rest_url', ['return' => $should, 'args' => ['another/v2/']]);
 
         $actual = Service::getUrl($mockCore, 'another/v2');
 
@@ -85,8 +83,7 @@ final class ServiceTest extends TestCase {
         $mockCore = Mockery::mock(CoreImpl::class);
         $mockCore->shouldReceive('getPluginConstant')->andReturnUsing('mockGetPluginConstant');
 
-        WP_Mock::userFunction('site_url', ['return' => 'http://localhost/wp-json']);
-        WP_Mock::userFunction('rest_get_url_prefix');
+        WP_Mock::userFunction('rest_url', ['return' => $should, 'args' => ['test/v1/user/1']]);
 
         redefine(Service::class . '::getNamespace', always('test/v1'));
 
