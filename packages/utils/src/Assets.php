@@ -49,8 +49,9 @@ trait Assets {
      * external libraries from public/lib, too.
      *
      * @param string $type The type (see Assets constants)
+     * @param string $hook_suffix The current admin page
      */
-    abstract public function enqueue_scripts_and_styles($type);
+    abstract public function enqueue_scripts_and_styles($type, $hook_suffix = null);
 
     /**
      * Localize the WordPress backend and frontend.
@@ -408,9 +409,11 @@ trait Assets {
 
     /**
      * Enqueue scripts and styles for admin pages.
+     *
+     * @param string $hook_suffix The current admin page
      */
-    public function admin_enqueue_scripts() {
-        $this->enqueue_scripts_and_styles(self::$TYPE_ADMIN);
+    public function admin_enqueue_scripts($hook_suffix) {
+        $this->enqueue_scripts_and_styles(self::$TYPE_ADMIN, $hook_suffix);
     }
 
     /**

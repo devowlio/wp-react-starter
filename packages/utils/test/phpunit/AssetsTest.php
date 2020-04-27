@@ -24,7 +24,7 @@ if (!class_exists(__NAMESPACE__ . '\\AssetsImpl')) {
             // Silence is golden.
         }
 
-        public function enqueue_scripts_and_styles($type) {
+        public function enqueue_scripts_and_styles($type, $hook_suffix = null) {
             // Silence is golden.
         }
     }
@@ -1276,10 +1276,11 @@ final class AssetsTest extends TestCase {
     }
 
     public function testAdminEnqueueScripts() {
+        $hook_suffix = 'settings-page';
         $this->assets->shouldReceive('admin_enqueue_scripts')->passthru();
-        $this->assets->shouldReceive('enqueue_scripts_and_styles')->with(Assets::$TYPE_ADMIN);
+        $this->assets->shouldReceive('enqueue_scripts_and_styles')->with(Assets::$TYPE_ADMIN, $hook_suffix);
 
-        $this->assets->admin_enqueue_scripts();
+        $this->assets->admin_enqueue_scripts($hook_suffix);
 
         $this->addToAssertionCount(1);
     }

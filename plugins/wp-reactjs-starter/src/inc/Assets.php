@@ -22,8 +22,9 @@ class Assets {
      * external libraries from src/public/lib, too.
      *
      * @param string $type The type (see utils Assets constants)
+     * @param string $hook_suffix The current admin page
      */
-    public function enqueue_scripts_and_styles($type) {
+    public function enqueue_scripts_and_styles($type, $hook_suffix = null) {
         // Generally check if an entrypoint should be loaded
         if (!in_array($type, [self::$TYPE_ADMIN, self::$TYPE_FRONTEND], true)) {
             return;
