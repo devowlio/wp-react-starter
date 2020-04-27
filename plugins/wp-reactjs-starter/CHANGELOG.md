@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.1 (2020-04-27)
+
+
+### chore
+
+* add hook_suffix to enqueue_scripts_and_styles function (#4ujzx0)
+
+
+### test
+
+* automatically retry cypress tests (#3rmp6q)
+
+
+
+
+
 # 1.1.0 (2020-04-15)
 
 

@@ -45,7 +45,7 @@ The following software may be included in this product: @types/node. A copy of t
 
 MIT License
 
-    Copyright (c) Microsoft Corporation. All rights reserved.
+    Copyright (c) Microsoft Corporation.
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -3069,7 +3069,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----
 
-The following software may be included in this product: workspace-aggregator-6f009405-a5d8-400d-8358-52c184693585. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-e0f484fb-492f-4ddd-855b-208930aaa409. This software contains the following license and notice below:
 
 The software "WP React Starter" is comprised of multiple parts
 (files in these directories and subdirectories, if the subdirectory
