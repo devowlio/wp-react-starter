@@ -14,6 +14,7 @@
 import { execSync } from "child_process";
 import cypressWebpackPreprocessor from "@cypress/webpack-preprocessor";
 import { resolve } from "path";
+import retryPlugin from "cypress-plugin-retries/lib/plugin";
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 require("dotenv").config({
@@ -34,6 +35,7 @@ function applyConfig(config) {
     config.supportFile = "test/cypress/support/index.ts";
     config.fixturesFolder = "test/cypress/fixtures";
     config.ignoreTestFiles = "*.ts";
+    config.env.RETRIES = 3;
     // config.testFiles = "test/cypress/integration/**/*.{feature,features}";
 
     // The both configs can not be altered through this plugin because they are needed at CLI startup
@@ -62,6 +64,7 @@ function applyConfig(config) {
 
 module.exports = (on, config) => {
     applyConfig(config);
+    retryPlugin(on);
 
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config

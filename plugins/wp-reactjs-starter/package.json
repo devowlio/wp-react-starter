@@ -195,6 +195,7 @@
         "css-loader": "^3.4.2",
         "cypress": "~4.4.0",
         "cypress-cucumber-preprocessor": "^2.0.1",
+        "cypress-plugin-retries": "^1.5.2",
         "fork-ts-checker-webpack-plugin": "^4.1.1",
         "grunt": "^1.1.0",
         "grunt-cachebuster": "^0.1.7",
