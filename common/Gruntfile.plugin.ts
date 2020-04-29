@@ -34,7 +34,13 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
             productionSource: {
                 expand: true,
                 cwd: "<%= BUILD_PLUGIN_DIR %>",
-                src: ["public/ts", "public/dev/*.map", `vendor/${mainPkg.name}/*/dev/*.map`]
+                src: [
+                    "public/ts",
+                    "public/dev/*.map",
+                    "public/dev/i18n-dir/",
+                    `vendor/${mainPkg.name}/*/dev/i18n-dir/`,
+                    `vendor/${mainPkg.name}/*/dev/*.map`
+                ]
             },
             /**
              * Remove all `dev` folders. This is an optional task and must be added via grunt.registerTask("post:clean:productionSource", ["clean:webpackDevBundles"]).
