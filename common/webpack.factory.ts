@@ -14,6 +14,8 @@ import WebpackBar from "webpackbar";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
+const CacheLoaderVersion = require("cache-loader/package.json").version;
+
 /**
  * An internal plugin which runs build:webpack:done script.
  */
@@ -153,11 +155,32 @@ function createDefaultSettings(
     {
         override,
         definePlugin = (processEnv) => processEnv,
-        webpackBarOptions = (options) => options
+        webpackBarOptions = (options) => options,
+        skipExternals = [],
+        skipEntrypoints = [],
+        onlyEntrypoints = [],
+        babelCacheIdentifier = ""
     }: {
         override?: (settings: Configuration[], factoryValues: FactoryValues) => void;
         definePlugin?: (processEnv: any) => any;
         webpackBarOptions?: (options: WebpackBar.Options) => WebpackBar.Options;
+        /**
+         * Allows to skip externals in `config.externals`. This can be useful to
+         * force-bundle a package.
+         */
+        skipExternals?: string[];
+        /**
+         * Allows to skip found entrypoints in `config.entry`.
+         */
+        skipEntrypoints?: string[];
+        /**
+         * Allows e. g. to only allow one entrypoint.
+         */
+        onlyEntrypoints?: string[];
+        /**
+         * Use this if you e. g. set different babel options for a second webpack configuration.
+         */
+        babelCacheIdentifier?: string;
     } = {}
 ) {
     const pwd = process.env.DOCKER_START_PWD || process.env.PWD;
@@ -257,19 +280,25 @@ function createDefaultSettings(
             rules: [
                 {
                     test: /\.tsx$/,
-                    include: tsFolder,
+                    exclude: /(disposables)/,
                     use: [
-                        "cache-loader",
+                        {
+                            loader: "cache-loader",
+                            options: {
+                                cacheIdentifier: `cache-loader:${CacheLoaderVersion} ${NODE_ENV}${babelCacheIdentifier}`
+                            }
+                        },
                         "thread-loader",
                         {
                             loader: "babel-loader?cacheDirectory",
-                            options: pkg.babel
+                            // We need to copy so updates to this object are not reflected to other configurations
+                            options: JSON.parse(JSON.stringify(pkg.babel))
                         }
                     ]
                 },
                 {
                     test: /\.(scss|css)$/,
-                    include: tsFolder,
+                    exclude: /(disposables)/,
                     use: [
                         MiniCssExtractPlugin.loader,
                         "css-loader?url=false",
@@ -312,6 +341,21 @@ function createDefaultSettings(
         ]
     };
 
+    skipExternals.forEach((key) => {
+        delete (pluginSettings.externals as any)[key];
+    });
+
+    skipEntrypoints.forEach((key) => {
+        delete (pluginSettings.entry as any)[key];
+    });
+
+    onlyEntrypoints.length &&
+        Object.keys(pluginSettings.entry).forEach((key) => {
+            if (onlyEntrypoints.indexOf(key) === -1) {
+                delete (pluginSettings.entry as any)[key];
+            }
+        });
+
     settings.push(pluginSettings);
 
     override?.(settings, {
@@ -331,4 +375,4 @@ function createDefaultSettings(
     return settings;
 }
 
-export { createDefaultSettings, slugCamelCase, getPlugins };
+export { WebpackPluginDone, createDefaultSettings, slugCamelCase, getPlugins };
