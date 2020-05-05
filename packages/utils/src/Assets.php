@@ -126,6 +126,25 @@ trait Assets {
     }
 
     /**
+     * Enqueue utils and return an array of dependencies.
+     */
+    public function enqueueUtils() {
+        $this->enqueueReact();
+        $this->enqueueMobx();
+        $scriptDeps = [
+            self::$HANDLE_REACT,
+            self::$HANDLE_REACT_DOM,
+            self::$HANDLE_MOBX,
+            'moment',
+            'wp-i18n',
+            'jquery'
+        ];
+        $handleUtils = $this->enqueueComposerScript('utils', $scriptDeps);
+        array_push($scriptDeps, $handleUtils);
+        return $scriptDeps;
+    }
+
+    /**
      * Enqueue mobx state management library.
      */
     public function enqueueMobx() {

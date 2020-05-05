@@ -324,6 +324,24 @@ final class AssetsTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
+    public function testEnqueueUtils() {
+        $scriptDeps = ['react', 'react-dom', 'mobx', 'moment', 'wp-i18n', 'jquery'];
+        $should = array_merge($scriptDeps, [PHPUNIT_ROOT_SLUG . '-utils']);
+        $this->assets->shouldReceive('enqueueUtils')->passthru();
+
+        $this->assets->shouldReceive('enqueueReact')->once();
+        $this->assets->shouldReceive('enqueueMobx')->once();
+        $this->assets
+            ->shouldReceive('enqueueComposerScript')
+            ->once()
+            ->with('utils', $scriptDeps)
+            ->andReturn(PHPUNIT_ROOT_SLUG . '-utils');
+
+        $actual = $this->assets->enqueueUtils();
+
+        $this->assertEquals($should, $actual);
+    }
+
     public function testEnqueueMobx() {
         $this->assets->shouldReceive('enqueueMobx')->passthru();
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnFalse();

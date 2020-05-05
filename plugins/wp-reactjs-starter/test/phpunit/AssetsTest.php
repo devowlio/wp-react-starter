@@ -22,8 +22,7 @@ final class AssetsTest extends TestCase {
         $usedHandle = PHPUNIT_SLUG . '-admin';
 
         $this->assets->shouldReceive('enqueue_scripts_and_styles')->passthru();
-        $this->assets->shouldReceive('enqueueReact');
-        $this->assets->shouldReceive('enqueueMobx');
+        $this->assets->shouldReceive('enqueueUtils')->once()->andReturn(['react']);
         $this->assets->shouldReceive('enqueueComposerScript')->with('utils', Mockery::any());
         $this->assets
             ->shouldReceive('enqueueScript')
@@ -48,8 +47,7 @@ final class AssetsTest extends TestCase {
         $usedHandle = PHPUNIT_SLUG . '-widget';
 
         $this->assets->shouldReceive('enqueue_scripts_and_styles')->passthru();
-        $this->assets->shouldReceive('enqueueReact');
-        $this->assets->shouldReceive('enqueueMobx');
+        $this->assets->shouldReceive('enqueueUtils')->once()->andReturn(['react']);
         $this->assets->shouldReceive('enqueueComposerScript')->with('utils', Mockery::any());
         $this->assets
             ->shouldReceive('enqueueScript')
