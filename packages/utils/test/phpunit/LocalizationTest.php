@@ -101,7 +101,7 @@ final class LocalizationTest extends TestCase {
         $domain = PHPUNIT_TD;
         $parsedPackageInfo = [$file, $path, $domain, $domain];
         $handle = 'phpunit-admin';
-        $currentLocale = 'en_CA';
+        $currentLocale = 'en_US';
 
         $this->localization->shouldReceive('load_script_translation_file')->passthru();
         $this->localization
@@ -109,7 +109,12 @@ final class LocalizationTest extends TestCase {
             ->with(Localization::$PACKAGE_INFO_FRONTEND, $file, $domain)
             ->andReturn($parsedPackageInfo);
 
-        WP_Mock::userFunction('determine_locale', ['return' => $currentLocale]);
+        $this->localization
+            ->shouldReceive('getLanguageFromFile')
+            ->once()
+            ->with($file)
+            ->andReturn($currentLocale);
+
         WP_Mock::userFunction('path_join', ['return' => $path, 'args' => [PHPUNIT_PATH, Mockery::any()]]);
 
         redefine('is_readable', always(false));
@@ -130,6 +135,31 @@ final class LocalizationTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
+    public function testLoadScriptTranslationFileNoMatchingLanguage() {
+        $file = '/var/www/html/wp-content/plugins/phpunit/public/languages/json/phpunit--phpunit-admin.json';
+        $path = '/var/www/html/wp-content/plugins/phpunit/public/languages/json';
+        $domain = PHPUNIT_TD;
+        $parsedPackageInfo = [$file, $path, $domain, $domain];
+        $handle = 'phpunit-admin';
+
+        $this->localization->shouldReceive('load_script_translation_file')->passthru();
+        $this->localization
+            ->shouldReceive('packageInfoParserForOverrides')
+            ->with(Localization::$PACKAGE_INFO_FRONTEND, $file, $domain)
+            ->andReturn($parsedPackageInfo);
+
+        $this->localization
+            ->shouldReceive('getLanguageFromFile')
+            ->once()
+            ->with($file)
+            ->andReturn(false);
+        $this->localization->shouldNotReceive('override');
+
+        $actual = $this->localization->load_script_translation_file($file, $handle, $domain);
+
+        $this->assertEquals($file, $actual);
+    }
+
     public function testLoadScriptTranslationFileNotMatchingDomain() {
         $file = '/var/www/html/wp-content/plugins/phpunit/public/languages/json/phpunit-en_US-phpunit-admin.json';
         $path = '/var/www/html/wp-content/plugins/phpunit/public/languages/json';
@@ -137,7 +167,7 @@ final class LocalizationTest extends TestCase {
         $anotherDomain = 'another-domain';
         $parsedPackageInfo = [$file, $path, $domain, $domain];
         $handle = 'phpunit-admin';
-        $currentLocale = 'en_CA';
+        $currentLocale = 'en_US';
 
         $this->localization->shouldReceive('load_script_translation_file')->passthru();
         $this->localization
@@ -145,7 +175,6 @@ final class LocalizationTest extends TestCase {
             ->with(Localization::$PACKAGE_INFO_FRONTEND, $file, $anotherDomain)
             ->andReturn($parsedPackageInfo);
 
-        WP_Mock::userFunction('determine_locale', ['return' => $currentLocale]);
         WP_Mock::userFunction('path_join', ['return' => $path, 'args' => [PHPUNIT_PATH, Mockery::any()]]);
 
         $this->localization->shouldNotReceive('override');
@@ -169,7 +198,6 @@ final class LocalizationTest extends TestCase {
             ->with(Localization::$PACKAGE_INFO_FRONTEND, $file, $domain)
             ->andReturn($parsedPackageInfo);
 
-        WP_Mock::userFunction('determine_locale', ['return' => $currentLocale]);
         WP_Mock::userFunction('path_join', [
             'return' => $path,
             'args' => [PHPUNIT_PATH, Assets::$PUBLIC_JSON_I18N]
@@ -182,6 +210,44 @@ final class LocalizationTest extends TestCase {
         $actual = $this->localization->load_script_translation_file($file, $handle, $domain);
 
         $this->assertEquals($file, $actual);
+    }
+
+    public function testGetLanguageFromFile() {
+        $should = 'en_US';
+        $file = '/var/www/html/wp-content/plugins/phpunit/public/languages/json/phpunit-en_US-phpunit-admin.json';
+
+        $this->localization->shouldReceive('getLanguageFromFile')->passthru();
+
+        WP_Mock::userFunction('get_available_languages', ['times' => 1, 'return' => ['de_DE', 'de_DE_formal']]);
+
+        $actual = $this->localization->getLanguageFromFile($file);
+
+        $this->assertEquals($should, $actual);
+    }
+
+    public function testGetLanguageFromFileNoMatch() {
+        $file = '/var/www/html/wp-content/plugins/phpunit/public/languages/json/phpunit--phpunit-admin.json';
+
+        $this->localization->shouldReceive('getLanguageFromFile')->passthru();
+
+        WP_Mock::userFunction('get_available_languages', ['times' => 1, 'return' => ['de_DE', 'de_DE_formal']]);
+
+        $actual = $this->localization->getLanguageFromFile($file);
+
+        $this->assertFalse($actual);
+    }
+
+    public function testGetLanguageFromFileNoInstalledLanguages() {
+        $should = 'en_US';
+        $file = '/var/www/html/wp-content/plugins/phpunit/public/languages/json/phpunit-en_US-phpunit-admin.json';
+
+        $this->localization->shouldReceive('getLanguageFromFile')->passthru();
+
+        WP_Mock::userFunction('get_available_languages', ['times' => 1, 'return' => []]);
+
+        $actual = $this->localization->getLanguageFromFile($file);
+
+        $this->assertEquals($should, $actual);
     }
 
     public function testOverrideLoadTextdomain() {

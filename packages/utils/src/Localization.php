@@ -65,13 +65,17 @@ trait Localization {
             $domain
         );
 
-        $locale = determine_locale();
         if (
             $domain === $packageDomain &&
             !is_readable($useFile) &&
             substr($useFile, 0, strlen($packagePath)) === $packagePath
         ) {
             // Collect data
+            $locale = $this->getLanguageFromFile($file);
+            if ($locale === false) {
+                return $file;
+            }
+
             $folder = dirname($useFile);
             $use = $this->override($locale);
             $wp_scripts = wp_scripts();
@@ -83,6 +87,22 @@ trait Localization {
         }
 
         return $file;
+    }
+
+    /**
+     * Obtain language key from a file name.
+     *
+     * @param string $file
+     */
+    public function getLanguageFromFile($file) {
+        $availableLanguages = get_available_languages();
+        $availableLanguages[] = 'en_US';
+        preg_match_all('/-(' . join('|', $availableLanguages) . ')-/m', basename($file), $matches, PREG_SET_ORDER, 0);
+
+        if (count($matches) === 0) {
+            return false;
+        }
+        return $matches[0][1];
     }
 
     /**
