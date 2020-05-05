@@ -93,6 +93,10 @@ final class CoreTest extends TestCase {
             'times' => 1,
             'args' => [PHPUNIT_FILE, [$mockActivator, 'activate']]
         ]);
+        WP_Mock::userFunction('register_activation_hook', [
+            'times' => 1,
+            'args' => [PHPUNIT_FILE, [$mockActivator, 'install']]
+        ]);
         WP_Mock::userFunction('register_deactivation_hook', [
             'times' => 1,
             'args' => [PHPUNIT_FILE, [$mockActivator, 'deactivate']]

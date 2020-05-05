@@ -60,6 +60,7 @@ trait Core {
             dirname(__DIR__)
         )->hooks();
 
+        register_activation_hook($pluginFile, [$this->getActivator(), 'install']);
         register_activation_hook($pluginFile, [$this->getActivator(), 'activate']);
         register_deactivation_hook($pluginFile, [$this->getActivator(), 'deactivate']);
     }
