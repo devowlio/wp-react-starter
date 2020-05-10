@@ -48,7 +48,7 @@ collect all artifacts:
 
 # Start the cypress e2e test
 .docker e2e cypress:
-    when: always # Always try the e2e test because it must be stopped
+    extends: [.install]
     stage: test
     script:
         # Cleanup previous environments

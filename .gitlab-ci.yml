@@ -14,9 +14,6 @@ variables:
     # Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     # Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
     COMPOSE_PROJECT_NAME: wp-reactjs-multi-starter
-    # Define cache folders for yarn and cypress so they can be cached
-    CYPRESS_CACHE_FOLDER: $CI_PROJECT_DIR/.cypress
-    YARN_CACHE_FOLDER: $CI_PROJECT_DIR/.yarn
     COMPOSER_HOME: $CI_PROJECT_DIR/.composer
     # This is set to 1 by your project variables so jobs like E2E and review apps gets activated. Currently I do not know another way to detect that, feel free to contribute...
     # DOCKER_DAEMON_ALLOW_UP: 1
@@ -30,31 +27,29 @@ variables:
     GIT_AUTHOR_EMAIL: $GITLAB_USER_EMAIL
     GIT_COMMITTER_NAME: $GITLAB_USER_NAME
     GIT_COMMITTER_EMAIL: $GITLAB_USER_EMAIL
-
-# Cache installation of yarn, cypress and co
-cache: &cache # see https://gitlab.com/gitlab-org/gitlab-runner/issues/2838#note_95134689
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    policy: pull # As we have an install job, all next steps do not need to push again
-    paths:
-        - .yarn/
-        - .cypress/
-        - .composer/
-        - node_modules/
-        - plugins/*/node_modules/*
-        - plugins/*/vendor/*
-        - packages/*/node_modules/*
-        - packages/*/vendor/*
+    # List of install-dependent files - generally, we built a mechanism to hold a hot cache in our gitlab-ci image
+    # If you add files to this list AND you are using shared-runners you need to add the glob to `gitlab-ci shared#only.changes`, too
+    INSTALL_FILES: package.json yarn.lock common/patch-package/* packages/*/composer.* plugins/*/composer.* packages/*/package.json plugins/*/package.json
+    INSTALL_VENDOR_FOLDERS: "{packages,plugins}/*/{vendor,node_modules,.yarn} node_modules .yarn .cypress"
 
 # Install all needed node and composer modules as extendable job
 .install:
     before_script:
-        # Set composer github token to avoid API rate limit (https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
-        - test $PHP_COMPOSER_GITHUB_TOKEN && composer config -g github-oauth.github.com $PHP_COMPOSER_GITHUB_TOKEN
+        # Copy temporary installation files from Dockerfile gitlab-ci...
+        - export TMP_CI_PROJECT_DIR=/tmp$(realpath $CI_PROJECT_DIR)
+        - export TMP_FILES=$(cd $TMP_CI_PROJECT_DIR && eval find $INSTALL_VENDOR_FOLDERS -maxdepth 0 2>/dev/null)
+        - time for dirs in $TMP_FILES; do ln -s $TMP_CI_PROJECT_DIR/$dirs $dirs; done
         # Make sure all dependencies are installed correctly
         - yarn bootstrap
         # Make sure cypress is installed correctly
         - test $DOCKER_DAEMON_ALLOW_UP && yarn cypress install
+        # Recreate our local package symlinks
+        - >-
+            for sym in $(find
+            node_modules/@$COMPOSE_PROJECT_NAME/
+            {plugins,packages}/*/node_modules/@$COMPOSE_PROJECT_NAME
+            {plugins,packages}/*/vendor/$COMPOSE_PROJECT_NAME
+            -maxdepth 1 -type l 2>/dev/null); do ln -sf "$(realpath $sym | cut -c5-)" "$(dirname $sym)"; done
 
 # Run a job only in production branch
 .only production:
@@ -66,15 +61,34 @@ cache: &cache # see https://gitlab.com/gitlab-org/gitlab-runner/issues/2838#note
     before_script:
         - "[ ! -f $JOB_PACKAGE_FOLDER/$JOB_PACKAGE_NAME/.publish ] && [ ! $LERNA_CHANGES_FORCE ] && echo $LERNA_SKIP_MESSAGE && exit 0"
 
-# Initial installation so the cache gets filled
 install:
-    extends: .install
     stage: install
-    cache:
-        <<: *cache
-        policy: pull-push
+    variables:
+        TEMP_CONTAINER_NAME: $COMPOSE_PROJECT_NAME-install
     script:
-        - echo Installation done, make cache for the next jobs...
+        - echo This container just makes sure the built image is correctly published with newest dependencies.
+        - test ! $DOCKER_DAEMON_ALLOW_UP && exit 0
+        # See `stage-containerize.yml` job for more information about this mechanism
+        - export INSTALL_FILES=$(ls -t $INSTALL_FILES 2>/dev/null)
+        # Reset times for cache consistency
+        - touch -a -m -t 201501010000.00 $INSTALL_FILES
+        - tar -cvf install.tar $INSTALL_FILES
+        # Create temporary container where we make sure installing current dependencies
+        - export DOCKER_CONTAINER_FQN=$CI_REGISTRY_IMAGE/gitlab-ci:$CI_COMMIT_REF_SLUG
+        - (docker rm -f $TEMP_CONTAINER_NAME || :)
+        - docker run --name $TEMP_CONTAINER_NAME -it -d $DOCKER_CONTAINER_FQN
+        - docker cp install.tar $TEMP_CONTAINER_NAME:/tmp/builds/devowlio/wp-reactjs-starter
+        - docker exec -t $TEMP_CONTAINER_NAME /bin/bash -c "tar -xvf install.tar && yarn bootstrap && yarn cypress install"
+        - docker commit --author "GitLab CI" --message "Reinstall dependencies" $TEMP_CONTAINER_NAME $DOCKER_CONTAINER_FQN
+        # Push to registry
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker history $DOCKER_CONTAINER_FQN
+        - docker push $DOCKER_CONTAINER_FQN
+    after_script:
+        # Purge
+        - docker rm -f $TEMP_CONTAINER_NAME
+        - export DANGLING_IMAGES=$((docker images -f "dangling=true" | grep ^$CI_REGISTRY_IMAGE/gitlab-ci:$CI_COMMIT_REF_SLUG | awk '{ print $3 }') || :)
+        - test $DANGLING_IMAGES && docker rmi $DANGLING_IMAGES
 
 include:
     - /devops/.gitlab/stage-containerize.yml

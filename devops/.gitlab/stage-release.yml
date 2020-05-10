@@ -21,6 +21,7 @@ release:
 docker review start:
     stage: release
     dependencies: [collect all artifacts]
+    needs: [collect all artifacts]
     variables:
         COMPOSE_PROJECT_NAME_SUFFIX: -traefik
     script:
@@ -50,6 +51,7 @@ docker review start:
         on_stop: docker review stop
 
 docker review stop:
+    extends: [.install]
     stage: release
     variables:
         COMPOSE_PROJECT_NAME_SUFFIX: -traefik
