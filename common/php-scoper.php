@@ -4,6 +4,19 @@ declare(strict_types=1);
 use Isolated\Symfony\Component\Finder\Finder;
 //use Symfony\Component\Finder\Finder;
 
+////////////////////
+// Configuration
+////////////////////
+
+$apiFolder = getcwd() . '/inc/api/';
+$whitelistFolders = ['vendor/symfony/polyfill*'];
+$whiteListNamespaces = [
+    // Do not scope polyfills
+    'Symfony\\Polyfill\\*'
+];
+
+////////////////////
+
 // Obtain original namespace (must be the first entry in autoload.psr-4)
 $composerJson = json_decode(file_get_contents('composer.json'), true);
 $psr4 = array_keys($composerJson['autoload']['psr-4'])[0];
@@ -18,7 +31,28 @@ foreach ($whiteListPlugins as $key => $plugin) {
     $whiteListPlugins[$key] = array_keys($composerJson['autoload']['psr-4'])[0] . '*';
 }
 
-$apiFolder = getcwd() . '/inc/api/';
+// Expand all files from folders to absolute file pathes
+$whitelistFoldersFiles = [];
+foreach ($whitelistFolders as $whitelistFolder) {
+    try {
+        $whitelistFoldersFiles = array_merge(
+            $whitelistFoldersFiles,
+            array_map(
+                'realpath',
+                array_keys(
+                    iterator_to_array(
+                        Finder::create()
+                            ->files()
+                            ->ignoreUnreadableDirs()
+                            ->in($whitelistFolder)
+                    )
+                )
+            )
+        );
+    } catch (Exception $e) {
+        // Silence is golden.
+    }
+}
 
 return [
     'prefix' => $psr4 . 'Vendor',
@@ -69,8 +103,9 @@ return [
             return $content;
         }
     ],
-    'whitelist' => $whiteListPlugins,
+    'whitelist' => array_merge($whiteListPlugins, $whiteListNamespaces),
     'files-whitelist' => array_merge(
+        $whitelistFoldersFiles,
         array_map(
             'realpath',
             array_keys(
