@@ -198,6 +198,16 @@ function createDefaultSettings(
     const outputPath = type === "plugin" ? join(pwd, "src/public", nodeEnvFolder) : join(pwd, nodeEnvFolder);
     const tsFolder = resolve(pwd, type === "plugin" ? "src/public/ts" : "lib");
 
+    // We need to copy so updates to this object are not reflected to other configurations
+    // And also, we need to copy the targets from `browserslist` to `@babel/preset-env#targets`
+    // Read more about this bug in https://github.com/babel/babel/issues/9962
+    const babelOptions = JSON.parse(JSON.stringify(pkg.babel));
+    for (const preset of babelOptions.presets) {
+        if (preset?.[0] === "@babel/preset-env") {
+            preset[1].targets = pkg.browserslist;
+        }
+    }
+
     const pluginSettings: Configuration = {
         context: pwd,
         mode: NODE_ENV,
@@ -291,8 +301,7 @@ function createDefaultSettings(
                         "thread-loader",
                         {
                             loader: "babel-loader?cacheDirectory",
-                            // We need to copy so updates to this object are not reflected to other configurations
-                            options: JSON.parse(JSON.stringify(pkg.babel))
+                            options: babelOptions
                         }
                     ]
                 },
