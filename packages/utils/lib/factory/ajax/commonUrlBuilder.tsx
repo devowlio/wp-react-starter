@@ -10,7 +10,8 @@ enum RouteHttpVerb {
     GET = "GET",
     POST = "POST",
     PUT = "PUT",
-    DELETE = "DELETE"
+    DELETE = "DELETE",
+    PATCH = "PATCH"
 }
 
 interface RouteLocationInterface {
