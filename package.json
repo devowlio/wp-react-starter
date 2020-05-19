@@ -74,7 +74,20 @@
                 "message": "chore(release): publish [ci skip]",
                 "allowBranch": "master"
             }
-        }
+        },
+        "ignoreChanges": [
+            "packages/*/devops/**/*",
+            "packages/*/scripts/**/*",
+            "packages/*/test/**/*",
+            "packages/*/*.md",
+            "packages/*/tsconfig.json",
+            "plugins/*/devops/**/*",
+            "plugins/*/scripts/**/*",
+            "plugins/*/test/**/*",
+            "plugins/*/wordpress.org/**/*",
+            "plugins/*/*.md",
+            "plugins/*/tsconfig.json"
+        ]
     },
     "eslintConfig": {
         "extends": [
