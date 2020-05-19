@@ -1,7 +1,0 @@
-# Test PHPUnit
-utils phpunit:
-    extends: [.utils jobs, .utils only changes, .phpunit]
-
-# Test Jest
-utils jest:
-    extends: [.utils jobs, .utils only changes, .jest]

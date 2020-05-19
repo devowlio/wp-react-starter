@@ -19,8 +19,6 @@ cd plugins/my-plugin # Navigate to our plugin
 composer require "wp-reactjs-multi-starter/mypackage @dev" # @dev is important so symlinking works as expected!
 ```
 
-Do not forget navigating to your plugin which consumes the dependency and add the dependency path to [`.wprjss only changes`](../gitlab-integration/extend-gitlab-ci-pipeline.md#plugin).
-
 ### Example
 
 So, let's imagine we have the file `packages/mypackage/src/Example.php`. In your plugins' coding you can access the class simply with the defined PHP namespace:
@@ -84,8 +82,6 @@ In your plugins' coding you can access the files simply as follow:
 ```ts
 import /* [...] */ "@wp-reactjs-multi-starter/mypackage";
 ```
-
-Do not forget navigating to your plugin which consumes the dependency and add the dependency path to [`.wprjss only changes`](../gitlab-integration/extend-gitlab-ci-pipeline.md#plugin).
 
 {% hint style="info" %}
 You have to replace `wp-reactjs-multi-starter` with your names.

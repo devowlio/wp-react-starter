@@ -1,7 +1,0 @@
-# Lint JavaScript/TypeScript coding
-utils lint eslint:
-    extends: [.utils jobs, .utils only changes, .lint eslint]
-
-# Lint PHP coding
-utils lint phpcs:
-    extends: [.utils jobs, .utils only changes, .lint phpcs]

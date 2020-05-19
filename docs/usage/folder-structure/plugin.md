@@ -10,12 +10,12 @@ All files and folders written in italics are not saved in Git, but automatically
     -   📁 _`coverage`_ Coverage reports, see [this](../../advanced/tests.md#coverage)
     -   📁 `devops` Files related to [CI/CD](../../gitlab-integration/predefined-pipeline.md), Docker and so on for this specific plugin
         -   📁 `.gitlab`
-            -   📄 💡 `.gitlab-ci.yml` [CI/CD similar root file](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.yml`
-            -   📄 `stage-build-production.yml` Predefined job to build production plugin when merged to `master`
-            -   📄 `stage-build.yml` Predefined job to build plugin
-            -   📄 `stage-deploy.yml` Predefined job for wordpress.org deployment
-            -   📄 `stage-test.yml` Predefined test jobs
-            -   📄 `stage-validate.yml` Jobs for Docker garbage collection, semantic versioning and license scanner
+            -   📄 💡 `.gitlab-ci.ts` [CI/CD similar root file](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.yml`
+            -   📄 `stage-build-production.ts` Predefined job to build production plugin when merged to `master`
+            -   📄 `stage-build.ts` Predefined job to build plugin
+            -   📄 `stage-deploy.ts` Predefined job for wordpress.org deployment
+            -   📄 `stage-test.ts` Predefined test jobs
+            -   📄 `stage-validate.ts` Jobs for Docker garbage collection, semantic versioning and license scanner
         -   📁 `docker-compose` [Compose files](https://docs.docker.com/compose/compose-file/) are consumed automatically
             -   📄 `docker-compose.e2e.yml` Used in Cypress [E2E tests](../../advanced/tests.md#e2e)
             -   📄 `docker-compose.local.yml` Used locally with port expose

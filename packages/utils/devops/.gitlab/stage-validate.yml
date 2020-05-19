@@ -1,7 +1,0 @@
-# Validate licenses for yarn packages
-utils yarn licenses:
-    extends: [.utils jobs, .utils only changes, .yarn licenses]
-
-# Validate licenses for composer packages
-utils composer licenses:
-    extends: [.utils jobs, .utils only changes, .composer licenses]

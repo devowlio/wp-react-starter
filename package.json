@@ -167,6 +167,7 @@
         "husky": "^4.2.3",
         "lerna": "^3.18.4",
         "lint-staged": "^10.0.9",
+        "node-gitlab-ci": "^0.2.0",
         "parallel-webpack": "^2.4.0",
         "patch-package": "^6.2.1",
         "php-parser": "^3.0.0",

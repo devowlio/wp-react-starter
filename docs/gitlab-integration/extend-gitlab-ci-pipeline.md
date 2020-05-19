@@ -8,13 +8,13 @@ Template jobs are jobs prefixed with a dot `.` in `yml` files. They can be used 
 
 ### Containerize
 
-You can find all root template jobs in [`devops/.gitlab/stage-containerize.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all root template jobs in [`devops/.gitlab/stage-containerize.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.containerize`: Build docker images from `devops/docker/` and push to [Gitlab Container Registry](https://docs.gitlab.com/ee/user/packages/container_registry/).
 
 ### Root
 
-You can find all root template jobs in [`.gitlab-ci.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all root template jobs in [`.gitlab-ci.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.install`: Installs all needed node and composer dependencies. In conjunction with [`install`](predefined-pipeline.md#install) stage it just makes sure all is installed correctly. It does not reinstall instead it prints out something like `Already up-to-date`.
 
@@ -24,7 +24,7 @@ You can find all root template jobs in [`.gitlab-ci.yml`](../usage/folder-struct
 
 ### Validate
 
-You can find all validate template jobs in [`devops/.gitlab/stage-validate.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all validate template jobs in [`devops/.gitlab/stage-validate.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.yarn licenses`: Scan licenses for yarn dependencies. Required [variables](#available-variables): `$JOB_PACKAGE_FOLDER`, `$JOB_PACKAGE_NAME`.
 
@@ -34,7 +34,7 @@ You can find all validate template jobs in [`devops/.gitlab/stage-validate.yml`]
 
 ### Build
 
-You can find all build template jobs in [`devops/.gitlab/stage-build.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all build template jobs in [`devops/.gitlab/stage-build.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.docs`: Generate technical documents ([`yarn docs`](../usage/available-commands/plugin.md#documentation)) and store as artifact. Required [variables](#available-variables): `$JOB_PACKAGE_FOLDER`, `$JOB_PACKAGE_NAME`.
 
@@ -50,7 +50,7 @@ See also [this](predefined-pipeline.md#build).
 
 ### Test
 
-You can find all test template jobs in [`devops/.gitlab/stage-test.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all test template jobs in [`devops/.gitlab/stage-test.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.phpunit`: Start the [PHPUnit tests](../advanced/tests.md#phpunit) in a given package. Required [variables](#available-variables): `$JOB_PACKAGE_FOLDER`, `$JOB_PACKAGE_NAME`.
 
@@ -66,7 +66,7 @@ See also [this](predefined-pipeline.md#test).
 
 ### Release
 
-You can find all release template jobs in [`devops/.gitlab/stage-release.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all release template jobs in [`devops/.gitlab/stage-release.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.wordpress.org`: Synchronize the built plugin with the SVN repository. Required [variables](#available-variables): `$WPORG_SVN_URL`, `$WPORG_SVN_USERNAME`, `$WPORG_SVN_PASSWORD`, `$JOB_PACKAGE_NAME`, `$COPY_BUILD_FOLDER`.
 
@@ -76,7 +76,7 @@ See also [this](predefined-pipeline.md#deploy).
 
 ### Plugin
 
-You can find all the plugin template jobs in [`plugins/*/devops/.gitlab/.gitlab-ci.yml`](../usage/folder-structure/plugin.md#folder-structure):
+You can find all the plugin template jobs in [`plugins/*/devops/.gitlab/.gitlab-ci.ts`](../usage/folder-structure/plugin.md#folder-structure):
 
 `.wprjss jobs`: Predefine [`$JOB_PACKAGE_NAME`](#available-variables). Extend from that template in all your jobs for the given plugin.
 
@@ -88,7 +88,7 @@ Plugin template jobs are abstractions to predefine variables needed in other tem
 
 ### Package
 
-You can find all the package template jobs in [`packages/*/devops/.gitlab/.gitlab-ci.yml`](../usage/folder-structure/root.md#folder-structure):
+You can find all the package template jobs in [`packages/*/devops/.gitlab/.gitlab-ci.ts`](../usage/folder-structure/root.md#folder-structure):
 
 `.utils jobs`: Predefine [`$JOB_PACKAGE_NAME`](#available-variables). Extend from that template in all your jobs for the given package.
 

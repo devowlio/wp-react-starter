@@ -37,12 +37,12 @@ Don't give up too early, because it can take a while until you find your way in 
         -   📄 💡 `webpack.factory.ts` Base webpack [configuration file](https://webpack.js.org/configuration/) for plugins, see [here](../../advanced/extend-compose-webpack.md#webpack)
         -   📄 `webpack.multi.ts` Multi-package configuration for `yarn docker:start`
     -   📁 `devops` Files related to CI/CD, Docker and so on
-        -   📁 `.gitlab` [CI/CD predefined jobs](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.yml`
-            -   📄 `stage-containerize.yml` Jobs for building and pushing docker files to GitLab container registry
-            -   📄 `stage-build.yml` Jobs for build plugin, docs and linting
-            -   📄 `stage-release.yml` Jobs for release, review applications and wordpress.org deployment
-            -   📄 `stage-test.yml` Jobs for tests
-            -   📄 `stage-validate.yml` Jobs for Docker garbage collection, semantic versioning and license scanner
+        -   📁 `.gitlab` [CI/CD predefined jobs](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.ts`
+            -   📄 `stage-containerize.ts` Jobs for building and pushing docker files to GitLab container registry
+            -   📄 `stage-build.ts` Jobs for build plugin, docs and linting
+            -   📄 `stage-release.ts` Jobs for release, review applications and wordpress.org deployment
+            -   📄 `stage-test.ts` Jobs for tests
+            -   📄 `stage-validate.ts` Jobs for Docker garbage collection, semantic versioning and license scanner
         -   📁 `docker` Predefined [docker images](https://docs.docker.com/engine/reference/builder/)
             -   📁 `gitlab-ci` Dockerfile used in GitLab CI/CD jobs
         -   📁 `docker-compose` [Compose files](https://docs.docker.com/compose/compose-file/) for different contexts
@@ -65,10 +65,10 @@ Don't give up too early, because it can take a while until you find your way in 
         -   📁 `utils` Predefined utils package coming with `create-wp-react-app create-workspace`
             -   📁 `devops` Files related to CI/CD, Docker and so on for this specific package
                 -   📁 `.gitlab`
-                    -   📄 `.gitab-ci.yml` [CI/CD similar root file](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.yml`
-                    -   📄 `stage-build.yml` Predefined jobs for lint, included in `./.gitlab-ci.yml`
-                    -   📄 `stage-test.yml` Jobs for tests
-                    -   📄 `stage-validate.yml` Jobs for license scanner
+                    -   📄 `.gitab-ci.ts` [CI/CD similar root file](../../gitlab-integration/predefined-pipeline.md), included in root `.gitlab-ci.ts`
+                    -   📄 `stage-build.ts` Predefined jobs for lint, included in `./.gitlab-ci.ts`
+                    -   📄 `stage-test.ts` Jobs for tests
+                    -   📄 `stage-validate.ts` Jobs for license scanner
             -   📁 `languages` Languages files for this package
                 -   📁 `backend` Server-side [language files](../../php-development/localization.md)
                     -   📄 `utils.pot` Language file can be translated with [Poedit](https://poedit.net/)
@@ -121,7 +121,8 @@ Don't give up too early, because it can take a while until you find your way in 
             -   📄 `tsconfig.json` TypeScript [configuration file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html), extends `common/tsconfig.json`
     -   📁 💡 `plugins` See [Plugin folder structure](plugin.md)
     -   📄 `.gitignore` Ignore files in your Git repository on commit (see [this](https://git-scm.com/docs/gitignore))
-    -   📄 💡 `.gitlab-ci.yml` [CI/CD root file](../../gitlab-integration/predefined-pipeline.md), should include all `{packages,plugins}/*/devops/.gitlab/.gitlab-ci.yml` files
+    -   📄 💡 `.gitlab-ci.yml` [CI/CD root file](../../gitlab-integration/predefined-pipeline.md)
+    -   📄 💡 `.gitlab-ci.ts` [CI/CD root file](../../gitlab-integration/predefined-pipeline.md), should include all `{packages,plugins}/*/devops/.gitlab/.gitlab-ci.ts` files
     -   📄 `.prettierignore` Ignore files to be prettified (see [this](https://prettier.io/docs/en/ignore.html))
     -   📄 `package.json` Package [definition file](https://docs.npmjs.com/files/package.json) with [Yarn Workspace](https://yarnpkg.com/lang/en/docs/workspaces/#toc-how-to-use-it) definition
     -   📄 `README.md` "Because no one can read your mind (yet)" - [makeareadme.com](https://www.makeareadme.com/)
