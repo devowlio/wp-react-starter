@@ -222,10 +222,10 @@ function createDefaultSettings(
                               ...plugins
                                   .filter(({ location }) => location === pwd)
                                   .reduce((map: { [key: string]: Options.CacheGroupsOptions }, obj) => {
-                                      map[`vendor~${obj.entrypointName}`] = {
+                                      map[`vendor-${obj.entrypointName}`] = {
                                           test: /node_modules.*(?<!\.css)(?<!\.scss)(?<!\.less)$/,
                                           chunks: (chunk) => chunk.name === obj.entrypointName,
-                                          name: `vendor~${obj.entrypointName}`,
+                                          name: `vendor-${obj.entrypointName}`,
                                           enforce: true
                                       };
                                       return map;
@@ -234,6 +234,10 @@ function createDefaultSettings(
                         : {
                               vendor: {
                                   test: /node_modules.*(?<!\.css)(?<!\.scss)(?<!\.less)$/,
+                                  name: (module, chunks, cacheGroupKey) => {
+                                      const allChunksNames = chunks.map((item: any) => item.name).join("-");
+                                      return `${cacheGroupKey}-${allChunksNames}`;
+                                  },
                                   chunks: "initial",
                                   enforce: true
                               }

@@ -131,14 +131,7 @@ trait Assets {
     public function enqueueUtils() {
         $this->enqueueReact();
         $this->enqueueMobx();
-        $scriptDeps = [
-            self::$HANDLE_REACT,
-            self::$HANDLE_REACT_DOM,
-            self::$HANDLE_MOBX,
-            'moment',
-            'wp-i18n',
-            'jquery'
-        ];
+        $scriptDeps = [self::$HANDLE_REACT, self::$HANDLE_REACT_DOM, self::$HANDLE_MOBX, 'moment', 'wp-i18n', 'jquery'];
         $handleUtils = $this->enqueueComposerScript('utils', $scriptDeps);
         array_push($scriptDeps, $handleUtils);
         return $scriptDeps;
@@ -156,7 +149,7 @@ trait Assets {
     }
 
     /**
-     * Checks if a `vendor~` file is created for a given script and enqueue it.
+     * Checks if a `vendor-` file is created for a given script and enqueue it.
      *
      * @param string $handle
      * @param boolean $isLib
@@ -167,7 +160,7 @@ trait Assets {
      */
     protected function probablyEnqueueChunk($handle, $isLib, $src, &$deps, $in_footer, $media) {
         if (!$isLib) {
-            $handle = $this->enqueue('vendor~' . $handle, 'vendor~' . $src, $deps, false, 'script', $in_footer, $media);
+            $handle = $this->enqueue('vendor-' . $handle, 'vendor-' . $src, $deps, false, 'script', $in_footer, $media);
             if ($handle !== false) {
                 array_push($deps, $handle);
             }
@@ -314,7 +307,7 @@ trait Assets {
     }
 
     /**
-     * Checks if a `vendor~` file is created for a given script in a composer package and enqueue it.
+     * Checks if a `vendor-` file is created for a given script in a composer package and enqueue it.
      *
      * @param string $handle
      * @param string $src
@@ -327,12 +320,12 @@ trait Assets {
         $scriptSuffix = $src === 'index.js' || $src === 'index.css' ? '' : '-' . pathinfo($src, PATHINFO_FILENAME);
         $handle = $this->enqueueComposer(
             $handle,
-            'vendor~' . $src,
+            'vendor-' . $src,
             $deps,
             'script',
             $in_footer,
             $media,
-            'vendor~' . $rootSlug . '-' . $handle . $scriptSuffix
+            'vendor-' . $rootSlug . '-' . $handle . $scriptSuffix
         );
         if ($handle !== false) {
             array_push($deps, $handle);

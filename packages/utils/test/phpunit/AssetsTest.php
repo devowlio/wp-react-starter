@@ -364,8 +364,8 @@ final class AssetsTest extends TestCase {
         $this->assets
             ->shouldReceive('enqueue')
             ->once()
-            ->with('vendor~admin', 'vendor~admin.js', $deps, false, 'script', true, 'all')
-            ->andReturn('vendor~admin');
+            ->with('vendor-admin', 'vendor-admin.js', $deps, false, 'script', true, 'all')
+            ->andReturn('vendor-admin');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
         $method->setAccessible(true);
@@ -398,7 +398,7 @@ final class AssetsTest extends TestCase {
         $this->assets
             ->shouldReceive('enqueue')
             ->once()
-            ->with('vendor~admin', 'vendor~admin.js', $deps, false, 'script', true, 'all')
+            ->with('vendor-admin', 'vendor-admin.js', $deps, false, 'script', true, 'all')
             ->andReturnFalse();
 
         $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueChunk');
@@ -861,8 +861,8 @@ final class AssetsTest extends TestCase {
         $this->assets
             ->shouldReceive('enqueueComposer')
             ->once()
-            ->with('utils', 'vendor~index.js', $deps, 'script', true, 'all', 'vendor~' . PHPUNIT_ROOT_SLUG . '-utils')
-            ->andReturn('phpunit-vendor~admin');
+            ->with('utils', 'vendor-index.js', $deps, 'script', true, 'all', 'vendor-' . PHPUNIT_ROOT_SLUG . '-utils')
+            ->andReturn('phpunit-vendor-admin');
 
         $method = new ReflectionMethod(AssetsImpl::class, 'probablyEnqueueComposerChunk');
         $method->setAccessible(true);
@@ -904,7 +904,7 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
         $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
 
-        redefine('is_dir', function($dir) use ($self, $packageDir) {
+        redefine('is_dir', function ($dir) use ($self, $packageDir) {
             $self->addCallbackReached('devDirExists', $dir === PHPUNIT_PATH . '/' . $packageDir . 'dev');
             return true;
         });
@@ -970,7 +970,7 @@ final class AssetsTest extends TestCase {
         $this->assets->shouldReceive('useNonMinifiedSources')->andReturnTrue();
         $self = $this->expectCallbacksReached(['devDirExists', 'isLernaRepo']);
 
-        redefine('is_dir', function($dir) use ($self, $packageDir) {
+        redefine('is_dir', function ($dir) use ($self, $packageDir) {
             $self->addCallbackReached('devDirExists', $dir === PHPUNIT_PATH . '/' . $packageDir . 'dev');
             return false;
         });
