@@ -10,7 +10,6 @@ const extendConfig: ExtendConfigFunction = async (config) => {
         [`.${prefix} jobs`, `.${prefix} only changes`, `.docker e2e cypress`],
         `${prefix} docker e2e cypress`,
         {
-            // TODO:
             // only: # Add dependent plugins so you run also the test if another plugin changes
             //    changes: ["plugins/{dependent-plugin1,dependent-plugin2}/**/*"]
         }
@@ -19,7 +18,7 @@ const extendConfig: ExtendConfigFunction = async (config) => {
     // Test PHPUnit
     config.from<PhpUnitMacroArgs>("phpunit", { prefix });
 
-    // Lint PHP coding
+    // Test Jest
     config.from<JestMacroArgs>("jest", { prefix });
 };
 

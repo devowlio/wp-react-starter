@@ -8,7 +8,7 @@ const extendConfig: ExtendConfigFunction = async (config) => {
     // Test PHPUnit
     config.from<PhpUnitMacroArgs>("phpunit", { prefix });
 
-    // Lint PHP coding
+    // Test Jest
     config.from<JestMacroArgs>("jest", { prefix });
 };
 

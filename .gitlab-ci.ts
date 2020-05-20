@@ -4,6 +4,7 @@ import { Config, CreateConfigFunction } from "node-gitlab-ci";
 
 const createConfig: CreateConfigFunction = async () => {
     const config = new Config();
+    const pkg = require("./package.json");
 
     config.stages("containerize", "install", "validate", "build", "test", "release", "build production", "deploy");
 
@@ -13,7 +14,7 @@ const createConfig: CreateConfigFunction = async () => {
 
     // Prefix created compose services so we can act on them (volumes, network, not container because they are named by container_name), should be same as package.json name
     // Also consider that all docker relevant prefixes should also contain the CI_COMMIT_REF_SLUG environment variable
-    config.variable("COMPOSE_PROJECT_NAME", "wp-reactjs-multi-starter");
+    config.variable("COMPOSE_PROJECT_NAME", pkg.name);
     config.variable("COMPOSER_HOME", "$CI_PROJECT_DIR/.composer");
 
     // This is set to 1 by your project variables so jobs like E2E and review apps gets activated. Currently I do not know another way to detect that, feel free to contribute...
@@ -65,9 +66,7 @@ const createConfig: CreateConfigFunction = async () => {
                 // Make sure cypress is installed correctly
                 "test $DOCKER_DAEMON_ALLOW_UP && yarn cypress install",
                 // Recreate our local package symlinks
-                `for sym in $(find node_modules/@$COMPOSE_PROJECT_NAME/ {plugins,packages}/*/node_modules/@$COMPOSE_PROJECT_NAME {plugins,packages}/*/vendor/$COMPOSE_PROJECT_NAME -maxdepth 1 -type l 2>/dev/null); do ln -sf "$(realpath $sym | cut -c5-)" "$(dirname $sym)"; done`,
-                "ls -la plugins/wp-reactjs-starter/vendor/",
-                "ls -la plugins/wp-reactjs-starter/vendor/wp-reactjs-multi-starter/"
+                `for sym in $(find node_modules/@$COMPOSE_PROJECT_NAME/ {plugins,packages}/*/node_modules/@$COMPOSE_PROJECT_NAME {plugins,packages}/*/vendor/$COMPOSE_PROJECT_NAME -maxdepth 1 -type l 2>/dev/null); do ln -sf "$(realpath $sym | cut -c5-)" "$(dirname $sym)"; done`
             ]
         },
         true
@@ -121,7 +120,7 @@ const createConfig: CreateConfigFunction = async () => {
             "export DOCKER_CONTAINER_FQN=$CI_REGISTRY_IMAGE/gitlab-ci:$CI_COMMIT_REF_SLUG",
             "(docker rm -f $TEMP_CONTAINER_NAME || :)",
             "docker run --name $TEMP_CONTAINER_NAME -it -d $DOCKER_CONTAINER_FQN",
-            "docker cp install.tar $TEMP_CONTAINER_NAME:/tmp/builds/devowlio/wp-reactjs-starter",
+            "docker cp install.tar $TEMP_CONTAINER_NAME:/tmp$(realpath $CI_PROJECT_DIR)",
             `docker exec -t $TEMP_CONTAINER_NAME /bin/bash -c "tar -xvf install.tar && yarn bootstrap && yarn cypress install"`,
             `docker commit --author "GitLab CI" --message "Reinstall dependencies" $TEMP_CONTAINER_NAME $DOCKER_CONTAINER_FQN`,
             // Push to registry
