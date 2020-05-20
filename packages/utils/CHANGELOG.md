@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.2 (2020-05-20)
+
+
+### build
+
+* cleanup temporary i18n files correctly
+
+
+### ci
+
+* introduce node-gitlab-ci
+* read root name from package.json
+
+
+### fix
+
+* add PATCH to available HTTP methods (#5cjaau)
+* correctly enqueue dependencies (#52jf92)
+* improvement speed up in admin dashboard (#52gj39)
+* install database tables after reactivate plugin (#52k7f1)
+* remove ~ due to G6 blacklist filtering (security plugins, #5cqdn0)
+
+
+
+
+
 ## 1.1.1 (2020-04-27)
 
 

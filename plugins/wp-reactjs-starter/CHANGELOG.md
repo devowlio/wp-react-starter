@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.2 (2020-05-20)
+
+
+### build
+
+* cleanup temporary i18n files correctly
+
+
+### ci
+
+* introduce node-gitlab-ci
+* read root name from package.json
+
+
+### fix
+
+* correctly enqueue dependencies (#52jf92)
+
+
+
+
+
 ## 1.1.1 (2020-04-27)
 
 
