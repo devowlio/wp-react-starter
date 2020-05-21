@@ -86,7 +86,7 @@ const extendConfig: ExtendConfigFunction = async (config) => {
                 'yarn docker-compose:e2e --project-directory "$JOB_MOUNT_PATH/devops/docker-compose" up --build -d',
                 "export WP_WAIT_CONTAINER=$(yarn --silent docker-compose:e2e:name-wordpress)",
                 // Collect all builds and copy them to the container, and wait for the plugin until it is ready
-                "for slug in $(yarn --silent workspace:slugs); do docker cp plugins/$slug/build/$slug $WP_WAIT_CONTAINER:/var/www/html/wp-content/plugins; done;",
+                "for slug in $(yarn --silent workspace:slugs); do for dirs in $(find plugins/$slug/build/$slug* -maxdepth 0 -type d 2>/dev/null); do docker cp $dirs $WP_WAIT_CONTAINER:/var/www/html/wp-content/plugins/; done; done;",
                 "yarn wp-wait",
                 // Connect the gitlab container to our environment
                 'docker network connect "$COMPOSE_PROJECT_NAME-ci-$JOB_PACKAGE_NAME-$CI_COMMIT_REF_SLUG""_locl" $JOB_CONTAINER_ID',
