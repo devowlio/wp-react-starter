@@ -183,22 +183,6 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
     });
 
     /**
-     * Build a composer package before it will be installed in a build process.
-     */
-    grunt.registerTask("composer:dependents:build", () => {
-        Object.keys(grunt.config.get<{ [key: string]: string }>("pkg.dependencies"))
-            .filter((dep) => dep.indexOf(`@${mainPkg.name}/`) > -1)
-            .map((dep) => dep.split("/")[1])
-            .forEach((dep) => {
-                const cwd = resolve(process.cwd(), `../../packages/${dep}`);
-                if (!grunt.file.exists(resolve(cwd, "dist")) || !grunt.file.exists(resolve(cwd, "dev"))) {
-                    grunt.log.writeln(`Building production package of ${dep} in ${cwd}...`);
-                    execSync(`cd '${cwd}' && yarn build`, { stdio: "inherit" }); // we can not use `cwd` as option because yarn can not resolve packages then
-                }
-            });
-    });
-
-    /**
      * Composer does not allow to define to pack only a set of directories and files as yarn
      * allows with package.json#files (https://stackoverflow.com/a/17069547/5506547). For this, a
      * custom implementation in composer.json#extra.copy-all-except is implemented.
@@ -351,10 +335,10 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                 "clean:productionLibs",
                 "strip_code:sourcemaps",
                 "build:readme",
-                "composer:dependents:build",
                 "composer:install:production",
                 "composer:clean:production",
                 "clean:productionSource",
+                "clean:webpackDevBundles",
                 "strip_code:productionSource",
                 "php:scope",
                 "clean:packageManageFiles"

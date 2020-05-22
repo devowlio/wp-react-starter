@@ -24,7 +24,7 @@
         "dev": "yarn grunt libs:copy && concurrently --raw \"test $IS_DOCKER_START_COMMAND && exit 0 || yarn webpack --watch\" \"yarn --silent chokidar 'src/inc/**/*.php' -i 'src/inc/base/others/cachebuster*' -c 'yarn i18n:generate:backend' --silent\"",
         "i18n:generate:backend": "yarn --silent wp:weak i18n make-pot src/ src/languages/$(basename \"$(pwd)\").pot --ignore-domain --include=inc/ --exclude=public/",
         "i18n:generate:frontend": "test -d src/public/dev && yarn --silent grunt i18n:prepare:wp && yarn --silent wp:weak i18n make-pot src/public/dev/i18n-dir src/public/languages/$(basename \"$(pwd)\").pot --ignore-domain && rm -rf src/public/languages/json && yarn --silent wp i18n make-json src/public/languages src/public/languages/json --no-purge",
-        "build": "yarn --silent build:js:production && yarn --silent build:js:development && yarn grunt build",
+        "build": "BUILD_PLUGIN=$npm_package_slug yarn --silent parallel-webpack --no-stats --config ../../common/webpack.multi.ts && yarn grunt cachebuster:public && yarn grunt build",
         "build:js:production": "NODE_ENV=production yarn webpack",
         "build:js:development": "yarn webpack",
         "build:webpack:done": "yarn --silent concurrently -n cachebuster:public,i18n:generate:frontend 'yarn --silent grunt cachebuster:public' 'yarn --silent i18n:generate:frontend'",

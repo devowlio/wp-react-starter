@@ -8,7 +8,7 @@
 
 import { resolve, join } from "path";
 import fs from "fs";
-import { Configuration, DefinePlugin, Compiler, Options } from "webpack";
+import { Configuration, DefinePlugin, Compiler, Options, ProvidePlugin } from "webpack";
 import { spawn, execSync } from "child_process";
 import WebpackBar from "webpackbar";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
@@ -185,12 +185,14 @@ function createDefaultSettings(
 ) {
     const pwd = process.env.DOCKER_START_PWD || process.env.PWD;
     const NODE_ENV = (process.env.NODE_ENV as Configuration["mode"]) || "development";
+    const CI = !!process.env.CI;
     const nodeEnvFolder = NODE_ENV === "production" ? "dist" : "dev";
     const rootPkg = require(resolve(pwd, "../../package.json"));
     const pkg = require(resolve(pwd, "package.json"));
     const settings: Configuration[] = [];
     const plugins = getPlugins(pwd);
     const slug = type === "plugin" ? pkg.slug : pkg.name.split("/")[1];
+    const NoopLoader = resolve(pwd, "../../common/webpack-loader-noop.js");
 
     const rootSlugCamelCased = slugCamelCase(rootPkg.name);
     const packages = getPackages(pwd, rootSlugCamelCased);
@@ -296,13 +298,15 @@ function createDefaultSettings(
                     test: /\.tsx$/,
                     exclude: /(disposables)/,
                     use: [
-                        {
-                            loader: "cache-loader",
-                            options: {
-                                cacheIdentifier: `cache-loader:${CacheLoaderVersion} ${NODE_ENV}${babelCacheIdentifier}`
-                            }
-                        },
-                        "thread-loader",
+                        CI
+                            ? NoopLoader
+                            : {
+                                  loader: "cache-loader",
+                                  options: {
+                                      cacheIdentifier: `cache-loader:${CacheLoaderVersion} ${NODE_ENV}${babelCacheIdentifier}`
+                                  }
+                              },
+                        CI ? NoopLoader : "thread-loader",
                         {
                             loader: "babel-loader?cacheDirectory",
                             options: babelOptions
@@ -349,9 +353,8 @@ function createDefaultSettings(
             }),
             new MiniCssExtractPlugin({
                 filename: "[name].css"
-            }),
-            new WebpackPluginDone(pwd)
-        ]
+            })
+        ].concat(process.env.BUILD_PLUGIN ? [] : [new WebpackPluginDone(pwd)])
     };
 
     skipExternals.forEach((key) => {
@@ -388,4 +391,41 @@ function createDefaultSettings(
     return settings;
 }
 
-export { WebpackPluginDone, createDefaultSettings, slugCamelCase, getPlugins };
+/**
+ * In some cases it is more than recommend to use a lightweight alternative
+ * to React in your frontend. E. g. for plugin developers creating frontend
+ * solutions to non-logged-in users to reduce load time.
+ *
+ * Note: You need to apply `skipExternals: ["react", "react-dom"]`, too!
+ */
+function applyPreact(config: Configuration, disableChunks = false) {
+    // Disable splitChunks so no `vendor~banner.js` is created
+    if (disableChunks) {
+        delete config.optimization.splitChunks;
+    }
+
+    // Implement preact and JSX transform through babel and webpack
+    // https://preactjs.com/guide/v10/getting-started#aliasing-in-webpack
+    config.resolve.alias = {
+        react: "preact/compat",
+        "react-dom": "preact/compat"
+    };
+
+    // https://preactjs.com/guide/v8/switching-to-preact/#2-jsx-pragma-transpile-to-h
+    // https://babeljs.io/docs/en/babel-preset-react#pragma
+    (config.module.rules[0].use as any[])[2].options.presets[2] = [
+        "@babel/preset-react",
+        {
+            pragma: "h"
+        }
+    ];
+
+    // https://github.com/preactjs/preact-compat/issues/161#issuecomment-590806041
+    config.plugins.push(
+        new ProvidePlugin({
+            h: ["preact", "h"]
+        })
+    );
+}
+
+export { WebpackPluginDone, createDefaultSettings, slugCamelCase, getPlugins, applyPreact };

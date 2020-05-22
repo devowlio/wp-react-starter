@@ -61,10 +61,12 @@ const createConfig: CreateConfigFunction = async () => {
                 "export TMP_FILES=$(cd $TMP_CI_PROJECT_DIR && eval find $INSTALL_VENDOR_FOLDERS -maxdepth 0 2>/dev/null)",
                 "echo $TMP_FILES",
                 "time for dirs in $TMP_FILES; do ln -s $TMP_CI_PROJECT_DIR/$dirs $dirs; done",
+                "git stash",
                 // Make sure all dependencies are installed correctly
                 "yarn bootstrap",
                 // Make sure cypress is installed correctly
                 "test $DOCKER_DAEMON_ALLOW_UP && yarn cypress install",
+                "git stash pop || :",
                 // Recreate our local package symlinks
                 `for sym in $(find node_modules/@$COMPOSE_PROJECT_NAME/ {plugins,packages}/*/node_modules/@$COMPOSE_PROJECT_NAME {plugins,packages}/*/vendor/$COMPOSE_PROJECT_NAME -maxdepth 1 -type l 2>/dev/null); do ln -sf "$(realpath $sym | cut -c5-)" "$(dirname $sym)"; done`
             ]
