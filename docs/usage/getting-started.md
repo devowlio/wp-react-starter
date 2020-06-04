@@ -8,6 +8,7 @@ Please make sure that the following components are installed on your local compu
 -   [**Node.js**](https://nodejs.org/): JavaScript runtime (version >= 10.17)
 -   [**Yarn**](https://yarnpkg.com/lang/en/): Dependency manager for JavaScript (version >= 1.19)
 -   [**Composer**](https://getcomposer.org/): Dependency manager for PHP (version >= 1.9)
+-   [**Prestissimo**](https://packagist.org/packages/hirak/prestissimo): Paralelized dependency installation for Composer (version >= 0.3.10)
 -   [**Docker**](https://docs.docker.com/install/): Container Platform CLI `docker` and `docker-compose` (Docker Desktop version >= 2.1)
 -   [**WP-CLI**](https://wp-cli.org/#installing): CLI for for WordPress `wp`
 -   [**GitLab**](https://gitlab.com): Sign up for your Git repository and make predefined [CI/CD functionality](../gitlab-integration/predefined-pipeline.md) work
