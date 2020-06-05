@@ -6,6 +6,8 @@ While using GitLab CI/CD functionality share runners are active by default. Shar
 Below is an example of how you can create exactly one own Gitlab CI runner for your repository, running Docker as an executor. The following steps may differ for more complex or scalable scenarios. For more advanced usage refer to the official [Runner documentation](https://docs.gitlab.com/runner).
 {% endhint %}
 
+### Setup an own runner
+
 1. If you do not have yet your own server navigate to [Scaleway](https://scaleway.com) and order one (the cheapest Linux server should be enough)
 1. SSH into your server (Scaleway explains while ordering how that works)
 1. Install `docker` and `docker-compose` on that server (see [this](../usage/getting-started.md#prerequisites) for reference)
@@ -15,6 +17,9 @@ Below is an example of how you can create exactly one own Gitlab CI runner for y
     - Add `concurrent = 4` so jobs inside stages run parallel
     - Add `"/var/run/docker.sock:/var/run/docker.sock"` in `volumes` so jobs can access docker daemon to run containers in containers
 1. Restart Runner `gitlab-runner restart`
+
+### Configure your GitLab project
+
 1. Disable shared runners in GitLab > Project > CI/CD > Runners and enable the registered one
 1. Add [variable](./extend-gitlab-ci-pipeline.md#available-variables) `$DOCKER_DAEMON_ALLOW_UP` with value `1` in GitLab > Project > CI/CD > Variables
 1. Enable [Review applications](./review-applications.md)
