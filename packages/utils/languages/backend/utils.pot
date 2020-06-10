@@ -7,10 +7,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-15T20:01:24+01:00\n"
+"POT-Creation-Date: n/a\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.2.0\n"
-
-#: Service.php:39
-msgid "Welcome!"
-msgstr ""
+"X-Generator: WP-CLI 2.4.0\n"
