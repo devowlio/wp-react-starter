@@ -30,7 +30,7 @@ class WebpackPluginDone {
         const env = Object.create(process.env);
         env.TS_NODE_PROJECT = resolve(this.pwd, "tsconfig.json");
 
-        compiler.plugin("done", () => {
+        compiler.hooks.done.tap("WebpackPluginDone", () => {
             spawn("yarn --silent build:webpack:done", {
                 stdio: "inherit",
                 shell: true,
