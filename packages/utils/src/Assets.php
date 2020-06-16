@@ -381,7 +381,7 @@ trait Assets {
                 wp_enqueue_script($useHandle, $url, $deps, $cachebuster, $in_footer);
                 $this->setLazyScriptTranslations(
                     $useHandle,
-                    $useHandle,
+                    $rootSlug . '-' . $handle,
                     path_join($pluginPath, $packageDir . 'languages/frontend/json')
                 );
             } else {

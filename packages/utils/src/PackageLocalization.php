@@ -24,7 +24,7 @@ class PackageLocalization {
      * @param string $packageDir Absolute path to your package.
      * @codeCoverageIgnore
      */
-    private function __construct($rootSlug, $packageDir) {
+    protected function __construct($rootSlug, $packageDir) {
         $this->rootSlug = $rootSlug;
         $this->packageDir = $packageDir;
     }

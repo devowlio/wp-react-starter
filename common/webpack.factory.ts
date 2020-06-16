@@ -348,6 +348,7 @@ function createDefaultSettings(
                 "process.env": definePlugin({
                     NODE_ENV: JSON.stringify(NODE_ENV),
                     env: JSON.stringify(NODE_ENV),
+                    rootSlug: JSON.stringify(rootPkg.name),
                     slug: JSON.stringify(slug)
                 })
             }),
