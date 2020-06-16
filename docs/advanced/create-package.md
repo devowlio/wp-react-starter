@@ -89,4 +89,75 @@ You have to replace `wp-reactjs-multi-starter` with your names.
 
 ## Localization
 
-A package can also be localized with commands [`yarn i18n:backend` and `yarn i18n:generate:frontend`](../usage/available-commands/package.md#localization). All `.pot` files will be generated to `languages`. If you consume a package via `enqueueComposerScript` and `composer require` all localization files are **automatically** loaded to the WordPress runtime, you do not have to manually load them!
+A package can also be localized with commands [`yarn i18n:backend` and `yarn i18n:generate:frontend`](../usage/available-commands/package.md#localization). All `.pot` files will be generated to `languages`. If you consume a package via `enqueueComposerScript` and `composer require` all localization files are **automatically** loaded to the WordPress runtime, you do not have to manually load them (Provider)! But, you still need to register the hooks manually as explained below (Consumer).
+
+### PHP Consumer
+
+First, you need to create a new file `/packages/your-package/src/Localization.php` with the following content:
+
+```php
+<?php
+namespace WPRJSS\MyPackage;
+
+use WPRJSS\Utils\PackageLocalization;
+
+// @codeCoverageIgnoreStart
+defined('ABSPATH') or die('No script kiddies please!'); // Avoid direct file request
+// @codeCoverageIgnoreEnd
+
+/**
+ * Package localization for `your-package` package.
+ */
+class Localization extends PackageLocalization
+{
+    /**
+     * C'tor.
+     */
+    protected function __construct()
+    {
+        parent::__construct(MY_PACKAGE_ROOT_SLUG, dirname(__DIR__));
+    }
+
+    /**
+     * Put your language overrides here!
+     *
+     * @param string $locale
+     * @return string
+     * @codeCoverageIgnore
+     */
+    protected function override($locale)
+    {
+        // switch ($locale) {
+        //     // Put your overrides here!
+        //     case 'de_AT':
+        //     case 'de_CH':
+        //     case 'de_CH_informal':
+        //     case 'de_DE_formal':
+        //         return 'de_DE';
+        //         break;
+        //     default:
+        //         break;
+        // }
+        return $locale;
+    }
+}
+```
+
+In your main PHP file (e. g. `Core.php`) you need to make sure to define the following constants and create the `Localization` instance. Afterwards, you can use `__` with `MY_PACKAGE_TD` as your text domain!
+
+```php
+define('MY_PACKAGE_ROOT_SLUG', 'wp-reactjs-multi-starter');
+define('MY_PACKAGE_SLUG', 'my-package');
+define('MY_PACKAGE_TD', MY_PACKAGE_ROOT_SLUG . '-' . MY_PACKAGE_SLUG);
+(new Localization())->hooks();
+```
+
+### TypeScript Consumer
+
+In your TypeScript coding it is much more easier to consume the translations:
+
+```tsx
+import { createLocalizationFactory } from "@wp-react-multi-starter/utils";
+
+const { __, _i /* [...] */ } = createLocalizationFactory(`${process.env.rootSlug}-${process.env.slug}`);
+```
