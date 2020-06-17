@@ -61,7 +61,7 @@ const createConfig: CreateConfigFunction = async () => {
                 "export TMP_FILES=$(cd $TMP_CI_PROJECT_DIR && eval find $INSTALL_VENDOR_FOLDERS -maxdepth 0 2>/dev/null)",
                 "echo $TMP_FILES",
                 "time for dirs in $TMP_FILES; do ln -s $TMP_CI_PROJECT_DIR/$dirs $dirs; done",
-                "git stash",
+                "git stash || :", // Allow to fail, e. g. in `docker review stop`
                 // Make sure all dependencies are installed correctly
                 "yarn bootstrap",
                 // Make sure cypress is installed correctly
