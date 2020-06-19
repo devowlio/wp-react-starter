@@ -1,12 +1,15 @@
 import { commonRequest } from "../../../../lib/factory/ajax/commonRequest";
-import { RouteHttpVerb } from "../../../../lib";
-import { produce } from "immer";
+import { RouteHttpVerb } from "../../../../lib/factory/ajax/routeHttpVerbEnum";
+import { produce, setAutoFreeze } from "immer";
 
 jest.mock("../../../../lib/factory/ajax/commonUrlBuilder");
-jest.mock("jquery");
+jest.mock("deepmerge");
+jest.mock("url-parse");
+jest.mock("whatwg-fetch");
 
 const { commonUrlBuilder } = require("../../../../lib/factory/ajax/commonUrlBuilder");
-const $ = require("jquery");
+const deepMerge = require("deepmerge");
+const Url = require("url-parse");
 
 describe("commonRequest", () => {
     const baseOpts = {
@@ -20,23 +23,65 @@ describe("commonRequest", () => {
         }
     };
 
+    function createUrlMock(produceData = (draft: any) => draft) {
+        const urlSetMock = jest.fn();
+        const urlToStringMock = jest.fn();
+        Url.mockImplementation(() => {
+            setAutoFreeze(false);
+            const data: any = produce(
+                {
+                    query: {} as any,
+                    pathname: "/wp-json/",
+                    protocol: "http:",
+                    set: urlSetMock.mockImplementation((part: string, value: string) => {
+                        data[part] = value;
+                        return data;
+                    }),
+                    toString: urlToStringMock.mockImplementation(() => "https://")
+                },
+                produceData
+            );
+            setAutoFreeze(true);
+
+            return data;
+        });
+
+        return { urlSetMock, urlToStringMock };
+    }
+
     it("should fetch correct response with default arguments", async () => {
         const url = baseOpts.options.restRoot + baseOpts.options.restNamespace + baseOpts.location.path;
 
+        const { urlSetMock, urlToStringMock } = createUrlMock();
         commonUrlBuilder.mockImplementation(() => url);
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        const spyFetch = jest
+            .spyOn(window, "fetch")
+            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
 
-        await commonRequest(baseOpts);
+        const actual = await commonRequest(baseOpts);
+
         expect(commonUrlBuilder).toHaveBeenCalledWith(expect.objectContaining(baseOpts));
         expect(commonUrlBuilder).toHaveBeenCalledWith(expect.objectContaining({ nonce: false }));
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
-            { data: undefined, headers: { "X-WP-Nonce": baseOpts.options.restNonce }, url }
-        );
-        expect($.ajax).toHaveBeenCalled();
+        expect(Url).toHaveBeenCalledWith(url, true);
+        expect(deepMerge.all).toHaveBeenCalledWith([
+            {
+                method: "GET"
+            },
+            {
+                body: undefined,
+                headers: { "Content-Type": "application/json;charset=utf-8", "X-WP-Nonce": baseOpts.options.restNonce }
+            }
+        ]);
+        expect(urlSetMock).not.toHaveBeenCalled();
+        expect(urlToStringMock).toHaveBeenCalled();
+        expect(spyFetch).toHaveBeenCalledWith("https://", {});
+        expect(mockJson).toHaveBeenCalled();
+        expect(actual).toEqual({});
     });
 
-    it("should fetch correct response with request body", async () => {
+    it("should fetch correct response with request body as GET parameters", async () => {
         const request = { id: 1 };
         const opts = produce(baseOpts, (draft) => {
             (draft as any).request = request;
@@ -45,13 +90,26 @@ describe("commonRequest", () => {
         const url = opts.options.restRoot + opts.options.restNamespace + opts.location.path;
 
         commonUrlBuilder.mockImplementation(() => url);
+        const { urlSetMock } = createUrlMock();
+        deepMerge.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        const spyFetch = jest
+            .spyOn(window, "fetch")
+            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
 
         await commonRequest(opts);
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
-            { data: request, headers: { "X-WP-Nonce": opts.options.restNonce }, url }
-        );
+
+        expect(deepMerge).toHaveBeenCalledWith({}, request);
+        expect(urlSetMock).toHaveBeenCalledWith("query", {});
+        expect(deepMerge.all).toHaveBeenCalledWith([
+            { method: "GET" },
+            {
+                body: undefined,
+                headers: { "Content-Type": "application/json;charset=utf-8", "X-WP-Nonce": opts.options.restNonce }
+            }
+        ]);
+        expect(spyFetch).toHaveBeenCalledWith("https://", {});
     });
 
     it("should fetch correct response with GET parameters", async () => {
@@ -63,13 +121,26 @@ describe("commonRequest", () => {
         const url = `${opts.options.restRoot + opts.options.restNamespace}/user/${params.id}`;
 
         commonUrlBuilder.mockImplementation(() => url);
+        const { urlSetMock } = createUrlMock();
+        deepMerge.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        const spyFetch = jest
+            .spyOn(window, "fetch")
+            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
 
         await commonRequest(opts);
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
-            { data: undefined, headers: { "X-WP-Nonce": opts.options.restNonce }, url }
-        );
+
+        expect(deepMerge).not.toHaveBeenCalled();
+        expect(urlSetMock).not.toHaveBeenCalled();
+        expect(deepMerge.all).toHaveBeenCalledWith([
+            { method: "GET" },
+            {
+                body: undefined,
+                headers: { "Content-Type": "application/json;charset=utf-8", "X-WP-Nonce": opts.options.restNonce }
+            }
+        ]);
+        expect(spyFetch).toHaveBeenCalledWith("https://", {});
     });
 
     it("should fetch correct response with custom settings", async () => {
@@ -78,19 +149,32 @@ describe("commonRequest", () => {
                 Connection: "keep-alive"
             }
         };
+        setAutoFreeze(false);
         const opts = produce(baseOpts, (draft) => {
             (draft as any).settings = settings;
         });
+        setAutoFreeze(true);
         const url = opts.options.restRoot + opts.options.restNamespace + opts.location.path;
 
         commonUrlBuilder.mockImplementation(() => url);
+        createUrlMock();
+        deepMerge.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        const spyFetch = jest
+            .spyOn(window, "fetch")
+            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
 
         await commonRequest(opts);
-        expect($.extend).toHaveBeenCalledWith(true, settings, {
-            data: undefined,
-            headers: { "X-WP-Nonce": opts.options.restNonce },
-            url
-        });
+
+        expect(deepMerge.all).toHaveBeenCalledWith([
+            { method: "GET", headers: settings.headers },
+            {
+                body: undefined,
+                headers: { "Content-Type": "application/json;charset=utf-8", "X-WP-Nonce": opts.options.restNonce }
+            }
+        ]);
+        expect(spyFetch).toHaveBeenCalledWith("https://", {});
     });
 
     it("should fetch correct response with POST method", async () => {
@@ -101,12 +185,42 @@ describe("commonRequest", () => {
         const url = opts.options.restRoot + opts.options.restNamespace + opts.location.path;
 
         commonUrlBuilder.mockImplementation(() => url);
+        createUrlMock();
+        deepMerge.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
 
         await commonRequest(opts);
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            { method: method },
-            { data: undefined, headers: { "X-WP-Nonce": opts.options.restNonce }, url }
-        );
+
+        expect(deepMerge.all).toHaveBeenCalledWith([
+            { method },
+            {
+                body: undefined,
+                headers: { "Content-Type": "application/json;charset=utf-8", "X-WP-Nonce": opts.options.restNonce }
+            }
+        ]);
+    });
+
+    it("should throw error when response is not ok", async () => {
+        const method = RouteHttpVerb.POST;
+        const opts = produce(baseOpts, (draft) => {
+            (draft.location as any).method = method;
+        });
+        const url = opts.options.restRoot + opts.options.restNamespace + opts.location.path;
+
+        commonUrlBuilder.mockImplementation(() => url);
+        createUrlMock();
+        deepMerge.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
+        const mockJson = jest.fn().mockReturnValue({});
+        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: false, json: mockJson } as any));
+
+        await expect(commonRequest(opts)).rejects.toEqual({
+            ok: false,
+            json: expect.any(Function),
+            responseJSON: {}
+        });
+        expect(mockJson).toHaveBeenCalled();
     });
 });

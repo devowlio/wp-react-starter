@@ -1,10 +1,10 @@
 import { createLocalizationFactory } from "../../../lib/factory/i18n";
 
-jest.mock("i18n-calypso");
+jest.mock("interpolate-components");
 jest.mock("@wordpress/i18n");
 jest.mock("wp");
 
-const i18nCalypso = require("i18n-calypso");
+const interpolate = require("interpolate-components").default;
 const wpi18n = require("@wordpress/i18n");
 const wp = require("wp").default;
 
@@ -68,12 +68,12 @@ describe("i18n", () => {
         const components = {};
         const reactNode = {};
 
-        i18nCalypso.translate.mockImplementation(() => reactNode);
+        interpolate.mockImplementation(() => reactNode);
 
         const { _i } = createLocalizationFactory(slug);
         const actual = _i(single, components);
 
-        expect(i18nCalypso.translate).toHaveBeenCalledWith(single, { components });
+        expect(interpolate).toHaveBeenCalledWith({ mixedString: single, components });
         expect(actual).toBe(reactNode);
     });
 

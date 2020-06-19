@@ -1,7 +1,7 @@
 // @see https://github.com/Automattic/wp-calypso/blob/master/packages/i18n-calypso/src/index.js
 
-import { ReactNode } from "react";
-import * as i18nCalypso from "i18n-calypso";
+import { ReactNode, ReactElement } from "react";
+import interpolate from "interpolate-components";
 import * as wpi18n from "@wordpress/i18n";
 import wp from "wp";
 
@@ -75,8 +75,9 @@ function createLocalizationFactory(slug: string) {
      * A translation can look like this: "Hello {{a}}click me{{/a}}." and you have to pass
      * a component with key "a".
      */
-    function _i(translation: string, components?: i18nCalypso.TranslateOptions["components"]): any {
-        return i18nCalypso.translate(translation, {
+    function _i(translation: string, components?: { [placeholder: string]: ReactElement }): any {
+        return interpolate({
+            mixedString: translation,
             components
         }) as ReactNode;
     }

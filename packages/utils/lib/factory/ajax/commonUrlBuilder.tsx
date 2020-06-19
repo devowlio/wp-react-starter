@@ -1,18 +1,11 @@
 import Url from "url-parse";
-import $ from "jquery";
 import { trailingslashit, untrailingslashit } from "../../helpers";
 import { BaseOptions } from "../../options";
+import { RouteHttpVerb } from ".";
+import deepMerge from "deepmerge";
 
 // Use _method instead of Http verb
 const WP_REST_API_USE_GLOBAL_METHOD = true;
-
-enum RouteHttpVerb {
-    GET = "GET",
-    POST = "POST",
-    PUT = "PUT",
-    DELETE = "DELETE",
-    PATCH = "PATCH"
-}
 
 interface RouteLocationInterface {
     path: string;
@@ -89,12 +82,11 @@ function commonUrlBuilder({
         query._method = location.method;
     }
 
-    return apiUrl.set("query", $.extend(true, {}, options.restQuery, getParams, query)).toString();
+    return apiUrl.set("query", deepMerge.all([options.restQuery, getParams, query])).toString();
 }
 
 export {
     WP_REST_API_USE_GLOBAL_METHOD,
-    RouteHttpVerb,
     RouteLocationInterface,
     RouteRequestInterface,
     RouteParamsInterface,

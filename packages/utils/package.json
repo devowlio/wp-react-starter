@@ -122,16 +122,18 @@
         "@wordpress/i18n": "^3.6.1",
         "classnames": "^2.2.6",
         "core-js": "3",
+        "deepmerge": "^4.2.2",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.2",
-        "i18n-calypso": "^4.0.0",
         "immer": "^6.0.2",
+        "interpolate-components": "^1.1.1",
         "jquery": "^3.4.1",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-test-renderer": "^16.13.1",
         "setimmediate": "^1.0.5",
-        "url-parse": "^1.4.7"
+        "url-parse": "^1.4.7",
+        "whatwg-fetch": "^3.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.9.0",

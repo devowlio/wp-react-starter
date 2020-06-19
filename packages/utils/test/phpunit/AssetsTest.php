@@ -325,7 +325,7 @@ final class AssetsTest extends TestCase {
     }
 
     public function testEnqueueUtils() {
-        $scriptDeps = ['react', 'react-dom', 'mobx', 'moment', 'wp-i18n', 'jquery'];
+        $scriptDeps = ['react', 'react-dom', 'mobx', 'wp-i18n', 'jquery'];
         $should = array_merge($scriptDeps, [PHPUNIT_ROOT_SLUG . '-utils']);
         $this->assets->shouldReceive('enqueueUtils')->passthru();
 

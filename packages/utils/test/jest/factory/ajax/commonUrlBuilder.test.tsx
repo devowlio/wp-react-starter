@@ -1,13 +1,16 @@
-import { commonUrlBuilder, RouteHttpVerb } from "../../../../lib/factory/ajax/commonUrlBuilder";
+import { commonUrlBuilder } from "../../../../lib/factory/ajax/commonUrlBuilder";
+import { RouteHttpVerb } from "../../../../lib/factory/ajax/routeHttpVerbEnum";
 import { produce, setAutoFreeze } from "immer";
 
 jest.mock("url-parse");
 jest.mock("../../../../lib/helpers");
-jest.mock("jquery");
+jest.mock("deepmerge", () => ({
+    all: jest.fn()
+}));
 
 const Url = require("url-parse");
 const helpers = require("../../../../lib/helpers");
-const $ = require("jquery");
+const deepMerge = require("deepmerge");
 
 describe("commonUrlBuilder", () => {
     const baseOpts = {
@@ -24,6 +27,7 @@ describe("commonUrlBuilder", () => {
 
     function createUrlMock(produceData = (draft: any) => draft) {
         const urlSetMock = jest.fn();
+        const urlToStringMock = jest.fn();
         Url.mockImplementation(() => {
             setAutoFreeze(false);
             const data: any = produce(
@@ -33,14 +37,9 @@ describe("commonUrlBuilder", () => {
                     protocol: "http:",
                     set: urlSetMock.mockImplementation((part: string, value: string) => {
                         data[part] = value;
-
-                        if (part == "query") {
-                            return {
-                                toString: jest.fn()
-                            };
-                        }
-                        return undefined;
-                    })
+                        return data;
+                    }),
+                    toString: urlToStringMock.mockImplementation(() => "https://")
                 },
                 produceData
             );
@@ -49,28 +48,29 @@ describe("commonUrlBuilder", () => {
             return data;
         });
 
-        return { urlSetMock };
+        return { urlSetMock, urlToStringMock };
     }
 
     it("should create a valid url with default arguments", () => {
-        const { urlSetMock } = createUrlMock();
+        const { urlSetMock, urlToStringMock } = createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
-        commonUrlBuilder(baseOpts);
+        const actual = commonUrlBuilder(baseOpts);
 
+        expect(Url).toHaveBeenCalledWith("http://localhost/wp-json/", true);
         expect(urlSetMock).toHaveBeenCalledWith("pathname", "/wp-json/jest/v1/user");
         expect(urlSetMock).toHaveBeenCalledWith("query", {});
         expect(helpers.trailingslashit).toHaveBeenCalled();
         expect(helpers.untrailingslashit).toHaveBeenCalled();
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
+        expect(deepMerge.all).toHaveBeenCalledWith([
             undefined,
             {},
             { _wpnonce: baseOpts.options.restNonce, _method: undefined }
-        );
+        ]);
+        expect(urlToStringMock).toHaveBeenCalled();
+        expect(actual).toBe("https://");
     });
 
     it("should create a valid url with HTTPS auto correction", () => {
@@ -79,7 +79,7 @@ describe("commonUrlBuilder", () => {
         });
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(baseOpts);
 
@@ -96,19 +96,13 @@ describe("commonUrlBuilder", () => {
         const { urlSetMock } = createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
         expect(urlSetMock).toHaveBeenCalledWith("pathname", "/wp-json/jest/v1/user");
         expect(urlSetMock).toHaveBeenCalledWith("query", {});
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
-            opts.options.restQuery,
-            {},
-            { _wpnonce: opts.options.restNonce }
-        );
+        expect(deepMerge.all).toHaveBeenCalledWith([opts.options.restQuery, {}, { _wpnonce: opts.options.restNonce }]);
     });
 
     it("should create a valid url with index.php permalink settings (rest_route query)", () => {
@@ -125,14 +119,12 @@ describe("commonUrlBuilder", () => {
 
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
         expect(urlSetMock).toHaveBeenCalledWith("query", {});
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
+        expect(deepMerge.all).toHaveBeenCalledWith([
             undefined,
             {},
             {
@@ -140,7 +132,7 @@ describe("commonUrlBuilder", () => {
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 rest_route: "/wp-json/jest/v1/user"
             }
-        );
+        ]);
     });
 
     it("should create a valid url without nonce", () => {
@@ -151,17 +143,15 @@ describe("commonUrlBuilder", () => {
         createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
+        expect(deepMerge.all).toHaveBeenCalledWith([
             undefined,
             {},
             expect.not.objectContaining({ _wpnonce: opts.options.restNonce })
-        );
+        ]);
     });
 
     it("should create a valid url with other method than GET (POST)", () => {
@@ -173,17 +163,15 @@ describe("commonUrlBuilder", () => {
         createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
+        expect(deepMerge.all).toHaveBeenCalledWith([
             undefined,
             {},
             { _wpnonce: opts.options.restNonce, _method: method }
-        );
+        ]);
     });
 
     it("should create a valid url with an url parameter (:user)", () => {
@@ -198,12 +186,12 @@ describe("commonUrlBuilder", () => {
         const { urlSetMock } = createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
         expect(urlSetMock).toHaveBeenCalledWith("pathname", "/wp-json/jest/v1/user/50");
-        expect($.extend).toHaveBeenCalledWith(true, {}, undefined, {}, { _wpnonce: opts.options.restNonce });
+        expect(deepMerge.all).toHaveBeenCalledWith([undefined, {}, { _wpnonce: opts.options.restNonce }]);
     });
 
     it("should create a valid url with an url parameter (:user) combined with additional query", () => {
@@ -219,17 +207,11 @@ describe("commonUrlBuilder", () => {
         const { urlSetMock } = createUrlMock();
         helpers.trailingslashit.mockImplementation(() => "/wp-json/");
         helpers.untrailingslashit.mockImplementation(() => "jest/v1");
-        $.extend.mockImplementation((): any => ({}));
+        deepMerge.all.mockImplementation((): any => ({}));
 
         commonUrlBuilder(opts);
 
         expect(urlSetMock).toHaveBeenCalledWith("pathname", "/wp-json/jest/v1/user/50");
-        expect($.extend).toHaveBeenCalledWith(
-            true,
-            {},
-            undefined,
-            { fields: "id" },
-            { _wpnonce: opts.options.restNonce }
-        );
+        expect(deepMerge.all).toHaveBeenCalledWith([undefined, { fields: "id" }, { _wpnonce: opts.options.restNonce }]);
     });
 });
