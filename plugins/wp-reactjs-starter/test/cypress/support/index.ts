@@ -24,3 +24,8 @@ import "cypress-plugin-retries";
 Cypress.Cookies.defaults({
     whitelist: /wordpress_/
 });
+
+// `window.fetch` does not work yet with cypress (https://git.io/JfFdL)
+Cypress.on("window:before:load", (win: Window) => {
+    win.fetch = null;
+});
