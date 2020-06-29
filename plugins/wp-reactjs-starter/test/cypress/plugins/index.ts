@@ -81,7 +81,7 @@ module.exports = (on, config) => {
                     extensions: [".ts", ".js"]
                 },
                 // @see https://git.io/JeAtF
-                // eslint-disable-next-line @typescript-eslint/camelcase
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 node: { fs: "empty", child_process: "empty", readline: "empty" },
                 module: {
                     rules: [

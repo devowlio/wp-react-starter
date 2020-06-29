@@ -42,17 +42,30 @@
                 //"sort-imports": "warn",
                 "@typescript-eslint/no-explicit-any": 0,
                 "@typescript-eslint/explicit-function-return-type": 0,
+                "@typescript-eslint/explicit-module-boundary-types": 0,
                 "@typescript-eslint/ban-ts-ignore": 0,
-                "@typescript-eslint/member-ordering": "error"
+                "@typescript-eslint/member-ordering": "error",
+                "@typescript-eslint/ban-types": [
+                    "error",
+                    {
+                        "types": {
+                            "{}": false
+                        },
+                        "extendDefaults": true
+                    }
+                ]
             }
         },
         {
             "files": ["**/jest/**/*.test.{tsx,ts}"],
             "plugins": ["jest"],
-            "extends": ["plugin:jest/recommended", "plugin:jest/style"]
+            "extends": ["plugin:jest/recommended", "plugin:jest/style"],
+            "rules": {
+                "@typescript-eslint/ban-ts-comment": 0
+            }
         },
         {
-            "files": ["**/*.test.{tsx,ts}"],
+            "files": ["**/*.test.{tsx,ts}", "**/cypress/plugins/*"],
             "rules": {
                 "@typescript-eslint/no-var-requires": 0
             }

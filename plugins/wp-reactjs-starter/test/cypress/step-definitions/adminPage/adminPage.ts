@@ -9,9 +9,12 @@ Then("I click on REST API link in the admin notice and alert contains {string}",
     const stub = cy.stub();
     cy.on("window:alert", stub);
 
-    AdminPageObject.restApiLink.click().then(() => {
-        expect(stub.getCall(0)).to.be.calledWith(Cypress.sinon.match(new RegExp(alertText)));
-    });
+    AdminPageObject.restApiLink
+        .click()
+        .wait(1000)
+        .then(() => {
+            expect(stub.getCall(0)).to.be.calledWith(Cypress.sinon.match(new RegExp(alertText)));
+        });
 });
 
 Then("I type {string} and add todo, check it, afterwards delete it", (todo: string) => {

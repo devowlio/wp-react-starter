@@ -3,15 +3,15 @@ import { BaseOptions } from "@wp-reactjs-multi-starter/utils";
 import { RootStore } from "./stores";
 
 class OptionStore extends BaseOptions {
+    // Implement "others" property in your Assets.php;
+    @observable
+    public others: {} = {};
+
     public readonly pureSlug: ReturnType<typeof BaseOptions.getPureSlug>;
 
     public readonly pureSlugCamelCased: ReturnType<typeof BaseOptions.getPureSlug>;
 
     public readonly rootStore: RootStore;
-
-    // Implement "others" property in your Assets.php;
-    @observable
-    public others: {} = {};
 
     constructor(rootStore: RootStore) {
         super();

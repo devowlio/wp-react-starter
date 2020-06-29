@@ -69,7 +69,7 @@ function commonUrlBuilder({
 
     // Set path depending on permalink settings
     if (query.rest_route) {
-        query.rest_route = usePath; // eslint-disable-line @typescript-eslint/camelcase
+        query.rest_route = usePath; // eslint-disable-line @typescript-eslint/naming-convention
     } else {
         apiUrl.set("pathname", usePath); // Set path
     }

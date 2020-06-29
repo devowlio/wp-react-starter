@@ -4,10 +4,10 @@ import { RootStore } from "./stores";
 
 /* istanbul ignore next: Example implementations gets deleted the most time after plugin creation! */
 class TodoStore {
-    public readonly rootStore: RootStore;
-
     @observable
     public todos: TodoModel[] = [];
+
+    public readonly rootStore: RootStore;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;

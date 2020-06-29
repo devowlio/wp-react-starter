@@ -112,7 +112,7 @@ describe("commonUrlBuilder", () => {
 
         const { urlSetMock } = createUrlMock((draft) => {
             draft.query = {
-                // eslint-disable-next-line @typescript-eslint/camelcase
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 rest_route: "/wp-json/"
             };
         });
@@ -129,7 +129,7 @@ describe("commonUrlBuilder", () => {
             {},
             {
                 _wpnonce: opts.options.restNonce,
-                // eslint-disable-next-line @typescript-eslint/camelcase
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 rest_route: "/wp-json/jest/v1/user"
             }
         ]);

@@ -30,7 +30,7 @@ function setupGrunt(grunt: IGrunt) {
                 ]
             }
         },
-        strip_code: /* eslint-disable-line @typescript-eslint/camelcase */ {
+        strip_code: /* eslint-disable-line @typescript-eslint/naming-convention */ {
             /**
              * With clean:productionLibs all sourcemap files are cleaned. To avoid 404 errors
              * on client side you also need to remove the link to the sourcemap.
