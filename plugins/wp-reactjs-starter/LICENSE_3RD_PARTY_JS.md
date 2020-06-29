@@ -2605,7 +2605,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----
 
-The following software may be included in this product: workspace-aggregator-88ba7866-27e0-4fbb-810c-c700dc271e48. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-d0254415-9656-4499-949e-a869b2c988d4. This software contains the following license and notice below:
 
 The software "WP React Starter" is comprised of multiple parts
 (files in these directories and subdirectories, if the subdirectory

@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.2.0 (2020-06-29)
+
+
+### build
+
+* improve plugin build with webpack parallel builds
+
+
+### chore
+
+* i18n update (#5ut991)
+
+
+### feat
+
+* allow to define licenses in root package.json (#68jvq7)
+* use window.fetch with polyfill instead of jquery (#5whc87)
+* use window.fetch with polyfill instead of jquery (#5whc87)
+
+
+
+
+
 ## 1.1.2 (2020-05-20)
 
 
