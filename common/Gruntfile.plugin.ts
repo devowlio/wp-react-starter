@@ -10,9 +10,6 @@ import { applyDefaultRunnerConfiguration, hookable } from "./Gruntfile";
 import rimraf from "rimraf";
 import { extractGlobalStubIdentifiers } from "./php-scope-stub";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const mainPkg = require("../package.json");
-
 function applyPluginRunnerConfiguration(grunt: IGrunt) {
     applyDefaultRunnerConfiguration(grunt);
 
@@ -38,8 +35,8 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                     "public/ts",
                     "public/dev/*.map",
                     "public/dev/i18n-dir/",
-                    `vendor/${mainPkg.name}/*/dev/i18n-dir/`,
-                    `vendor/${mainPkg.name}/*/dev/*.map`
+                    `vendor/<%= mainPkg.name %>/*/dev/i18n-dir/`,
+                    `vendor/<%= mainPkg.name %>/*/dev/*.map`
                 ]
             },
             /**
@@ -48,7 +45,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
             webpackDevBundles: {
                 expand: true,
                 cwd: "<%= BUILD_PLUGIN_DIR %>",
-                src: ["public/dev/", `vendor/${mainPkg.name}/*/dev/`]
+                src: ["public/dev/", `vendor/<%= mainPkg.name %>/*/dev/`]
             },
             packageManageFiles: ["<%= BUILD_PLUGIN_DIR %>/?(composer|package).*"]
         },
@@ -63,7 +60,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
                 expand: true,
                 src: [
                     "<%= BUILD_PLUGIN_DIR %>/public/dev/*.{js,css}",
-                    `<%= BUILD_PLUGIN_DIR %>/vendor/${mainPkg.name}/*/dev/*.{js,css}`
+                    `<%= BUILD_PLUGIN_DIR %>/vendor/<%= mainPkg.name %>/*/dev/*.{js,css}`
                 ]
             }
         },
@@ -139,6 +136,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
     grunt.registerTask("composer:install:production", () => {
         const cwd = process.cwd();
         const buildPluginDir = resolve(cwd, grunt.config.get<string>("BUILD_PLUGIN_DIR"));
+        const mainPkgName = grunt.config.get<string>("mainPkg.name");
         const composerJson = resolve(buildPluginDir, "composer.json");
         const lockFile = resolve(buildPluginDir, "composer.lock");
         grunt.log.writeln(`Install no-dev composer dependencies... (BUILD_PLUGIN_DIR=${buildPluginDir})`);
@@ -152,7 +150,7 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
 
         // Iterate through dependent packages and temp deactivate their vendor folder for new installation (only non-dev)
         const dependents = Object.keys(JSON.parse(readFileSync(composerJson).toString())["require"] || {})
-            .filter((dep) => dep.startsWith(`${mainPkg.name}/`))
+            .filter((dep) => dep.startsWith(`${mainPkgName}/`))
             .map((dep) => dep.split("/")[1]);
         dependents.forEach((dep) => {
             grunt.log.writeln(`Temp vendor dir and reinstall non-dev for ${dep}...`);
@@ -188,9 +186,10 @@ function applyPluginRunnerConfiguration(grunt: IGrunt) {
      * custom implementation in composer.json#extra.copy-all-except is implemented.
      */
     grunt.registerTask("composer:clean:production", () => {
+        const mainPkgName = grunt.config.get<string>("mainPkg.name");
         const buildPluginDir = grunt.config.get<string>("BUILD_PLUGIN_DIR");
         const onlyThis = ["composer.*", "package.json", "LICENSE*", "README*", "CHANGELOG*"];
-        grunt.file.expand({ cwd: buildPluginDir }, `vendor/${mainPkg.name}/*/composer.json`).forEach((file) => {
+        grunt.file.expand({ cwd: buildPluginDir }, `vendor/${mainPkgName}/*/composer.json`).forEach((file) => {
             const absolute = resolve(buildPluginDir, file);
             grunt.log.writeln(`Read composer file for local dependant ${absolute}...`);
             const content = grunt.file.readJSON(absolute);

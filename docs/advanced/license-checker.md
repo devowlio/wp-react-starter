@@ -10,7 +10,7 @@ We give no guarantee of legal validity!
 
 As we use `yarn` as dependency manager, we can rely on [`yarn licenses`](https://yarnpkg.com/lang/en/docs/cli/licenses/) scanning all used dependencies and report back if there is an issue (on [CI side](../gitlab-integration/predefined-pipeline.md#validate)). A generated disclaimer will be saved to [`LICENSE_3RD_PARTY_JS.md`](../usage/folder-structure/plugin.md#folder-structure).
 
-Allowed licenses and packages can be configured in [`package.json#license-check`](../usage/folder-structure/plugin.md#folder-structure).
+Allowed licenses and packages can be configured in [`package.json#license-check`](../usage/folder-structure/plugin.md#folder-structure) or the root `package.json`.
 
 {% hint style="warning" %}
 Root dependencies are not checked! Make sure to add all your license-relevant dependencies to your subpackage [`package.json`](../usage/folder-structure/plugin.md#folder-structure).

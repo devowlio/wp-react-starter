@@ -4,7 +4,7 @@
 
 import { execSync } from "child_process";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
-import { basename, dirname } from "path";
+import { basename, dirname, resolve } from "path";
 
 /**
  * Create "pre:" and "post:" hooks for an array of tasks.
@@ -26,12 +26,14 @@ function applyDefaultRunnerConfiguration(grunt: IGrunt) {
     grunt.file.defaultEncoding = "utf8";
 
     const pkg = grunt.file.readJSON("package.json");
+    const mainPkg = grunt.file.readJSON(resolve(__dirname, "../package.json"));
 
     /**
      * Tasks configuration.
      */
     grunt.config.merge({
-        pkg
+        pkg,
+        mainPkg
     });
 
     /**
@@ -53,8 +55,14 @@ function applyDefaultRunnerConfiguration(grunt: IGrunt) {
      */
     grunt.registerTask("yarn:license:check", () => {
         const cwd = process.cwd();
-        const allowed = (grunt.config.get("pkg.license-check.spdx") as string[]).map((l) => l.toLowerCase());
-        const ignorePackages = (grunt.config.get("pkg.license-check.packages") as string[]).map((l) => l.toLowerCase());
+        const allowed = grunt.config
+            .get<string[]>("pkg.license-check.spdx")
+            .map((l) => l.toLowerCase())
+            .concat(grunt.config.get<string[]>("mainPkg.license-check.spdx").map((l) => l.toLowerCase()));
+        const ignorePackages = grunt.config
+            .get<string[]>("pkg.license-check.packages")
+            .map((l) => l.toLowerCase())
+            .concat(grunt.config.get<string[]>("mainPkg.license-check.packages").map((l) => l.toLowerCase()));
         console.log(`Allowed licenses: ${allowed.join(";")}`);
 
         const unlicensed = execSync("yarn --silent licenses list --production --json --no-progress", { cwd })

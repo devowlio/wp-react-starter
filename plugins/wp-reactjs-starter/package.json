@@ -53,25 +53,7 @@
     },
     "phpunit-coverage-threshold": 80,
     "license-check": {
-        "spdx": [
-            "MIT",
-            "ISC",
-            "BSD-2-Clause",
-            "BSD-3-Clause",
-            "Apache-2.0",
-            "Artistic-2.0",
-            "WTFPL",
-            "CC-0",
-            "CC0-1.0",
-            "MPL-2.0",
-            "ZLib",
-            "Unlicense",
-            "GPL-2.0",
-            "GPL-2.0-or-later",
-            "GPL-3",
-            "GPL-3.0-or-later",
-            "LGPL-3.0-or-later"
-        ],
+        "spdx": [],
         "packages": [
             "ignore-packages-here@1.0.0"
         ]
