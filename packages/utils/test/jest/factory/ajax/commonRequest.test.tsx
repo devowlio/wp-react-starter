@@ -3,13 +3,17 @@ import { RouteHttpVerb } from "../../../../lib/factory/ajax/routeHttpVerbEnum";
 import { produce, setAutoFreeze } from "immer";
 
 jest.mock("../../../../lib/factory/ajax/commonUrlBuilder");
+jest.mock("../../../../lib/factory/ajax/parseResult");
 jest.mock("deepmerge");
 jest.mock("url-parse");
 jest.mock("whatwg-fetch");
 
 const { commonUrlBuilder } = require("../../../../lib/factory/ajax/commonUrlBuilder");
+const { parseResult } = require("../../../../lib/factory/ajax/parseResult");
 const deepMerge = require("deepmerge");
 const Url = require("url-parse");
+
+parseResult.mockReturnValue({});
 
 describe("commonRequest", () => {
     const baseOpts = {
@@ -55,10 +59,7 @@ describe("commonRequest", () => {
         const { urlSetMock, urlToStringMock } = createUrlMock();
         commonUrlBuilder.mockImplementation(() => url);
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        const spyFetch = jest
-            .spyOn(window, "fetch")
-            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
+        const spyFetch = jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true } as any));
 
         const actual = await commonRequest(baseOpts);
 
@@ -77,7 +78,7 @@ describe("commonRequest", () => {
         expect(urlSetMock).not.toHaveBeenCalled();
         expect(urlToStringMock).toHaveBeenCalled();
         expect(spyFetch).toHaveBeenCalledWith("https://", {});
-        expect(mockJson).toHaveBeenCalled();
+        expect(parseResult).toHaveBeenCalled();
         expect(actual).toEqual({});
     });
 
@@ -93,10 +94,7 @@ describe("commonRequest", () => {
         const { urlSetMock } = createUrlMock();
         deepMerge.mockImplementation((): any => ({}));
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        const spyFetch = jest
-            .spyOn(window, "fetch")
-            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
+        const spyFetch = jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true } as any));
 
         await commonRequest(opts);
 
@@ -124,10 +122,7 @@ describe("commonRequest", () => {
         const { urlSetMock } = createUrlMock();
         deepMerge.mockImplementation((): any => ({}));
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        const spyFetch = jest
-            .spyOn(window, "fetch")
-            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
+        const spyFetch = jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true } as any));
 
         await commonRequest(opts);
 
@@ -160,10 +155,7 @@ describe("commonRequest", () => {
         createUrlMock();
         deepMerge.mockImplementation((): any => ({}));
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        const spyFetch = jest
-            .spyOn(window, "fetch")
-            .mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
+        const spyFetch = jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true } as any));
 
         await commonRequest(opts);
 
@@ -188,8 +180,7 @@ describe("commonRequest", () => {
         createUrlMock();
         deepMerge.mockImplementation((): any => ({}));
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true, json: mockJson } as any));
+        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: true } as any));
 
         await commonRequest(opts);
 

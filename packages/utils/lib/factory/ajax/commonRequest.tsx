@@ -10,6 +10,7 @@ import {
 import deepMerge from "deepmerge";
 import Url from "url-parse";
 import "whatwg-fetch"; // window.fetch polyfill
+import { parseResult } from ".";
 
 /**
  * Build and execute a specific REST query.
@@ -49,8 +50,9 @@ async function commonRequest<
         apiUrl.set("query", deepMerge(apiUrl.query, routeRequest));
     }
 
+    const apiUrlBuilt = apiUrl.toString();
     const result = await window.fetch(
-        apiUrl.toString(),
+        apiUrlBuilt,
         deepMerge.all([
             settings,
             {
@@ -77,7 +79,7 @@ async function commonRequest<
         throw resultAny;
     }
 
-    return (await result.json()) as TResponse;
+    return parseResult<TResponse>(apiUrlBuilt, result);
 }
 
 export { commonRequest };
