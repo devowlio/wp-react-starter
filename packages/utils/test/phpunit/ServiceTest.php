@@ -49,6 +49,51 @@ final class ServiceTest extends TestCase {
         $this->addToAssertionCount(1);
     }
 
+    public function testAdminNotices() {
+        $this->service->shouldReceive('admin_notices')->passthru();
+
+        $this->service
+            ->shouldReceive('getSecurityPlugins')
+            ->once()
+            ->andReturn([]);
+
+        WP_Mock::userFunction('__', ['return' => '__']);
+
+        $this->expectOutputString(
+            '<div id="notice-corrupt-rest-api" class="hidden notice notice-warning"><p>__</p><ul></ul><p>__</p></div>'
+        );
+
+        $this->service->admin_notices();
+
+        // Only output once
+        $this->service->admin_notices();
+    }
+
+    public function testGetSecurityPlugins() {
+        $should = ['Hide My WP'];
+        $this->service->shouldReceive('getSecurityPlugins')->passthru();
+
+        WP_Mock::userFunction('get_option', [
+            'times' => 1,
+            'args' => ['active_plugins'],
+            'return' => ['phpunit-plugin/index.php', 'hide-my-wp/index.php']
+        ]);
+
+        redefine('constant', function ($arg) {
+            return $arg;
+        });
+
+        WP_Mock::userFunction('get_plugin_data', [
+            'times' => 1,
+            'args' => ['WP_PLUGIN_DIR/hide-my-wp/index.php'],
+            'return' => ['Name' => 'Hide My WP']
+        ]);
+
+        $actual = $this->service->getSecurityPlugins();
+
+        $this->assertEquals($actual, $should);
+    }
+
     public function testGetUrl() {
         $should = 'http://localhost/wp-json/test/v1/';
 

@@ -38,14 +38,14 @@ class PackageLocalization {
     protected function override($locale) {
         switch ($locale) {
             // Put your overrides here!
-            // case 'de_AT':
-            // case 'de_CH':
-            // case 'de_CH_informal':
-            // case 'de_DE_formal':
-            //     return 'de_DE';
-            //     break;
-            // default:
-            //     break;
+            case 'de_AT':
+            case 'de_CH':
+            case 'de_CH_informal':
+            case 'de_DE_formal':
+                return 'de_DE';
+                break;
+            default:
+                break;
         }
         return $locale;
     }

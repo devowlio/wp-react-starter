@@ -39,6 +39,22 @@ final class PackageLocalizationTest extends TestCase {
         $this->assertEquals($should, $actual);
     }
 
+    public function testOverrideDeFormal() {
+        $locale = 'de_DE_formal';
+        $should = 'de_DE';
+
+        $this->packageLocalization
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('override')
+            ->passthru();
+
+        $method = new ReflectionMethod(PackageLocalization::class, 'override');
+        $method->setAccessible(true);
+        $actual = $method->invoke($this->packageLocalization, $locale);
+
+        $this->assertEquals($should, $actual);
+    }
+
     public function testGetPackageInfoBackend() {
         $rootSlug = PHPUNIT_ROOT_SLUG;
         $package = 'utils';

@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: n/a\n"
+"PO-Revision-Date: 2020-07-13 09:37+0200\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de_DE\n"
+
+#. translators:
+#: Service.php:81
+msgid ""
+"One or more WordPress plugins tried to call the WordPress REST API, which "
+"failed. Most likely a security plugin%s or a web server configuration "
+"disabled the REST API. Please make sure that the following REST API "
+"namespaces are reachable to use your plugin without problems:"
+msgstr ""
+"Ein oder mehrere WordPress-Plugins versuchten, die WordPress REST API "
+"aufzurufen, was fehlschlug. Höchstwahrscheinlich hat ein Sicherheits-"
+"Plugin%s oder eine Webserver-Konfiguration die REST-API deaktiviert. "
+"Bitte stelle sicher, dass die folgenden REST-API-Namensräume erreichbar "
+"sind, um das jeweilige Plugin ohne Probleme nutzen zu können:"
+
+#. translators:
+#: Service.php:89
+msgid ""
+"What is the WordPress REST API and how to enable it? %1$sLearn more%2$s."
+msgstr ""
+"Was ist die WordPress REST API und wie kann sie aktiviert werden? "
+"%1$sKlicke hier, um mehr darüber zu erfahren%2$s."
+
+#: Service.php:92
+msgid ""
+"https://devowl.io/knowledge-base/i-only-see-a-loading-spinner-what-can-i-"
+"do/"
+msgstr ""
+"https://devowl.io/knowledge-base/i-only-see-a-loading-spinner-what-can-i-"
+"do/"

@@ -67,6 +67,7 @@ final class CoreTest extends TestCase {
         WP_Mock::expectActionAdded('plugins_loaded', [$this->core, 'updateDbCheck']);
         WP_Mock::expectActionAdded('init', [$this->core, 'init']);
         WP_Mock::expectActionAdded('rest_api_init', [$mockService, 'rest_api_init']);
+        WP_Mock::expectActionAdded('admin_notices', [$mockService, 'admin_notices']);
 
         /** @var MockInterface|LocalizationImpl */
         $mockLocalization = Mockery::mock(LocalizationImpl::class);

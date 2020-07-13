@@ -10,3 +10,17 @@ msgstr ""
 "POT-Creation-Date: n/a\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
+
+#. translators:
+#: Service.php:81
+msgid "One or more WordPress plugins tried to call the WordPress REST API, which failed. Most likely a security plugin%s or a web server configuration disabled the REST API. Please make sure that the following REST API namespaces are reachable to use your plugin without problems:"
+msgstr ""
+
+#. translators:
+#: Service.php:89
+msgid "What is the WordPress REST API and how to enable it? %1$sLearn more%2$s."
+msgstr ""
+
+#: Service.php:92
+msgid "https://devowl.io/knowledge-base/i-only-see-a-loading-spinner-what-can-i-do/"
+msgstr ""

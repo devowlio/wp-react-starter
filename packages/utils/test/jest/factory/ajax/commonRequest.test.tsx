@@ -194,7 +194,7 @@ describe("commonRequest", () => {
     });
 
     it("should throw error when response is not ok", async () => {
-        const method = RouteHttpVerb.POST;
+        const method = RouteHttpVerb.GET;
         const opts = produce(baseOpts, (draft) => {
             (draft.location as any).method = method;
         });
@@ -204,14 +204,13 @@ describe("commonRequest", () => {
         createUrlMock();
         deepMerge.mockImplementation((): any => ({}));
         deepMerge.all.mockImplementation((): any => ({}));
-        const mockJson = jest.fn().mockReturnValue({});
-        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: false, json: mockJson } as any));
+        jest.spyOn(window, "fetch").mockImplementationOnce(() => ({ ok: false } as any));
 
         await expect(commonRequest(opts)).rejects.toEqual({
             ok: false,
-            json: expect.any(Function),
             responseJSON: {}
         });
-        expect(mockJson).toHaveBeenCalled();
+        expect(parseResult).toHaveBeenCalled();
+        expect((global as any).detectCorrupRestApiFailed).toBe(1);
     });
 });

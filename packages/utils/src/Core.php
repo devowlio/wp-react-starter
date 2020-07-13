@@ -52,6 +52,7 @@ trait Core {
         add_action('plugins_loaded', [$this, 'updateDbCheck']);
         add_action('init', [$this, 'init']);
         add_action('rest_api_init', [$this->getService(), 'rest_api_init']);
+        add_action('admin_notices', [$this->getService(), 'admin_notices']);
 
         // Localize the plugin and package itself
         $this->getPluginClassInstance(PluginReceiver::$PLUGIN_CLASS_LOCALIZATION)->hooks();

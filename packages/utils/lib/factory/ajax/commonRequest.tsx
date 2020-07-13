@@ -38,9 +38,9 @@ async function commonRequest<
 
     // Use global parameter (see https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/)
     if (WP_REST_API_USE_GLOBAL_METHOD && location.method && location.method !== RouteHttpVerb.GET) {
-        settings.method = "POST";
+        settings.method = RouteHttpVerb.POST;
     } else {
-        settings.method = "GET";
+        settings.method = RouteHttpVerb.GET;
     }
 
     // Request with GET/HEAD method cannot have body
@@ -69,10 +69,14 @@ async function commonRequest<
     if (!result.ok) {
         let responseJSON = undefined;
         try {
-            responseJSON = await result.json();
+            responseJSON = await parseResult<TResponse>(apiUrlBuilt, result);
         } catch (e) {
             // Silence is golden.
         }
+
+        // Set this request as failing so the endpoint is probably corrupt (see `corrupRestApi.tsx`)
+        settings.method === RouteHttpVerb.GET &&
+            (window.detectCorrupRestApiFailed = (window.detectCorrupRestApiFailed || 0) + 1);
 
         const resultAny = result as any;
         resultAny.responseJSON = responseJSON;
