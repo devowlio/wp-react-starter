@@ -53,6 +53,7 @@ Don't give up too early, because it can take a while until you find your way in 
         -   📁 `scripts` Used in Docker containers ([mounted](https://docs.docker.com/compose/compose-file/#volumes))
             -   📄 `container-wordpress-cli-entrypoint.sh` Extended [entrypoint](https://docs.docker.com/compose/compose-file/#entrypoint) for `wordpress-cli` service
             -   📄 `container-wordpress-command.sh` [Command](https://docs.docker.com/compose/compose-file/#command) for `wordpress` service
+            -   📄 `custom-php.ini` Custom PHP [configuration file](https://www.php.net/manual/en/configuration.file.php) for `wordpress` service
             -   📄 `e2e-tests-autologin-plugin.php` Micro-plugin for automatic login via URL in WordPress for E2E tests
             -   📄 `lerna-ready-ci.sh` Make `lerna` work in GitLab CI environment
             -   📄 `purge-ci.sh` Purge Socker resources for E2E tests and Review Apps in CI/CD

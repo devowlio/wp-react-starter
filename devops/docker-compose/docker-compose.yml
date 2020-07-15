@@ -48,6 +48,7 @@ services:
             - ../scripts:/scripts
             # Allow symlinking for composer "path" repositories
             - ../../packages:/var/www/html/wp-content/packages
+            - ../scripts/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini
         restart: on-failure
         depends_on:
             - mysql
