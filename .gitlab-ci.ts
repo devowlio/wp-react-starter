@@ -85,11 +85,21 @@ const createConfig: CreateConfigFunction = async () => {
         true
     );
 
+    const commonFiles = ["common/**/*", "devops/**/*", "*.{yml,ts,json,lock}"];
     config.job(
         "common files changed",
         {
             only: {
-                changes: ["common/**/*", "devops/**/*", "*.{yml,ts,json,lock}"]
+                changes: commonFiles
+            }
+        },
+        true
+    );
+    config.job(
+        "no common files changed",
+        {
+            except: {
+                changes: commonFiles
             }
         },
         true
@@ -194,13 +204,27 @@ function createPackageJobs(config: Config, cwd: string, type: "packages" | "plug
         true
     );
 
+    const changes = [`${type}/${prefix}/**/*`].concat(dependencies.map((dep) => `packages/${dep}/**/*`));
+
     // Create only changes expression so a job is only called when there is a relevant change
     config.extends(
         ".common files changed",
         `${prefix} only changes`,
         {
             only: {
-                changes: [`${type}/${prefix}/**/*`].concat(dependencies.map((dep) => `packages/${dep}/**/*`))
+                changes
+            }
+        },
+        true
+    );
+
+    // Create except changes expression so a job is only called when there is no relevant change
+    config.extends(
+        ".no common files changed",
+        `${prefix} except changes`,
+        {
+            except: {
+                changes
             }
         },
         true

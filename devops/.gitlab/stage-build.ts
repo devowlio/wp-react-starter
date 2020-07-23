@@ -6,6 +6,8 @@ type EsLintMacroArgs = MacroArgs & {
 
 type PhpCsMacroArgs = EsLintMacroArgs;
 
+type BuildPluginMacroArgs = PhpCsMacroArgs;
+
 const extendConfig: ExtendConfigFunction = async (config) => {
     // Generate technical documents
     config.extends(
@@ -72,6 +74,10 @@ const extendConfig: ExtendConfigFunction = async (config) => {
         "build plugin",
         {
             stage: "build",
+            before_script: [
+                // Check if build already exists so we can safely skip it
+                "test -d plugins/$JOB_PACKAGE_NAME/build && exit 0 || :"
+            ],
             script: [
                 // If we are in production build check if it is necessary
                 '[ $CI_JOB_STAGE == "build production" ] && [ ! -f plugins/$JOB_PACKAGE_NAME/.publish ] && echo $LERNA_SKIP_MESSAGE && exit 0',
@@ -93,6 +99,31 @@ const extendConfig: ExtendConfigFunction = async (config) => {
         },
         true
     );
+
+    config.macro<BuildPluginMacroArgs>("build plugin", (self, { prefix }) => {
+        const jobName = `${prefix} build`;
+        const cache = {
+            key: `${jobName}-$CI_COMMIT_REF_SLUG`,
+            untracked: true,
+            paths: ["plugins/$JOB_PACKAGE_NAME/build/"]
+        };
+
+        // The plugin is changed, build and only push to cache
+        config.extends([`.${prefix} jobs`, `.${prefix} only changes`, `.build plugin`], jobName, {
+            cache: {
+                ...cache,
+                policy: "push"
+            }
+        });
+
+        // The plugin is not changed, pull from cache and rebuild if not found
+        config.extends([`.${prefix} jobs`, `.${prefix} except changes`, `.build plugin`], `${jobName} from cache`, {
+            cache: {
+                ...cache,
+                policy: "pull-push"
+            }
+        });
+    });
 
     config.macro<EsLintMacroArgs>("lint eslint", (self, { prefix }) => {
         const definingJob = `.${prefix} jobs`;
@@ -129,4 +160,4 @@ const extendConfig: ExtendConfigFunction = async (config) => {
     });
 };
 
-export { extendConfig, EsLintMacroArgs, PhpCsMacroArgs };
+export { extendConfig, EsLintMacroArgs, PhpCsMacroArgs, BuildPluginMacroArgs };

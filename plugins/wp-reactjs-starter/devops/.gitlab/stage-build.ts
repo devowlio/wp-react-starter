@@ -1,6 +1,6 @@
 import { ExtendConfigFunction } from "node-gitlab-ci";
 import { createPackageJobs } from "../../../../.gitlab-ci";
-import { EsLintMacroArgs, PhpCsMacroArgs } from "../../../../devops/.gitlab/stage-build";
+import { EsLintMacroArgs, PhpCsMacroArgs, BuildPluginMacroArgs } from "../../../../devops/.gitlab/stage-build";
 
 const extendConfig: ExtendConfigFunction = async (config) => {
     const { prefix } = createPackageJobs(config, __dirname, "plugins");
@@ -15,7 +15,9 @@ const extendConfig: ExtendConfigFunction = async (config) => {
     config.from<PhpCsMacroArgs>("lint phpcs", { prefix });
 
     // Create build files and run it through docker
-    config.extends([`.${prefix} jobs`, `.build plugin`], `${prefix} build`, {});
+    config.from<BuildPluginMacroArgs>("build plugin", {
+        prefix
+    });
 };
 
 export { extendConfig };
