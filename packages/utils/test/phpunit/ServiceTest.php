@@ -28,7 +28,15 @@ final class ServiceTest extends TestCase {
         redefine(Service::class . '::getNamespace', always('test/v1'));
 
         WP_Mock::userFunction('register_rest_route', [
-            'args' => ['test/v1', '/plugin', ['methods' => 'GET', 'callback' => [Mockery::self(), 'routePlugin']]]
+            'args' => [
+                'test/v1',
+                '/plugin',
+                [
+                    'methods' => 'GET',
+                    'callback' => [Mockery::self(), 'routePlugin'],
+                    'permission_callback' => '__return_true'
+                ]
+            ]
         ]);
 
         $this->service->rest_api_init();

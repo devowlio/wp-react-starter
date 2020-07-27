@@ -31,7 +31,8 @@ class HelloWorld {
         $namespace = Service::getNamespace($this);
         register_rest_route($namespace, '/hello', [
             'methods' => 'GET',
-            'callback' => [$this, 'routeHello']
+            'callback' => [$this, 'routeHello'],
+            'permission_callback' => '__return_true'
         ]);
     }
 

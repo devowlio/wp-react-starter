@@ -49,7 +49,8 @@ class Service {
         $namespace = Service::getNamespace($this->getCore());
         register_rest_route($namespace, '/plugin', [
             'methods' => 'GET',
-            'callback' => [$this, 'routePlugin']
+            'callback' => [$this, 'routePlugin'],
+            'permission_callback' => '__return_true'
         ]);
     }
 
