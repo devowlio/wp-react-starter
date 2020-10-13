@@ -858,11 +858,37 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: enzyme, enzyme-adapter-react-16, enzyme-adapter-utils, enzyme-shallow-equal. A copy of the source code may be downloaded from https://github.com/airbnb/enzyme.git (enzyme), https://github.com/airbnb/enzyme.git (enzyme-adapter-react-16), https://github.com/airbnb/enzyme.git (enzyme-adapter-utils), https://github.com/airbnb/enzyme.git (enzyme-shallow-equal). This software contains the following license and notice below:
+The following software may be included in this product: enzyme. A copy of the source code may be downloaded from https://github.com/airbnb/enzyme.git. This software contains the following license and notice below:
 
 The MIT License (MIT)
 
 Copyright (c) 2015 Airbnb, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----
+
+The following software may be included in this product: enzyme-adapter-react-16, enzyme-adapter-utils, enzyme-shallow-equal. A copy of the source code may be downloaded from https://github.com/enzymejs/enzyme.git (enzyme-adapter-react-16), https://github.com/enzymejs/enzyme.git (enzyme-adapter-utils), https://github.com/enzymejs/enzyme.git (enzyme-shallow-equal). This software contains the following license and notice below:
+
+The MIT License (MIT)
+
+Copyright (c) 2015 Airbnb, Inc. and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1424,7 +1450,7 @@ OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 -----
 
-The following software may be included in this product: is-regex, object-is. A copy of the source code may be downloaded from git://github.com/ljharb/is-regex.git (is-regex), git://github.com/es-shims/object-is.git (object-is). This software contains the following license and notice below:
+The following software may be included in this product: is-negative-zero, is-regex, object-is. A copy of the source code may be downloaded from git://github.com/ljharb/is-negative-zero.git (is-negative-zero), git://github.com/ljharb/is-regex.git (is-regex), git://github.com/es-shims/object-is.git (object-is). This software contains the following license and notice below:
 
 The MIT License (MIT)
 
@@ -2605,7 +2631,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----
 
-The following software may be included in this product: workspace-aggregator-d0254415-9656-4499-949e-a869b2c988d4. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-55d169ff-aef2-4686-81cc-15f3d2f9ecc0. This software contains the following license and notice below:
 
 The software "WP React Starter" is comprised of multiple parts
 (files in these directories and subdirectories, if the subdirectory

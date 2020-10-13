@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.3.0 (2020-10-13)
+
+
+### chore
+
+* update dependencies (#3cj43t)
+
+
+### ci
+
+* try to use cache when building plugin and untouched
+
+
+### docs
+
+* update license agreement (#4ufx38)
+
+
+### feat
+
+* compatibility with WordPress 5.5 (#6gqcm8)
+
+
+### test
+
+* disable cypress test which does no longer with cypress@4
+
+
+
+
+
 # 1.2.0 (2020-06-29)
 
 

@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.3.0 (2020-10-13)
+
+
+### chore
+
+* update dependencies (#3cj43t)
+
+
+### docs
+
+* update license agreement (#4ufx38)
+
+
+### feat
+
+* compatibility with WordPress 5.5 (#6gqcm8)
+* introduce corrupt REST API notice (#4gkvbz)
+
+
+### fix
+
+* once a PHP notice is issued in the REST API, the interface still works (#6cpapc)
+
+
+
+
+
 # 1.2.0 (2020-06-29)
 
 
