@@ -56,7 +56,7 @@ function commonUrlBuilder({
     // Find undeclared body params (which are not bind above) and add it to GET query
     for (const checkParam of Object.keys(params)) {
         if (foundParams.indexOf(checkParam) === -1) {
-            getParams[checkParam] = encodeURIComponent((params as any)[checkParam]);
+            getParams[checkParam] = (params as any)[checkParam]; // We do not need `encodeURIComponent` as it is supported by `url-parse` already
         }
     }
 
