@@ -2,6 +2,9 @@
 
 # Make the `lerna` command possible in GitLab CI environment
 
+# Unshallow to make git-describe.sync work https://app.clickup.com/t/a6qmdj
+git fetch --unshallow
+
 # Use unsafe-perm so lerna lifecycle events work. Why: https://git.io/JeQdu
 yarn config set unsafe-perm true
 
