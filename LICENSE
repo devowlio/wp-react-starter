@@ -2,29 +2,20 @@ The software "WP React Starter" is comprised of multiple parts
 (files in these directories and subdirectories, if the subdirectory
 be under no other licence):
 
-/: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
-/.vscode: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
-/common: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
-/devops: WP React Starter Licence Agreement v1.0 or later (wp-react-starter-licence-1.0-or-later)
-/docs: WP React Starter Licence Agreement v1.0 (wp-react-starter-licence-1.0-or-later)
+/: ISC License (ISC)
+/.vscode: ISC License (ISC)
+/common: ISC License (ISC)
+/devops: ISC License (ISC)
+/docs: ISC License (ISC)
 /packages/utils: GNU General Public License v3.0 or later (GPL-3.0-or-later)
 /plugins/wp-reactjs-starter: GNU General Public License v3.0 or later (GPL-3.0-or-later)
 
 You can find a copy of both licenses at:
 
-WordPress Product Licence Agreement: https://devowl.io/wordpress-product-licence-agreement/
+ISC License: https://opensource.org/licenses/ISC
 GNU General Public License v3.0: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 In practice, this means that the build of the WordPress plugins 
 that you create with WP React Starter is only licensed under
 GNU General Public License v3.0 or later. Most or all devtools 
-are licensed under WP React Starter Licence Agreement v1.0 or later.
-
-If you want to use WP React Starter, please get a license from 
-https://devowl.io/wp-react-starter/licence/.
-
-In addition to the license agreements, you must agree to 
-the following documents when you order a license:
-
-devowl.io General terms and conditions: https://devowl.io/terms/
-devowl.io Privacy Policy: https://devowl.io/privacy-policy/
+are licensed under the ISC license.
