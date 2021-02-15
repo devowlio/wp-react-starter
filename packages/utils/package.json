@@ -1,6 +1,6 @@
 {
     "name": "@wp-reactjs-multi-starter/utils",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "Utility functionality for all your WordPress plugins.",
     "author": "Matthias Günter <support@matthias-web.com>",
     "homepage": "https://matthias-web.com",

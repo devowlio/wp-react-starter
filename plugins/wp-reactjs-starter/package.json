@@ -1,7 +1,7 @@
 {
     "name": "@wp-reactjs-multi-starter/wp-reactjs-starter",
     "slug": "wp-reactjs-starter",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "WordPress Plugin Boilerplate using new web technologies.",
     "author": "Matthias Günter <support@matthias-web.com>",
     "license": "GPL-3.0-or-later",
@@ -131,7 +131,7 @@
         ]
     },
     "dependencies": {
-        "@wp-reactjs-multi-starter/utils": "^1.3.0",
+        "@wp-reactjs-multi-starter/utils": "^1.4.0",
         "core-js": "3.6.5",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.2",
