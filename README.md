@@ -1,6 +1,6 @@
 # WP React Starter: WordPress React Boilerplate
 
-<img align="right" src="https://matthias-web.com/wp-content/uploads/WP-React-Starter/Git/wp-react-starter-logo.png" alt="WP React Starter Logo" height="180" />
+<img align="right" src="https://assets.devowl.io/git/wp-react-starter/logo.png" alt="WP React Starter Logo" height="180" />
 
 Create (multiple) WordPress plugins that use **React**, **TypeScript**, and **object-oriented PHP** in a fully customizable **Docker** development environment, commited in a **monorepo**.
 
