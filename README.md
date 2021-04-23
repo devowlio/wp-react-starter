@@ -1,5 +1,7 @@
 # WP React Starter: WordPress React Boilerplate
 
+> **DEPRECATED**: WP React Starter was a "research project" of [devowl.io](https://devowl.io/) for the development of our WordPress plugins. Unfortunately, we don't have enough resources to regularly contribute the developments of our private monorepo to WP React Starter. You are welcome to continue using or forking this project, but it will no longer be updated or extended with new features, structures, etc.
+
 <img align="right" src="https://assets.devowl.io/git/wp-react-starter/logo.png" alt="WP React Starter Logo" height="180" />
 
 Create (multiple) WordPress plugins that use **React**, **TypeScript**, and **object-oriented PHP** in a fully customizable **Docker** development environment, commited in a **monorepo**.
